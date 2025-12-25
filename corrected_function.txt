@@ -1,0 +1,66 @@
+    function sauvegarderCertificatAntirabique() {
+        // Récupérer les informations du patient depuis les champs du certificat affiché
+        const nomInput = document.querySelector('input[value*=" "]:not([readonly])');
+        const dateNaissanceInput = document.querySelector('input[type="text"]:not([readonly]):not([value*="Dr"])');
+        const docteurSpan = document.querySelector('.docteur');
+        
+        let patientNomPrenom = '';
+        let patientDateNaissance = '';
+        let docteur = '';
+        
+        // Récupérer le nom complet depuis l'input qui contient le nom du patient
+        const allInputs = document.querySelectorAll('input[type="text"]');
+        for (let input of allInputs) {
+            if (input.value && !input.value.includes('Dr') && input.value.includes(' ') && input.id !== 'dateJour0' && input.id !== 'datePlus3' && input.id !== 'datePlus7' && input.id !== 'datePlus14' && input.id !== 'datePlus21') {
+                patientNomPrenom = input.value;
+                break;
+            }
+        }
+        
+        // Récupérer la date de naissance (l'input qui ne contient pas d'espace et n'est pas le nom)
+        for (let input of allInputs) {
+            if (input.value && !input.value.includes('Dr') && input.value && !input.value.includes(' ') && input !== nomInput && input.id !== 'dateJour0' && input.id !== 'datePlus3' && input.id !== 'datePlus7' && input.id !== 'datePlus14' && input.id !== 'datePlus21') {
+                patientDateNaissance = input.value;
+                break;
+            }
+        }
+        
+        // Récupérer le médecin
+        if (docteurSpan) {
+            docteur = docteurSpan.textContent.replace('Dr ', '').trim();
+        }
+        
+        // Préparer les données pour l'API
+        const data = {
+            nom: patientNomPrenom.split(' ').slice(0, -1).join(' ') || patientNomPrenom, // Extraire le nom
+            prenom: patientNomPrenom.split(' ').slice(-1).join(' ') || '', // Extraire le prénom
+            medecin: docteur,
+            classe: "Antirabique",
+            type_de_vaccin: "Vaccin antirabique",
+            shema: "Essen",
+            date_de_certificat: new Date().toISOString().split('T')[0], // Date d'aujourd'hui
+            date_de_naissance: patientDateNaissance,
+            animal: "chien"
+        };
+        
+        // Envoyer les données à l'API
+        fetch('http://localhost:5000/api/ajouter_antirabique', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('Certificat antirabique sauvegardé avec succès!');
+            } else {
+                alert('Erreur lors de la sauvegarde: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur de connexion au serveur');
+        });
+    }

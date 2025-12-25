@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-Bv3PmC1DpDAqDtK9r8V94YCWvtrGBARI6E/3skPCpY8=';">
+    <title>Certificat Médical</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+            max-width: 21cm;
+            margin: 0 auto;
+        }
+
+        .certificate-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-fields {
+            text-align: right;
+        }
+
+        .certificate-title {
+            text-align: center;
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 30px 0;
+        }
+
+        .certificate-body {
+            text-align: right;
+            direction: rtl;
+            margin: 20px 0;
+            line-height: 1.8;
+        }
+
+        .signature-fields {
+            text-align: left;
+            direction: ltr;
+        }
+
+        .underline {
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            min-width: 150px;
+            padding: 2px 5px;
+        }
+
+        .signature-section {
+            margin-top: 50px;
+            text-align: right;
+        }
+
+
+        .divider {
+            border: none;
+            border-top: 1px solid #000;
+            margin: 30px 0;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+            
+            /* Hide placeholders during printing */
+            input::placeholder,
+            textarea::placeholder {
+                color: transparent !important;
+                opacity: 0 !important;
+            }
+            
+            /* Ensure input fields look clean when printed */
+            .editable {
+                border: none !important;
+                border-bottom: none !important;
+                background-color: transparent !important;
+            }
+        }
+
+        .print-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .print-button:hover {
+            background-color: #0056b3;
+        }
+
+        .copy-button {
+            position: fixed;
+            top: 10px;
+            right: 110px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .copy-button:hover {
+            background-color: #218838;
+        }
+
+        .editable {
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px dashed #666;
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        input[type="date"] {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+        }
+
+        input[type="date"]::-webkit-inner-spin-button {
+            display: none;
+        }
+
+        input[type="date"]::-webkit-clear-button {
+            display: none;
+        }
+
+        .editable:focus {
+            background-color: #f0f8ff;
+        }
+
+        .editable:focus {
+            background-color: #f0f8ff;
+        }
+
+        .certificate-type {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 14pt;
+            font-weight: bold;
+        }
+    </style>
+    
+</head>
+
+<body>
+    <button class="print-button no-print" id="printBtn">Imprimer</button>
+    <button class="copy-button no-print" id="copyBtn">Copier partie1 vers la partie 2</button>
+
+    <!-- Certificat Médical Général -->
+    <div id="general-certificate">
+        <div class="certificate-header">
+            <h1 style="margin: 0; font-size: 14pt;">الجمهــــوريــــة الجــزائريـــة الديمقــراطيــة الشعبيـة</h1>
+            <div class="header-fields">
+                <div style="margin: 10px 0;">
+                    <input type="text" class="editable" id="wilaya-ar-1" placeholder="ولايــةar"
+                        style="width: 200px; direction: rtl;" />
+                </div>
+                <div style="margin: 10px 0;">
+                    <input type="text" class="editable" id="polyclinique-ar-1" placeholder="Poly ar"
+                        style="width: 200px; direction: rtl;" />
+                </div>
+            </div>
+        </div>
+
+        <div class="certificate-title">
+            شهادة طبية عامة
+        </div>
+
+        <div class="certificate-body">
+            <p>
+                أنا الممضي أسفله الحكيم : <input type="text" class="editable" id="docteur-1"
+                    placeholder="medecin" style="width: 150px;" dir="rtl" />
+            </p>
+            <p>
+                بعد فحص السيد <input type="text" class="editable" id="nom-1" placeholder="nom"
+                    style="width: 150px;" dir="rtl" /> <input type="text" class="editable" id="prenom-1"
+                    placeholder="prenom" style="width: 150px;" dir="rtl" /> العمر <input type="text"
+                    class="editable" id="age-1" placeholder="age" style="width: 100px;" />
+            </p>
+            <p>
+                مرشح لعمل <input type="text"  class="editable" id="travail-1" placeholder="العمل" style="width: 200px;"
+                    dir="rtl" /> الساكن ب <input type="text" class="editable" id="adresse-1" placeholder="العنوان"
+                    style="width: 250px;" dir="rtl" />
+            </p>
+            <p>
+                اشهد بأنه سليم من كل مرض أو عطب يمنعه من العمل المطلوب.
+            </p>
+            <p class="signature-fields">
+                <input type="text" class="editable date-input" id="date-1" style="width: 150px;" placeholder="jj/mm/aaaa" /> في
+            </p>
+            <p class="signature-fields">
+                إمضاء الطبيب
+            </p>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Certificat Médical Spécial -->
+    <div id="special-certificate">
+        <div class="certificate-header">
+            <h1 style="margin: 0; font-size: 14pt;">الجمهــــوريــــة الجــزائريـــة الديمقــراطيــة الشعبيـة</h1>
+            <div class="header-fields">
+                <div style="margin: 10px 0;">
+                    <input type="text" class="editable" id="wilaya-ar-2" placeholder="ولايــةar"
+                        style="width: 200px; direction: rtl;" />
+                </div>
+                <div style="margin: 10px 0;">
+                    <input type="text" class="editable" id="polyclinique-ar-2" placeholder="Poly ar"
+                        style="width: 200px; direction: rtl;" />
+                </div>
+            </div>
+        </div>
+
+        <div class="certificate-title">
+            شهادة طبية خاصة
+        </div>
+
+        <div class="certificate-body">
+            <p>
+                أنا الممضي أسفله الحكيم : <input type="text" class="editable" id="docteur-2"
+                    placeholder="medecin" style="width: 150px;" dir="rtl" />
+            </p>
+            <p>
+                بعد فحص السيد <input type="text" class="editable" id="nom-2" placeholder="nom"
+                    style="width: 150px;" dir="rtl" /> <input type="text" class="editable" id="prenom-2"
+                    placeholder="prenom" style="width: 150px;" dir="rtl" /> العمر <input type="text"
+                    class="editable" id="age-2" placeholder="age" style="width: 100px;" />
+            </p>
+            <p>
+                مرشح لعمل <input type="text" class="editable" id="travail-2" placeholder="العمل"
+                    style="width: 200px;" dir="rtl" /> الساكن ب <input type="text" class="editable"
+                    id="adresse-2" placeholder="العنوان" style="width: 250px;" dir="rtl" />
+            </p>
+            <p>
+                اشهد بأنه معافى من مرض السل أو أي مرض صدري مشابه.
+            </p>
+            <p class="signature-fields">
+                <input type="text" class="editable date-input" id="date-2" style="width: 150px;" placeholder="jj/mm/aaaa" /> في
+            </p>
+            <p class="signature-fields">
+                إمضاء الطبيب
+            </p>
+        </div>
+    </div>
+	
+    <script src="cert-bon-sante-scripts.js"></script>
+</body>
+
+</html>

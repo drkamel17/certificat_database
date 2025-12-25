@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شهادة طبية قبل الزواج</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.4;
+            margin: 18px;
+            padding: 25px 25px 40px 25px;
+            /* Premier encadrement */
+            border: 3px solid #2c3e50;
+            border-radius: 5px;
+            /* Deuxième encadrement */
+            box-shadow: 0 0 0 3px #3498db, 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            margin-top: 8px;
+        }
+        .section {
+            margin-bottom: 16px;
+        }
+        .signature {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .signature div {
+            width: 45%;
+            text-align: center;
+        }
+        .date {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+        
+        /* تقليص المسافات بين العناصر */
+        p {
+            margin: 16px 0;
+        }
+        
+        ul {
+            margin: 14px 0;
+            padding-right: 20px;
+        }
+        
+        li {
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+        
+        h2 {
+            margin: 14px 0;
+        }
+        
+        /* Styles pour les zones éditables */
+        .editable-field {
+            border-bottom: 2px dotted #333;
+            min-height: 20px;
+            display: inline-block;
+            min-width: 200px;
+            padding: 2px 5px;
+            background: transparent;
+            color: #333;
+            font-family: inherit;
+            font-size: inherit;
+            direction: rtl;
+            text-align: right;
+        }
+        
+        .editable-field:focus {
+            outline: none;
+            background-color: #f0f8ff;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .editable-field:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .editable-field.empty:before {
+            content: attr(data-placeholder);
+            color: #999;
+            font-style: italic;
+        }
+        
+        /* Contrôles de données */
+        .data-controls {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .data-controls button {
+            margin: 2px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .btn-save { background-color: #27ae60; color: white; }
+        .btn-load { background-color: #3498db; color: white; }
+        .btn-clear { background-color: #e74c3c; color: white; }
+        .btn-print { background-color: #9b59b6; color: white; }
+        
+        @media print {
+            @page {
+                size: A4;
+                margin: 0.5cm 0.5cm 0.5cm 0.5cm;
+            }
+            
+            body {
+                margin: 0 !important;
+                padding: 10px !important;
+                border: 2px solid #2c3e50 !important;
+                border-radius: 3px !important;
+                box-shadow: none !important;
+            }
+            
+            .data-controls { display: none; }
+            .editable-field { border-bottom: 2px dotted #333; }
+            
+            /* إخفاء placeholder عند الطباعة */
+            .editable-field.empty:before {
+                content: none !important;
+            }
+            
+            .editable-field:before {
+                content: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Contrôles de données -->
+    <div class="data-controls">
+        <button class="btn-save" id="saveBtn" title="حفظ بيانات الطبيب فقط">💾 حفظ طبيب</button>
+        <button class="btn-load" id="loadBtn" title="تحميل بيانات الطبيب">📂 تحميل طبيب</button>
+        <button class="btn-clear" id="clearBtn" title="مسح البيانات">🗑️ مسح</button>
+        <button class="btn-print" id="printBtn">🖨️ طباعة</button>
+    </div>
+    
+    <div class="header">
+        <h2>شهادة طبية قبل الزواج</h2>
+    </div>
+
+    <p>
+        (أعدت تطبيقًا لأحكام المادة 3 من المرسوم التنفيذي رقم 24-366 المؤرخ في 5 جمادى الأولى عام 1446 الموافق 13 نوفمبر سنة 2024 المتعلق بالشهادة الطبية والفحوصات والتحاليل قبل الزواج)
+    </p>
+
+    <div class="section">
+        <p>أنا الممضي أسفله، الدكتور في الطب:</p>
+        <p><strong>الاسم واللقب:</strong> <span class="editable-field" contenteditable="true" data-field="doctor-name" data-placeholder="أدخل الاسم واللقب"></span></p>
+        <p><strong>ممارس في:</strong> <span class="editable-field" contenteditable="true" data-field="practice-location" data-placeholder="أدخل مكان الممارسة"></span></p>
+        <p><strong>العنوان:</strong> <span class="editable-field" contenteditable="true" data-field="doctor-address" data-placeholder="أدخل العنوان"></span></p>
+        <p>أشهد أنني فحصت لغرض الزواج:</p>
+        <p><strong>اللقب:</strong> <span class="editable-field" contenteditable="true" data-field="patient-lastname" data-placeholder="أدخل اللقب"></span></p>
+        <p><strong>الاسم:</strong> <span class="editable-field" contenteditable="true" data-field="patient-firstname" data-placeholder="أدخل الاسم"></span></p>
+        <p><strong>المولود(ة) في:</strong> <span class="editable-field" contenteditable="true" data-field="birth-date" data-placeholder="أدخل تاريخ الميلاد"></span></p>
+        <p><strong>الساكن(ة) بـ:</strong> <span class="editable-field" contenteditable="true" data-field="patient-address" data-placeholder="أدخل العنوان"></span></p>
+        <p>بطاقة التعريف الوطنية رقم (أو وثيقة هوية أخرى): <span class="editable-field" contenteditable="true" data-field="id-number" data-placeholder="رقم البطاقة" style="min-width: 150px;"></span> الصادرة في: <span class="editable-field" contenteditable="true" data-field="id-date" data-placeholder="التاريخ" style="min-width: 100px;"></span> بـ: <span class="editable-field" contenteditable="true" data-field="id-place" data-placeholder="المكان" style="min-width: 150px;"></span></p>
+    </div>
+
+    <div class="section">
+        <p>وبعد إجراء فحص عادي كامل والاطلاع على نتائج الفحوصات والتحاليل قبل الزواج، أصرح بأنني:</p>
+        <ul>
+            <li>لفت انتباه طالبة الزواج إلى مخاطر الإصابة بالحصبة الألمانية التي يمكن أن تتعرض لها أثناء فترة الحمل، ودعوتها إلى تحيين تلقيحها ضد الحصبة الألمانية قبل تخطيط الحمل، على الأقل، شهرين (2).</li>
+            <li>لفت انتباه طالبي الزواج إلى مخاطر عدوى فيروس التهاب الكبد الفيروسي ب، ودعوتهما للتلقيح ضد هذا المرض.</li>
+            <li>قمت بتحسيس طالبي الزواج حول عوامل خطر بعض الأمراض وتقديم الاستشارات الوراثية المتعلقة بالقرابة العصبية.</li>
+            <li>شرحت لطالبة الزواج فائدة اتقاء مضاد العامل الريصي، في حالة عدم توافق العامل الريصي في الزوجين.</li>
+        </ul>
+        <p>سلمت هذه الشهادة، شخصيًا، للمعني(ة) لاستعمالها والإدلاء بها في حدود ما يسمح به القانون.</p>
+    </div>
+
+    <div class="date">
+        <p>حرر بـ <span class="editable-field" contenteditable="true" data-field="certificate-place" data-placeholder="أدخل المكان"></span> في <span class="editable-field" contenteditable="true" data-field="certificate-date" data-placeholder="أدخل التاريخ"></span></p>
+    </div>
+
+    <div class="signature">
+        <div>
+            <p>ختم المؤسسة أو الهيكل</p>
+        </div>
+        <div>
+            <p>توقيع وختم الممارس الطبي</p>
+        </div>
+    </div>
+
+    <script src="prenuptial.js"></script>
+</body>
+</html>

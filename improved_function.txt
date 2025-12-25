@@ -1,0 +1,92 @@
+    function sauvegarderCertificatAntirabique() {
+        // Récupérer les informations du patient depuis les champs modifiables du certificat
+        const allInputs = document.querySelectorAll('input:not([readonly])'); // Uniquement les inputs modifiables
+        let patientNomPrenom = '';
+        let patientDateNaissance = '';
+        let animal = '';
+        
+        // Trouver le champ NOM (premier input modifiable significatif)
+        for (let input of allInputs) {
+            const value = input.value.trim();
+            if (value && !value.includes('Dr') && value.length > 2) {
+                if (value.includes(' ') || /^[A-Za-z]+$/.test(value)) {
+                    patientNomPrenom = value;
+                    console.log('Nom trouvé:', value);
+                    break;
+                }
+            }
+        }
+        
+        // Trouver le champ DATE DE NAISSANCE (format date ou chiffres)
+        for (let input of allInputs) {
+            const value = input.value.trim();
+            if (value && value !== patientNomPrenom && !value.includes('Dr')) {
+                if (value.includes('-') || value.includes('/') || /^\d{4}$/.test(value)) {
+                    patientDateNaissance = value;
+                    console.log('Date trouvée:', value);
+                    break;
+                }
+            }
+        }
+        
+        // Trouver le champ ANIMAL
+        for (let input of allInputs) {
+            const value = input.value.toLowerCase().trim();
+            if (value && value !== patientNomPrenom.toLowerCase() && value !== patientDateNaissance.toLowerCase() && !value.includes('dr')) {
+                if (value.includes('chien') || value.includes('chat') || value.includes('animal') || value.includes('vaccin')) {
+                    animal = input.value.trim();
+                    console.log('Animal trouvé:', value);
+                    break;
+                }
+            }
+        }
+        
+        const docteurSpan = document.querySelector('.docteur');
+        const docteur = docteurSpan ? docteurSpan.textContent.replace('Dr ', '').trim() : '';
+        
+        // Debug: afficher les valeurs récupérées
+        console.log('Valeurs finales:', {
+            patientNomPrenom,
+            patientDateNaissance,
+            animal: animal || 'chien',
+            docteur
+        });
+        
+        // Préparer les données pour l'API
+        const maintenant = new Date();
+        const data = {
+            nom: patientNomPrenom.split(' ').slice(0, -1).join(' ').trim() || patientNomPrenom, // Extraire le nom
+            prenom: patientNomPrenom.split(' ').slice(-1).join(' ').trim() || '', // Extraire le prénom
+            medecin: docteur,
+            classe: "Antirabique",
+            type_de_vaccin: "Vaccin antirabique",
+            shema: "Zagreb H",
+            date_de_certificat: maintenant.toISOString().split('T')[0], // Date d'aujourd'hui
+            date_de_naissance: patientDateNaissance,
+            animal: animal || "chien",
+            heure_creation: maintenant.toTimeString().split(' ')[0] // Ajouter l'heure pour éviter les doublons
+        };
+        
+        console.log('Données envoyées à l\'API:', data);
+        
+        // Envoyer les données à l'API
+        fetch('http://localhost:5000/api/ajouter_antirabique', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('Certificat antirabique sauvegardé avec succès!');
+            } else {
+                alert('Erreur lors de la sauvegarde: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur de connexion au serveur');
+        });
+    }

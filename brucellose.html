@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La cat Brucellose selon l'instruction n°7 du 02 avril 2018</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 18px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            width: 45%;
+        }
+        .radio-group label {
+            display: block;
+            margin: 5px 0;
+        }
+        .radio-group input[type="radio"] {
+            margin-right: 8px;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div style="margin-bottom: 20px;">
+        <h2>Paramètres de la polyclinique</h2>
+        <div style="margin-bottom: 10px;">
+            <label for="polyclinique">Polyclinique (français):</label>
+            <input type="text" id="polyclinique" style="width: 100%; margin-top: 5px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label for="polyclinique-ar">Polyclinique (arabe):</label>
+            <input type="text" id="polyclinique-ar" style="width: 100%; margin-top: 5px;" dir="rtl">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label for="docteur">Docteur:</label>
+            <input type="text" id="docteur" style="width: 100%; margin-top: 5px;">
+        </div>
+    </div>
+	
+	<div style="margin-bottom: 20px;">
+            <h2>Format de l'Ordonnance</h2>
+            <label>
+                <input type="radio" name="header-option" value="with-header" checked>
+                Avec en-tête
+            </label>
+            <label>
+                <input type="radio" name="header-option" value="without-header">
+                Sans en-tête
+            </label>
+        </div>
+	
+	
+    <h1>La cat Brucellose selon l'instruction n°7 du 02 avril 2018</h1>
+    
+    <form id="brucelloseForm">
+        <div style="display: flex; gap: 20px;">
+            <div class="radio-group">
+                <div class="form-group">
+                    <label><input type="radio" name="brucellose" value="B aigue 01 er intention"> B aigue 01 er intention</label>
+                </div>
+                <div class="form-group">
+                    <label><input type="radio" name="brucellose" value="B aigue 02 intention"> B aigue 02 intention</label>
+                </div>
+                <div class="form-group">
+                    <label><input type="radio" name="brucellose" value="B aigue 03 intention A"> B aigue 03 intention A</label>
+                </div>
+                <div class="form-group">
+                    <label><input type="radio" name="brucellose" value="B aigue 03 intention B"> B aigue 03 intention B</label>
+                </div>
+                <div class="form-group">
+                    <label><input type="radio" name="brucellose" value="B chronique"> B chronique</label>
+                </div>
+            </div>
+            <div class="radio-group">
+                <div class="form-group">
+                    <label><input type="radio" name="brucellose" value="femme enceinte"> Femme enceinte</label>
+                </div>
+                <div class="form-group">
+                    <label><input type="radio" name="brucellose" value="enfant inf de 08 ans 01"> Enfant inférieur à 08 ans (01)</label>
+                </div>
+                <div class="form-group">
+                    <label><input type="radio" name="brucellose" value="enfant inf de 08 ans 02"> Enfant inférieur à 08 ans (02)</label>
+                </div>
+                <div class="form-group">
+                    <label><input type="radio" name="brucellose" value="enfant plus de 08 ans 01"> Enfant plus de 08 ans (01)</label>
+                </div>
+                <div class="form-group">
+                    <label><input type="radio" name="brucellose" value="enfant plus de 08 ans 02"> Enfant plus de 08 ans (02)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="poid">Poids de l'enfant:</label>
+            <input type="text" id="poid" name="poid">
+        </div>
+
+        <div class="note">
+            Pour les localisations focalisées endocardite ostéoarticulaire neuroméningée  est de prise en charge spécialisé et même hospitalière et pour cela je n'ai pas introduit dans cette forme.
+        </div>
+
+		<button type="button"  id="createOrdonnance"> Créer l'ordonnance</button>
+    </form>
+
+    <script src="brucellose.js"></script>
+
+</body>
+</html>

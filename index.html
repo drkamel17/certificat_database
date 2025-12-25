@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Générateur de Certificats Médicaux</title>
+    <meta name="description" content="Application web pour générer des certificats médicaux">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            margin: 20px;
+        }
+        .header {
+            color: #1976d2;
+            margin-bottom: 30px;
+        }
+        .header i {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .description {
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background-color: #1976d2;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .cta-button:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+        }
+        .features {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f5f9ff;
+            border-radius: 8px;
+        }
+        .features h2 {
+            color: #1976d2;
+            text-align: center;
+            margin-top: 0;
+        }
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .feature-list li i {
+            color: #4caf50;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        .footer {
+            margin-top: 20px;
+            color: #777;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-file-medical"></i>
+            <h1>Générateur de Certificats Médicaux</h1>
+        </div>
+        
+        <p class="description">
+            Une application web moderne pour créer rapidement et facilement des certificats médicaux professionnels. 
+            Idéal pour les médecins, cliniques et centres de santé.
+        </p>
+        
+        <a href="certificat.html" class="cta-button">
+            <i class="fas fa-play-circle"></i>
+            Commencer à générer des certificats
+        </a>
+        
+        <a href="vaccin.html" class="cta-button" style="margin-top: 15px; background-color: #4CAF50;">
+            <i class="fas fa-syringe"></i>
+            Schéma de Rattrapage Vaccinal
+        </a>
+        
+        <div class="features">
+            <h2>Fonctionnalités</h2>
+            <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> Génération instantanée de certificats</li>
+                <li><i class="fas fa-check-circle"></i> Plusieurs types de certificats médicaux</li>
+                <li><i class="fas fa-check-circle"></i> Interface intuitive et facile à utiliser</li>
+                <li><i class="fas fa-check-circle"></i> Impression directe depuis le navigateur</li>
+                <li><i class="fas fa-check-circle"></i> Sauvegarde des informations personnelles</li>
+                <li><i class="fas fa-check-circle"></i> Compatible avec tous les appareils</li>
+            </ul>
+        </div>
+        
+        <p class="footer">
+            Créé par Dr Daoudi | Application médicale professionnelle
+        </p>
+    </div>
+</body>
+</html>

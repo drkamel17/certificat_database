@@ -1,0 +1,99 @@
+    function sauvegarderCertificatAntirabique() {
+        // Approche simple: lire directement les valeurs visibles
+        const allInputs = document.querySelectorAll('input');
+        let nomComplet = '';
+        let dateNaissance = '';
+        let animalType = 'chien';
+        let medecinNom = '';
+        
+        console.log('Tous les inputs trouvés:', allInputs.length);
+        
+        // Chercher le nom dans tous les inputs
+        for (let i = 0; i < allInputs.length; i++) {
+            const input = allInputs[i];
+            const value = input.value ? input.value.trim() : '';
+            
+            console.log('Input', i, ':', value, 'type:', input.type, 'id:', input.id);
+            
+            // Ignorer les champs de dates de vaccination
+            if (input.id && (input.id.includes('dateJour') || input.id.includes('datePlus'))) {
+                continue;
+            }
+            
+            // Trouver le nom (généralement le premier champ avec espaces)
+            if (!nomComplet && value.includes(' ') && value.length > 5 && !value.includes('Dr')) {
+                nomComplet = value;
+                console.log('Nom trouvé:', nomComplet);
+                continue;
+            }
+            
+            // Trouver la date de naissance
+            if (!dateNaissance && value.includes('-') && !value.includes('Dr')) {
+                dateNaissance = value;
+                console.log('Date trouvée:', dateNaissance);
+                continue;
+            }
+            
+            // Trouver l'animal
+            if (value.toLowerCase().includes('chien') || value.toLowerCase().includes('chat')) {
+                animalType = value;
+                console.log('Animal trouvé:', animalType);
+            }
+        }
+        
+        // Trouver le médecin
+        const medecinElement = document.querySelector('.docteur');
+        if (medecinElement) {
+            medecinNom = medecinElement.textContent.replace('Dr ', '').trim();
+        }
+        
+        // Utiliser les valeurs trouvées ou les valeurs par défaut
+        const nom = nomComplet.split(' ').slice(0, -1).join(' ') || 'Nom';
+        const prenom = nomComplet.split(' ').slice(-1).join(' ') || 'Prenom';
+        
+        console.log('Valeurs finales:', {
+            nomComplet,
+            dateNaissance,
+            animalType,
+            medecinNom,
+            nom,
+            prenom
+        });
+        
+        // Préparer les données
+        const maintenant = new Date();
+        const data = {
+            nom: nom,
+            prenom: prenom,
+            medecin: medecinNom,
+            classe: "Antirabique",
+            type_de_vaccin: "Vaccin antirabique",
+            shema: "Zagreb",
+            date_de_certificat: maintenant.toISOString().split('T')[0],
+            date_de_naissance: dateNaissance,
+            animal: animalType,
+            heure_creation: maintenant.toTimeString().split(' ')[0]
+        };
+        
+        console.log('Données à envoyer:', data);
+        
+        // Envoyer
+        fetch('http://localhost:5000/api/ajouter_antirabique', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Réponse API:', result);
+            if (result.success) {
+                alert('Certificat sauvegardé avec succès!');
+            } else {
+                alert('Erreur: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur fetch:', error);
+            alert('Erreur de connexion');
+        });
+    }

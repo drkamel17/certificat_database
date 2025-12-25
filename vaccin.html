@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schéma de Rattrapage Vaccinal</title>
+    <link rel="stylesheet" href="./styles/vaccin.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🩺 Schéma de Rattrapage Vaccinal</h1>
+            <p>Application web pour la gestion des schémas de rattrapage vaccinal chez l'enfant - Interface moderne et complète par Dr DAOUDI</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-button active" data-tab="patient">👶 Informations Enfant</button>
+            <button class="tab-button" data-tab="vaccinations">💉 Vaccinations</button>
+            <button class="tab-button" data-tab="actions">⚙️ Actions</button>
+        </div>
+
+        <!-- Patient Info Tab -->
+        <div class="tab-content active" id="patient-tab">
+            <div class="patient-info">
+                <h2>📋 Informations de l'Enfant</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="patientName">Nom & Prénom de l'Enfant</label>
+                        <input type="text" id="patientName" placeholder="Nom complet de l'enfant">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthDate">Date de Naissance</label>
+                        <input type="date" id="birthDate">
+                        <small id="patientAgeDisplay" style="display: none; color: #666; font-style: italic;"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="consultationDate">Date de Consultation</label>
+                        <input type="date" id="consultationDate">
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 20px;">⚠️ Conditions Spéciales</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="premature">
+                        <label for="premature">👶 Prématuré (< 37 semaines)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="lowWeight">
+                        <label for="lowWeight">⚖️ Poids < 2000g</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="hbPositiveMother">
+                        <label for="hbPositiveMother">🩸 Mère HBs positif</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vaccinations Tab -->
+        <div class="tab-content" id="vaccinations-tab">
+            <div class="vaccinations-layout">
+                <div class="vaccinations-left">
+                    <div class="vaccine-category">
+                        <h3 class="category-title">📋 Naissance</h3>
+                        <div class="vaccine-grid">
+                            <div class="vaccine-field">
+                                <span class="vaccine-name">🛡️ BCG</span>
+                                <input type="date" class="vaccine-date" data-vaccine="BCG" data-comment="Vaccin contre la tuberculose. Première dose recommandée dès la naissance.">
+                            </div>
+                            <div class="vaccine-field">
+                                <span class="vaccine-name">💉 Hépatite B 1</span>
+                                <input type="date" class="vaccine-date" data-vaccine="HepatiteB1" data-comment="💡 Hépatite B 1 - L'enfant doit avoir moins de 7 jours, ou bien il a un poids inférieur à 2000g, ou sa mère est HBs positive et son âge inférieur à 30 jours.">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vaccine-category">
+                        <h3 class="category-title">📋 Primo-vaccination</h3>
+                        <div class="vaccine-grid">
+                            <div class="vaccine-field">
+                                <span class="vaccine-name">🔬 DTCa-VPI-Hib-HBV 1</span>
+                                <input type="date" class="vaccine-date" data-vaccine="DTCa1" data-comment="💡 DTCa-VPI-Hib-HBV 1 - Âge minimum 2 mois. Primo-vaccination hexavalente.">
+                            </div>
+                            <div class="vaccine-field">
+                                <span class="vaccine-name">🔬 DTCa-VPI-Hib-HBV 2</span>
+                                <input type="date" class="vaccine-date" data-vaccine="DTCa2" data-comment="💡 DTCa-VPI-Hib-HBV 2 - Âge minimum 4 mois. Intervalle minimum 6 semaines après la 1ère dose.">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vaccine-category">
+                        <h3 class="category-title">📋 Rappel</h3>
+                        <div class="vaccine-grid">
+                            <div class="vaccine-field">
+                                <span class="vaccine-name">🔬 DTCa-VPI-Hib-HBV Rappel</span>
+                                <input type="date" class="vaccine-date" data-vaccine="DTCaRappel" data-comment="💡 DTCa-VPI-Hib-HBV Rappel - Rappel à partir de 12 mois. Intervalle minimum 6 mois après la 2ème dose (minimum 4 mois).">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vaccine-category">
+                        <h3 class="category-title">📋 Pneumocoque</h3>
+                        <div class="vaccine-grid">
+                            <div class="vaccine-field">
+                                <span class="vaccine-name">🫁 VPC 13 - 1</span>
+                                <input type="date" class="vaccine-date" data-vaccine="VPC1" data-comment="💡 VPC 13 - 1 - Âge minimum 2 mois. Rattrapage possible jusqu'à 2 ans.">
+                            </div>
+                            <div class="vaccine-field">
+                                <span class="vaccine-name">🫁 VPC 13 - 2</span>
+                                <input type="date" class="vaccine-date" data-vaccine="VPC2" data-comment="💡 VPC 13 - 2 - Âge minimum 4 mois. Intervalle minimum 6 semaines après la 1ère dose.">
+                            </div>
+                            <div class="vaccine-field">
+                                <span class="vaccine-name">🫁 VPC 13 - Rappel</span>
+                                <input type="date" class="vaccine-date" data-vaccine="VPCRappel" data-comment="💡 VPC 13 - Rappel - Rappel à partir de 12 mois. Intervalle minimum 6 mois après la 2ème dose.">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vaccine-category">
+                        <h3 class="category-title">📋 Rougeole</h3>
+                        <div class="vaccine-grid">
+                            <div class="vaccine-field">
+                                <span class="vaccine-name">🦠 ROR 1</span>
+                                <input type="date" class="vaccine-date" data-vaccine="ROR1" data-comment="💡 ROR 1 - Âge minimum 11 mois (1ère dose).">
+                            </div>
+                            <div class="vaccine-field">
+                                <span class="vaccine-name">🦠 ROR 2</span>
+                                <input type="date" class="vaccine-date" data-vaccine="ROR2" data-comment="💡 ROR 2 - Âge minimum 18 mois. Intervalle minimum 1 mois après ROR 1. La 2ème dose n'est pas un rappel.">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vaccinations-right">
+                    <div class="messages-section">
+                        <h3>💬 Messages et Aide</h3>
+                        <div class="message-area" id="messageArea">
+🎯 Application Web - Interface optimisée
+
+📝 Instructions :
+• Saisissez les dates de vaccination dans les champs correspondants
+• Vert = Date valide selon les recommandations
+• Rouge = Date invalide ou trop précoce
+• Respectez les intervalles minimum entre doses
+
+💡 Conseils :
+• Vérifiez la date de naissance avant de saisir
+• Les conditions spéciales modifient les règles
+• Consultez l'onglet Actions pour le statut global
+                        </div>
+                    </div>
+
+                    <div class="quick-summary">
+                        <h3>📊 Résumé Rapide</h3>
+                        <div class="quick-stats">
+                            <div class="quick-stat">
+                                <span class="stat-icon">✅</span>
+                                <span class="stat-label">Valides:</span>
+                                <span class="stat-value" id="quickValidCount">0</span>
+                            </div>
+                            <div class="quick-stat">
+                                <span class="stat-icon">❌</span>
+                                <span class="stat-label">Invalides:</span>
+                                <span class="stat-value" id="quickInvalidCount">0</span>
+                            </div>
+                            <div class="quick-stat">
+                                <span class="stat-icon">⏳</span>
+                                <span class="stat-label">Manquants:</span>
+                                <span class="stat-value" id="quickMissingCount">10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Tab -->
+        <div class="tab-content" id="actions-tab">
+            <div class="actions-section">
+                <h2>⚙️ Actions</h2>
+                <div class="button-grid">
+                    <button class="btn btn-secondary" id="btnReset">🔄 Réinitialiser</button>
+                    <button class="btn btn-primary" id="btnSave">💾 Sauvegarder</button>
+                    <button class="btn btn-secondary" id="btnLoad">📂 Charger</button>
+                    <button class="btn btn-primary" id="btnReport">📊 Rapport</button>
+                    <button class="btn btn-accent" id="btnSchema">🎯 Schéma Proposé</button>
+                </div>
+            </div>
+
+            <div class="status-section">
+                <h3>📊 Statut de Vaccination</h3>
+                <div class="status-summary">
+                    <div class="status-item">
+                        <span class="status-label">✅ Vaccins à jour:</span>
+                        <span class="status-value" id="vaccinsAJour">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">⏳ Vaccins en retard:</span>
+                        <span class="status-value" id="vaccinsRetard">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">📅 Prochains vaccins:</span>
+                        <span class="status-value" id="prochainsVaccins">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal" id="reportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 Rapport de Vaccination</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="reportContent">
+                <!-- Content will be generated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Schema Modal -->
+    <div class="modal" id="schemaModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎯 Schéma de Vaccination Proposé</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="schemaContent">
+                <!-- Content will be generated dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="btnExportSchema">💾 Exporter</button>
+                <button class="btn btn-secondary" id="btnPrintSchema">🖨️ Imprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>🩺 Schéma de Rattrapage Vaccinal pour l'Enfant - Créé par Dr Daoudi | Application médicale professionnelle</p>
+    </footer>
+
+    <script src="vaccin.js"></script>
+</body>
+</html>

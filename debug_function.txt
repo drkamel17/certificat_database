@@ -1,0 +1,99 @@
+    function sauvegarderCertificatAntirabique() {
+        console.log('=== DÉBUT SAUVEGARDE ===');
+        
+        // Lire TOUS les inputs visibles sur la page
+        const tousLesInputs = document.querySelectorAll('input');
+        console.log('Nombre total d\'inputs:', tousLesInputs.length);
+        
+        let nomComplet = '';
+        let dateNaiss = '';
+        let animalType = 'chien';
+        let medecinNom = '';
+        
+        // Parcourir chaque input et identifier par position/type
+        tousLesInputs.forEach((input, index) => {
+            const valeur = input.value ? input.value.trim() : '';
+            console.log(`Input ${index}: "${valeur}" (type: ${input.type}, id: ${input.id || 'sans id'})`);
+            
+            // Ignorer les champs de dates de vaccination (J0, J3, J7, etc.)
+            if (input.id && (input.id.includes('dateJour') || input.id.includes('datePlus'))) {
+                return;
+            }
+            
+            // Trouver le nom (premier champ significatif avec plusieurs mots)
+            if (!nomComplet && valeur.includes(' ') && valeur.length > 3 && !valeur.includes('Dr')) {
+                nomComplet = valeur;
+                console.log('✅ NOM TROUVÉ:', nomComplet);
+                return;
+            }
+            
+            // Trouver la date de naissance (format date)
+            if (!dateNaiss && valeur.includes('-') && !valeur.includes('Dr')) {
+                dateNaiss = valeur;
+                console.log('✅ DATE TROUVÉE:', dateNaiss);
+                return;
+            }
+            
+            // Trouver l'animal
+            if (valeur.toLowerCase().includes('chien') || valeur.toLowerCase().includes('chat')) {
+                animalType = valeur;
+                console.log('✅ ANIMAL TROUVÉ:', animalType);
+            }
+        });
+        
+        // Récupérer le médecin
+        const medecinEl = document.querySelector('.docteur');
+        if (medecinEl) {
+            medecinNom = medecinEl.textContent.replace('Dr ', '').trim();
+            console.log('✅ MÉDECIN TROUVÉ:', medecinNom);
+        }
+        
+        // Extraire nom et prénom
+        const nom = nomComplet.split(' ').slice(0, -1).join(' ') || nomComplet;
+        const prenom = nomComplet.split(' ').slice(-1).join(' ') || '';
+        
+        console.log('=== RÉCAPITULATIF ===');
+        console.log('Nom complet:', nomComplet);
+        console.log('Nom:', nom);
+        console.log('Prénom:', prenom);
+        console.log('Date naissance:', dateNaiss);
+        console.log('Animal:', animalType);
+        console.log('Médecin:', medecinNom);
+        
+        // Préparer les données
+        const data = {
+            nom: nom,
+            prenom: prenom,
+            medecin: medecinNom,
+            classe: "Antirabique",
+            type_de_vaccin: "Vaccin antirabique",
+            shema: "Zagreb",
+            date_de_certificat: new Date().toISOString().split('T')[0],
+            date_de_naissance: dateNaiss,
+            animal: animalType
+        };
+        
+        console.log('=== DONNÉES ENVOYÉES À L\'API ===');
+        console.log(JSON.stringify(data, null, 2));
+        
+        // Envoyer
+        fetch('http://localhost:5000/api/ajouter_antirabique', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log('=== RÉPONSE API ===');
+            console.log(result);
+            if (result.success) {
+                alert('✅ Certificat sauvegardé avec succès!');
+            } else {
+                alert('❌ Erreur: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('❌ ERREUR FETCH:', error);
+            alert('❌ Erreur de connexion au serveur');
+        });
+    }

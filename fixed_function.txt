@@ -1,0 +1,44 @@
+    function sauvegarderCertificatAntirabique() {
+        // Récupérer les informations du patient depuis les champs du certificat affiché
+        const inputs = document.querySelectorAll('input[type="text"]');
+        const patientNomPrenom = inputs[0] ? inputs[0].value : ''; // Premier input = NOM
+        const patientDateNaissance = inputs[1] ? inputs[1].value : ''; // Deuxième input = Date de naissance
+        const docteurSpan = document.querySelector('.docteur');
+        const docteur = docteurSpan ? docteurSpan.textContent.replace('Dr ', '').trim() : '';
+        
+        // Préparer les données pour l'API
+        const maintenant = new Date();
+        const data = {
+            nom: patientNomPrenom.split(' ').slice(0, -1).join(' ').trim() || patientNomPrenom, // Extraire le nom
+            prenom: patientNomPrenom.split(' ').slice(-1).join(' ').trim() || '', // Extraire le prénom
+            medecin: docteur,
+            classe: "Antirabique",
+            type_de_vaccin: "Vaccin antirabique",
+            shema: "Essen",
+            date_de_certificat: maintenant.toISOString().split('T')[0], // Date d'aujourd'hui
+            date_de_naissance: patientDateNaissance,
+            animal: "chien",
+            heure_creation: maintenant.toTimeString().split(' ')[0] // Ajouter l'heure pour éviter les doublons
+        };
+        
+        // Envoyer les données à l'API
+        fetch('http://localhost:5000/api/ajouter_antirabique', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('Certificat antirabique sauvegardé avec succès!');
+            } else {
+                alert('Erreur lors de la sauvegarde: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur de connexion au serveur');
+        });
+    }
