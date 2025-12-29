@@ -18,6 +18,18 @@
       "use": "@vercel/static"
     },
     {
+      "src": "dece/**/*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "dece/**/*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "dece/**/*.html",
+      "use": "@vercel/static"
+    },
+    {
       "src": "templates/*.pdf",
       "use": "@vercel/static"
     }
@@ -26,6 +38,10 @@
     {
       "src": "/styles/(.*)",
       "dest": "/styles/$1"
+    },
+    {
+      "src": "/dece/(.*)",
+      "dest": "/dece/$1"
     },
     {
       "src": "/(.*)",

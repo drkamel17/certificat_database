@@ -1,0 +1,150 @@
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Container principal */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
+}
+
+/* Titre */
+h1 {
+    color: #2c3e50;
+    margin: 0;
+    padding: 10px 0;
+    font-size: 24px;
+}
+
+/* Conteneur du formulaire */
+.form-container {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Sections du formulaire */
+.section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+h2 {
+    color: #2c3e50;
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+/* Lignes du formulaire */
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-field {
+    flex: 1;
+    min-width: 250px;
+}
+
+/* Labels et inputs */
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #34495e;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Groupes de radio buttons */
+.radio-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Bouton de soumission */
+.form-actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.generate-btn {
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+    min-width: 200px;
+}
+
+.generate-btn:hover {
+    background: #34495e;
+}
+
+.generate-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Messages */
+.message {
+    padding: 15px;
+    margin: 15px 0;
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+}
+
+/* Messages de succès */
+.success {
+    color: #2e7d32;
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #e8f5e9;
+    border: 1px solid #c8e6c9;
+}

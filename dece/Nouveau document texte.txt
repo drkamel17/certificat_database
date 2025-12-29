@@ -1,0 +1,5 @@
+LD1: value="DOM" (Domicile)
+LD2: value="VP" (Voie publique)
+LD4: value="SSP" (Structure publique)
+LD5: value="SSPV" (Structure privée)
+LD3: value="AAP" (Autres à préciser)

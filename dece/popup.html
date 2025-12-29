@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificat de Décès</title>
+    <script src="pdf-lib.min.js"></script>
+    <script src="popup.js" defer></script>
+    <style>
+        /* Styles pour adapter à la taille de popup d'extension */
+        body {
+            width: 100%;
+            max-width: 100%;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        /* Fix form element appearance warnings */
+        .form-select,
+        .cim1,
+        .form-input,
+        select,
+        input:not([type="radio"]),
+        input:not([type="checkbox"]) {
+            display: block;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            -ms-appearance: none;
+            -o-appearance: none;
+            appearance: none;
+        }
+
+        /* Style for radio buttons and checkboxes */
+        input[type="radio"],
+        input[type="checkbox"] {
+            display: inline-block;
+            -webkit-appearance: auto;
+            -moz-appearance: auto;
+            -ms-appearance: auto;
+            -o-appearance: auto;
+            appearance: auto;
+        }
+    </style>
+    <style>
+        *,
+        ::before,
+        ::after {
+            --tw-border-spacing-x: 0;
+            --tw-border-spacing-y: 0;
+            --tw-translate-x: 0;
+            --tw-translate-y: 0;
+            --tw-rotate: 0;
+            --tw-skew-x: 0;
+            --tw-skew-y: 0;
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            --tw-pan-x: ;
+            --tw-pan-y: ;
+            --tw-pinch-zoom: ;
+            --tw-scroll-snap-strictness: proximity;
+            --tw-gradient-from-position: ;
+            --tw-gradient-via-position: ;
+            --tw-gradient-to-position: ;
+            --tw-ordinal: ;
+            --tw-slashed-zero: ;
+            --tw-numeric-figure: ;
+            --tw-numeric-spacing: ;
+            --tw-numeric-fraction: ;
+            --tw-ring-inset: ;
+            --tw-ring-offset-width: 0px;
+            --tw-ring-offset-color: #fff;
+            --tw-ring-color: rgb(59 130 246 / 0.5);
+            --tw-ring-offset-shadow: 0 0 #0000;
+            --tw-ring-shadow: 0 0 #0000;
+            --tw-shadow: 0 0 #0000;
+            --tw-shadow-colored: 0 0 #0000;
+            --tw-blur: ;
+            --tw-brightness: ;
+            --tw-contrast: ;
+            --tw-grayscale: ;
+            --tw-hue-rotate: ;
+            --tw-invert: ;
+            --tw-saturate: ;
+            --tw-sepia: ;
+            --tw-drop-shadow: ;
+            --tw-backdrop-blur: ;
+            --tw-backdrop-brightness: ;
+            --tw-backdrop-contrast: ;
+            --tw-backdrop-grayscale: ;
+            --tw-backdrop-hue-rotate: ;
+            --tw-backdrop-invert: ;
+            --tw-backdrop-opacity: ;
+            --tw-backdrop-saturate: ;
+            --tw-backdrop-sepia: ;
+            --tw-contain-size: ;
+            --tw-contain-layout: ;
+            --tw-contain-paint: ;
+            --tw-contain-style:
+        }
+
+        ::backdrop {
+            --tw-border-spacing-x: 0;
+            --tw-border-spacing-y: 0;
+            --tw-translate-x: 0;
+            --tw-translate-y: 0;
+            --tw-rotate: 0;
+            --tw-skew-x: 0;
+            --tw-skew-y: 0;
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            --tw-pan-x: ;
+            --tw-pan-y: ;
+            --tw-pinch-zoom: ;
+            --tw-scroll-snap-strictness: proximity;
+            --tw-gradient-from-position: ;
+            --tw-gradient-via-position: ;
+            --tw-gradient-to-position: ;
+            --tw-ordinal: ;
+            --tw-slashed-zero: ;
+            --tw-numeric-figure: ;
+            --tw-numeric-spacing: ;
+            --tw-numeric-fraction: ;
+            --tw-ring-inset: ;
+            --tw-ring-offset-width: 0px;
+            --tw-ring-offset-color: #fff;
+            --tw-ring-color: rgb(59 130 246 / 0.5);
+            --tw-ring-offset-shadow: 0 0 #0000;
+            --tw-ring-shadow: 0 0 #0000;
+            --tw-shadow: 0 0 #0000;
+            --tw-shadow-colored: 0 0 #0000;
+            --tw-blur: ;
+            --tw-brightness: ;
+            --tw-contrast: ;
+            --tw-grayscale: ;
+            --tw-hue-rotate: ;
+            --tw-invert: ;
+            --tw-saturate: ;
+            --tw-sepia: ;
+            --tw-drop-shadow: ;
+            --tw-backdrop-blur: ;
+            --tw-backdrop-brightness: ;
+            --tw-backdrop-contrast: ;
+            --tw-backdrop-grayscale: ;
+            --tw-backdrop-hue-rotate: ;
+            --tw-backdrop-invert: ;
+            --tw-backdrop-opacity: ;
+            --tw-backdrop-saturate: ;
+            --tw-backdrop-sepia: ;
+            --tw-contain-size: ;
+            --tw-contain-layout: ;
+            --tw-contain-paint: ;
+            --tw-contain-style:
+        }
+
+        /* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */
+        *,
+        ::after,
+        ::before {
+            box-sizing: border-box;
+            border-width: 0;
+            border-style: solid;
+            border-color: #e5e7eb
+        }
+
+        ::after,
+        ::before {
+            --tw-content: ''
+        }
+
+        :host,
+        html {
+            line-height: 1.5;
+            -webkit-text-size-adjust: 100%;
+            -moz-tab-size: 4;
+            tab-size: 4;
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-feature-settings: normal;
+            font-variation-settings: normal;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        body {
+            margin: 0;
+            line-height: inherit
+        }
+
+        hr {
+            height: 0;
+            color: inherit;
+            border-top-width: 1px
+        }
+
+        abbr:where([title]) {
+            -webkit-text-decoration: underline dotted;
+            text-decoration: underline dotted
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-size: inherit;
+            font-weight: inherit
+        }
+
+        a {
+            color: inherit;
+            text-decoration: inherit
+        }
+
+        b,
+        strong {
+            font-weight: bolder
+        }
+
+        code,
+        kbd,
+        pre,
+        samp {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-feature-settings: normal;
+            font-variation-settings: normal;
+            font-size: 1em
+        }
+
+        small {
+            font-size: 80%
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        table {
+            text-indent: 0;
+            border-color: inherit;
+            border-collapse: collapse
+        }
+
+        button,
+        input,
+        optgroup,
+        select,
+        textarea {
+            font-family: inherit;
+            font-feature-settings: inherit;
+            font-variation-settings: inherit;
+            font-size: 100%;
+            font-weight: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            color: inherit;
+            margin: 0;
+            padding: 0
+        }
+
+        button,
+        select {
+            text-transform: none
+        }
+
+        button,
+        input:where([type=button]),
+        input:where([type=reset]),
+        input:where([type=submit]) {
+            -webkit-appearance: button;
+            appearance: button;
+            background-color: transparent;
+            background-image: none
+        }
+
+        :-moz-focusring {
+            outline: auto
+        }
+
+        :-moz-ui-invalid {
+            box-shadow: none
+        }
+
+        progress {
+            vertical-align: baseline
+        }
+
+        ::-webkit-inner-spin-button,
+        ::-webkit-outer-spin-button {
+            height: auto
+        }
+
+        [type=search] {
+            -webkit-appearance: textfield;
+            appearance: textfield;
+            outline-offset: -2px
+        }
+
+        ::-webkit-search-decoration {
+            -webkit-appearance: none
+        }
+
+        ::-webkit-file-upload-button {
+            -webkit-appearance: button;
+            appearance: button;
+            font: inherit
+        }
+
+        summary {
+            display: list-item
+        }
+
+        blockquote,
+        dd,
+        dl,
+        figure,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        hr,
+        p,
+        pre {
+            margin: 0
+        }
+
+        fieldset {
+            margin: 0;
+            padding: 0
+        }
+
+        legend {
+            padding: 0
+        }
+
+        menu,
+        ol,
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0
+        }
+
+        dialog {
+            padding: 0
+        }
+
+        textarea {
+            resize: vertical
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            opacity: 1;
+            color: #9ca3af
+        }
+
+        [role=button],
+        button {
+            cursor: pointer
+        }
+
+        :disabled {
+            cursor: default
+        }
+
+        audio,
+        canvas,
+        embed,
+        iframe,
+        img,
+        object,
+        svg,
+        video {
+            display: block;
+            margin: auto 0;
+        }
+
+        img,
+        video {
+            max-width: 100%;
+            height: auto
+        }
+
+        [hidden]:where(:not([hidden=until-found])) {
+            display: none
+        }
+
+        .relative {
+            position: relative
+        }
+
+        .-mb-px {
+            margin-bottom: -1px
+        }
+
+        .mb-1 {
+            margin-bottom: 0.25rem
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem
+        }
+
+        .ml-1 {
+            margin-left: 0.25rem
+        }
+
+        .ml-2 {
+            margin-left: 0.5rem
+        }
+
+        .ml-8 {
+            margin-left: 2rem
+        }
+
+        .mr-1 {
+            margin-right: 0.25rem
+        }
+
+        .mr-3 {
+            margin-right: 0.75rem
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem
+        }
+
+        .mt-4 {
+            margin-top: 1rem
+        }
+
+        .mt-6 {
+            margin-top: 1.5rem
+        }
+
+        .mt-8 {
+            margin-top: 2rem
+        }
+
+        .block {
+            display: block
+        }
+
+        .inline-block {
+            display: inline-block
+        }
+
+        .flex {
+            display: flex
+        }
+
+        .grid {
+            display: grid
+        }
+
+        .hidden {
+            display: none
+        }
+
+        .h-4 {
+            height: 1rem
+        }
+
+        .h-5 {
+            height: 1.25rem
+        }
+
+        .w-32 {
+            width: 8rem
+        }
+
+        .w-4 {
+            width: 1rem
+        }
+
+        .w-5 {
+            width: 1.25rem
+        }
+
+        .flex-1 {
+            flex: 1 1 0%
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr))
+        }
+
+        .flex-col {
+            flex-direction: column
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap
+        }
+
+        .items-start {
+            align-items: flex-start
+        }
+
+        .items-center {
+            align-items: center
+        }
+
+        .justify-end {
+            justify-content: flex-end
+        }
+
+        .justify-center {
+            justify-content: center
+        }
+
+        .justify-between {
+            justify-content: space-between
+        }
+
+        .gap-4 {
+            gap: 1rem
+        }
+
+        .gap-6 {
+            gap: 1.5rem
+        }
+
+        .space-x-3> :not([hidden])~ :not([hidden]) {
+            --tw-space-x-reverse: 0;
+            margin-right: calc(0.75rem * var(--tw-space-x-reverse));
+            margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)))
+        }
+
+        .space-x-4> :not([hidden])~ :not([hidden]) {
+            --tw-space-x-reverse: 0;
+            margin-right: calc(1rem * var(--tw-space-x-reverse));
+            margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)))
+        }
+
+        .space-y-3> :not([hidden])~ :not([hidden]) {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.75rem * var(--tw-space-y-reverse))
+        }
+
+        .space-y-4> :not([hidden])~ :not([hidden]) {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(1rem * var(--tw-space-y-reverse))
+        }
+
+        .space-y-6> :not([hidden])~ :not([hidden]) {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(1.5rem * var(--tw-space-y-reverse))
+        }
+
+        .rounded {
+            border-radius: 0.25rem
+        }
+
+        .rounded-full {
+            border-radius: 9999px
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem
+        }
+
+        .border-2 {
+            border-width: 2px
+        }
+
+        .border-b {
+            border-bottom-width: 1px
+        }
+
+        .border-b-2 {
+            border-bottom-width: 2px
+        }
+
+        .border-gray-200 {
+            --tw-border-opacity: 1;
+            border-color: rgb(229 231 235 / var(--tw-border-opacity, 1))
+        }
+
+        .border-gray-300 {
+            --tw-border-opacity: 1;
+            border-color: rgb(209 213 219 / var(--tw-border-opacity, 1))
+        }
+
+        .border-primary {
+            --tw-border-opacity: 1;
+            border-color: rgb(93 92 222 / var(--tw-border-opacity, 1))
+        }
+
+        .border-transparent {
+            border-color: transparent
+        }
+
+        .bg-blue-50 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-blue-600 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-blue-700 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(29 78 216 / var(--tw-bg-opacity, 1))
+        }
+
+
+        .bg-gray-100 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-gray-200 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-gray-50 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-green-50 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(240 253 244 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-green-600 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-orange-50 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(255 247 237 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-primary {
+            --tw-bg-opacity: 1;
+            background-color: rgb(93 92 222 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-purple-50 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(250 245 255 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-white {
+            --tw-bg-opacity: 1;
+            background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-yellow-100 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(254 249 195 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-yellow-50 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(254 252 232 / var(--tw-bg-opacity, 1))
+        }
+
+        .p-2 {
+            padding: 0.5rem
+        }
+
+        .p-3 {
+            padding: 0.75rem
+        }
+
+        .p-4 {
+            padding: 1rem
+        }
+
+        .px-2 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem
+        }
+
+        .px-3 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem
+        }
+
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem
+        }
+
+        .py-1 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem
+        }
+
+        .py-3 {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem
+        }
+
+        .py-6 {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem
+        }
+
+        .text-lg {
+            font-size: 1.125rem;
+            line-height: 1.75rem
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+            line-height: 1.25rem
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+            line-height: 1.75rem
+        }
+
+        .font-medium {
+            font-weight: 500
+        }
+
+        .font-semibold {
+            font-weight: 600
+        }
+
+        .text-blue-800 {
+            --tw-text-opacity: 1;
+            color: rgb(30 64 175 / var(--tw-text-opacity, 1))
+        }
+
+        .text-gray-500 {
+            --tw-text-opacity: 1;
+            color: rgb(107 114 128 / var(--tw-text-opacity, 1))
+        }
+
+        .text-gray-600 {
+            --tw-text-opacity: 1;
+            color: rgb(75 85 99 / var(--tw-text-opacity, 1))
+        }
+
+        .text-gray-700 {
+            --tw-text-opacity: 1;
+            color: rgb(55 65 81 / var(--tw-text-opacity, 1))
+        }
+
+        .text-gray-800 {
+            --tw-text-opacity: 1;
+            color: rgb(31 41 55 / var(--tw-text-opacity, 1))
+        }
+
+        .text-gray-900 {
+            --tw-text-opacity: 1;
+            color: rgb(17 24 39 / var(--tw-text-opacity, 1))
+        }
+
+        .text-green-800 {
+            --tw-text-opacity: 1;
+            color: rgb(22 101 52 / var(--tw-text-opacity, 1))
+        }
+
+        .text-orange-800 {
+            --tw-text-opacity: 1;
+            color: rgb(154 52 18 / var(--tw-text-opacity, 1))
+        }
+
+        .text-primary {
+            --tw-text-opacity: 1;
+            color: rgb(93 92 222 / var(--tw-text-opacity, 1))
+        }
+
+        .text-purple-800 {
+            --tw-text-opacity: 1;
+            color: rgb(107 33 168 / var(--tw-text-opacity, 1))
+        }
+
+        .text-white {
+            --tw-text-opacity: 1;
+            color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+        }
+
+        .text-yellow-800 {
+            --tw-text-opacity: 1;
+            color: rgb(133 77 14 / var(--tw-text-opacity, 1))
+        }
+
+        .opacity-50 {
+            opacity: 0.5
+        }
+
+        .shadow-lg {
+            --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
+            box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+        }
+
+        .transition {
+            transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms
+        }
+
+        .hover\:bg-gray-300:hover {
+            --tw-bg-opacity: 1;
+            background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1))
+        }
+
+        .hover\:bg-green-700:hover {
+            --tw-bg-opacity: 1;
+            background-color: rgb(21 128 61 / var(--tw-bg-opacity, 1))
+        }
+
+        .hover\:bg-blue-700:hover {
+            --tw-bg-opacity: 1;
+            background-color: rgb(29 78 216 / var(--tw-bg-opacity, 1))
+        }
+
+
+        .hover\:bg-primary\/80:hover {
+            background-color: rgb(93 92 222 / 0.8)
+        }
+
+        .hover\:text-gray-700:hover {
+            --tw-text-opacity: 1;
+            color: rgb(55 65 81 / var(--tw-text-opacity, 1))
+        }
+
+        .focus\:outline-none:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px
+        }
+
+        .focus\:ring-2:focus {
+            --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+            --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+            box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
+        }
+
+        .focus\:ring-primary:focus {
+            --tw-ring-opacity: 1;
+            --tw-ring-color: rgb(93 92 222 / var(--tw-ring-opacity, 1))
+        }
+
+        .dark\:border-gray-600:is(.dark *) {
+            --tw-border-opacity: 1;
+            border-color: rgb(75 85 99 / var(--tw-border-opacity, 1))
+        }
+
+        .dark\:border-gray-700:is(.dark *) {
+            --tw-border-opacity: 1;
+            border-color: rgb(55 65 81 / var(--tw-border-opacity, 1))
+        }
+
+        .dark\:bg-blue-900\/20:is(.dark *) {
+            background-color: rgb(30 58 138 / 0.2)
+        }
+
+        .dark\:bg-gray-700:is(.dark *) {
+            --tw-bg-opacity: 1;
+            background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1))
+        }
+
+        .dark\:bg-gray-800:is(.dark *) {
+            --tw-bg-opacity: 1;
+            background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1))
+        }
+
+        .dark\:bg-gray-900:is(.dark *) {
+            --tw-bg-opacity: 1;
+            background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1))
+        }
+
+        .dark\:bg-green-900\/20:is(.dark *) {
+            background-color: rgb(20 83 45 / 0.2)
+        }
+
+        .dark\:bg-orange-900\/20:is(.dark *) {
+            background-color: rgb(124 45 18 / 0.2)
+        }
+
+        .dark\:bg-purple-900\/20:is(.dark *) {
+            background-color: rgb(88 28 135 / 0.2)
+        }
+
+        .dark\:bg-yellow-900:is(.dark *) {
+            --tw-bg-opacity: 1;
+            background-color: rgb(113 63 18 / var(--tw-bg-opacity, 1))
+        }
+
+        .dark\:bg-yellow-900\/20:is(.dark *) {
+            background-color: rgb(113 63 18 / 0.2)
+        }
+
+        .dark\:text-blue-200:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(191 219 254 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:text-gray-100:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(243 244 246 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:text-gray-300:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(209 213 219 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:text-gray-400:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(156 163 175 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:text-green-200:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(187 247 208 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:text-orange-200:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(254 215 170 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:text-purple-200:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(233 213 255 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:text-white:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:text-yellow-200:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(254 240 138 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:hover\:bg-gray-600:hover:is(.dark *) {
+            --tw-bg-opacity: 1;
+            background-color: rgb(75 85 99 / var(--tw-bg-opacity, 1))
+        }
+
+        .dark\:hover\:text-gray-300:hover:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(209 213 219 / var(--tw-text-opacity, 1))
+        }
+
+        @media (min-width: 640px) {
+            .sm\:rounded-3xl {
+                border-radius: 1.5rem
+            }
+
+            .sm\:p-6 {
+                padding: 1.5rem
+            }
+        }
+
+        @media (min-width: 768px) {
+            .md\:col-span-2 {
+                grid-column: span 2 / span 2
+            }
+
+            .md\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr))
+            }
+
+            .md\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr))
+            }
+
+            .md\:items-center {
+                align-items: center
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+    <div class="py-6 flex flex-col justify-center">
+        <div class="relative px-4 py-6 bg-white dark:bg-gray-800 shadow-lg sm:rounded-3xl sm:p-6">
+            <!-- En-tête -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center">
+                        <div class="bg-primary p-2 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h1 class="text-xl font-semibold text-primary dark:text-white">Certificat de décès</h1>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="print-button"
+                            class="px-3 py-1 bg-primary text-white rounded-lg hover:bg-primary/80 transition text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2">
+                                </path>
+                            </svg>
+                            Déclaration
+                        </button>
+                        <button id="submitnew-top"
+                            class="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2zm0-11h.01">
+                                </path>
+                            </svg>
+                            Certificat
+                        </button>
+                        <button id="gestion-button"
+                            class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                                </path>
+                            </svg>
+                            Gestion
+                        </button>
+                    </div>
+
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                    Remplissez tous les champs nécessaires avec précision pour générer un certificat complet.
+                </p>
+            </div>
+
+            <!-- Section de signature et lieu -->
+            <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div class="flex items-end space-x-4">
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date de
+                            signature:</label>
+                        <input id="DSG" type="date" name="DSG"
+                            class="w-full border-2 border-gray-300 dark:border-gray-600 bg-yellow-100 dark:bg-yellow-900 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">À:</label>
+                        <input id="placefr" type="text" name="placefr" value="" placeholder="Lieu de signature"
+                            class="w-full border-2 border-gray-300 dark:border-gray-600 bg-yellow-100 dark:bg-yellow-900 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">في:</label>
+                        <input id="place" type="text" name="place" value="" placeholder="مكان التوقيع بالعربي"
+                            class="w-full border-2 border-gray-300 dark:border-gray-600 bg-yellow-100 dark:bg-yellow-900 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglets -->
+            <div class="mb-6">
+                <div class="border-b border-gray-200 dark:border-gray-700">
+                    <nav class="flex -mb-px" aria-label="Onglets">
+                        <button
+                            class="tab-button tab-active py-3 px-4 border-b-2 border-primary text-primary font-medium"
+                            data-tab="tab1">1ère partie</button>
+                        <button
+                            class="tab-button py-3 px-4 border-b-2 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                            data-tab="tab2">2ème partie</button>
+                        <button
+                            class="tab-button py-3 px-4 border-b-2 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                            data-tab="tab3">3ème partie</button>
+                        <button
+                            class="tab-button py-3 px-4 border-b-2 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                            data-tab="tab4">4ème partie</button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Contenu du formulaire -->
+            <div class="tab-content">
+                <!-- Contenu de l'onglet 1 -->
+                <div id="tab1" class="tab-pane">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Wilaya
+                                Décès:</label>
+                            <select id="WILAYAD" name="WILAYAD"
+                                class="form-select rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="17000" selected="selected">DJELFA</option>
+                                <option value="1000">ADRAR</option>
+                                <option value="44000">AIN DEFLA</option>
+                                <option value="46000">AIN TEMOUCHENT</option>
+                                <option value="16000">ALGER</option>
+                                <option value="23000">ANNABA</option>
+                                <option value="5000">BATNA</option>
+                                <option value="8000">BECHAR</option>
+                                <option value="6000">BEJAIA</option>
+                                <option value="7000">BISKRA</option>
+                                <option value="9000">BLIDA</option>
+                                <option value="34000">BORDJ BOU ARRERIDJ</option>
+                                <option value="10000">BOUIRA</option>
+                                <option value="35000">BOUMERDES</option>
+                                <option value="2000">CHLEF</option>
+                                <option value="25000">CONSTANTINE</option>
+                                <option value="17000">DJELFA</option>
+                                <option value="32000">EL BAYADH</option>
+                                <option value="39000">EL OUED</option>
+                                <option value="36000">EL TAREF</option>
+                                <option value="99000">ETRANGER</option>
+                                <option value="47000">GHARDAIA</option>
+                                <option value="24000">GUELMA</option>
+                                <option value="33000">ILLIZI</option>
+                                <option value="18000">JIJEL</option>
+                                <option value="40000">KHENCHELA</option>
+                                <option value="3000">LAGHOUAT</option>
+                                <option value="28000">M'SILA</option>
+                                <option value="29000">MASCARA</option>
+                                <option value="26000">MEDEA</option>
+                                <option value="43000">MILA</option>
+                                <option value="27000">MOSTAGANEM</option>
+                                <option value="45000">NAAMA</option>
+                                <option value="31000">ORAN</option>
+                                <option value="30000">OUARGLA</option>
+                                <option value="4000">OUM EL BOUAGHI</option>
+                                <option value="48000">RELIZANE</option>
+                                <option value="20000">SAIDA</option>
+                                <option value="19000">SETIF</option>
+                                <option value="22000">SIDI BEL ABBES</option>
+                                <option value="21000">SKIKDA</option>
+                                <option value="41000">SOUK AHRAS</option>
+                                <option value="11000">TAMANRASSET</option>
+                                <option value="12000">TEBESSA</option>
+                                <option value="14000">TIARET</option>
+                                <option value="37000">TINDOUF</option>
+                                <option value="42000">TIPAZA</option>
+                                <option value="38000">TISSEMSILT</option>
+                                <option value="15000">TIZI OUZOU</option>
+                                <option value="13000">TLEMCEN</option>
+                                <option value="49000">TIMIMOUN</option>
+                                <option value="50000">BORDJ BADJI MOKHTAR</option>
+                                <option value="51000">OULED DJELLAL</option>
+                                <option value="52000">BENI ABBES</option>
+                                <option value="53000">IN SALAH</option>
+                                <option value="54000">IN GUEZZAM</option>
+                                <option value="55000">TOUGGOURT</option>
+                                <option value="56000">DJANET</option>
+                                <option value="57000">EL MGHAIR</option>
+                                <option value="58000">EL MENIAA</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Commune
+                                Décès:</label>
+                            <input type="text" id="COMMUNED" name="COMMUNED" placeholder="Entrez la commune"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date
+                                Décès:</label>
+                            <div class="flex space-x-3">
+                                <input id="DINS" type="date" name="DINS" placeholder="JJ-MM-AAAA"
+                                    class="form-input flex-1 rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <input id="HINS" type="time" name="HINS" value="09:05" placeholder="HH:MM"
+                                    class="form-input w-32 rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom:</label>
+                            <input id="NOM" type="text" name="NOM" value="" required="" placeholder="Entrez le nom"
+                                autocapitalize="characters"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prénom:</label>
+                            <input id="PRENOM" type="text" name="PRENOM" value="" placeholder="Entrez le prénom"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Père:</label>
+                            <input id="FILSDE" type="text" name="FILSDE" value="" placeholder="Nom du père"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mère:</label>
+                            <input id="ETDE" type="text" name="ETDE" value="" placeholder="Nom de la mère"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Né(e)
+                                le:</label>
+                            <input id="DATENS" type="date" name="DATENS" value="2025-05-16" placeholder="JJ-MM-AAAA"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <div class="flex items-center mt-1">
+                                <input id="DATEPRESUME" type="checkbox" name="DATEPRESUME"
+                                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 dark:border-gray-600 rounded">
+                                <label for="DATEPRESUME"
+                                    class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Date
+                                    présumée</label>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Wilaya
+                                Nais:</label>
+                            <select id="WILAYAN" name="WILAYAN"
+                                class="form-select rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="17000" selected="selected">DJELFA</option>
+                                <option value="1000">ADRAR</option>
+                                <option value="44000">AIN DEFLA</option>
+                                <option value="46000">AIN TEMOUCHENT</option>
+                                <option value="16000">ALGER</option>
+                                <option value="23000">ANNABA</option>
+                                <option value="5000">BATNA</option>
+                                <option value="8000">BECHAR</option>
+                                <option value="6000">BEJAIA</option>
+                                <option value="7000">BISKRA</option>
+                                <option value="9000">BLIDA</option>
+                                <option value="34000">BORDJ BOU ARRERIDJ</option>
+                                <option value="10000">BOUIRA</option>
+                                <option value="35000">BOUMERDES</option>
+                                <option value="2000">CHLEF</option>
+                                <option value="25000">CONSTANTINE</option>
+                                <option value="17000">DJELFA</option>
+                                <option value="32000">EL BAYADH</option>
+                                <option value="39000">EL OUED</option>
+                                <option value="36000">EL TAREF</option>
+                                <option value="99000">ETRANGER</option>
+                                <option value="47000">GHARDAIA</option>
+                                <option value="24000">GUELMA</option>
+                                <option value="33000">ILLIZI</option>
+                                <option value="18000">JIJEL</option>
+                                <option value="40000">KHENCHELA</option>
+                                <option value="3000">LAGHOUAT</option>
+                                <option value="28000">M'SILA</option>
+                                <option value="29000">MASCARA</option>
+                                <option value="26000">MEDEA</option>
+                                <option value="43000">MILA</option>
+                                <option value="27000">MOSTAGANEM</option>
+                                <option value="45000">NAAMA</option>
+                                <option value="31000">ORAN</option>
+                                <option value="30000">OUARGLA</option>
+                                <option value="4000">OUM EL BOUAGHI</option>
+                                <option value="48000">RELIZANE</option>
+                                <option value="20000">SAIDA</option>
+                                <option value="19000">SETIF</option>
+                                <option value="22000">SIDI BEL ABBES</option>
+                                <option value="21000">SKIKDA</option>
+                                <option value="41000">SOUK AHRAS</option>
+                                <option value="11000">TAMANRASSET</option>
+                                <option value="12000">TEBESSA</option>
+                                <option value="14000">TIARET</option>
+                                <option value="37000">TINDOUF</option>
+                                <option value="42000">TIPAZA</option>
+                                <option value="38000">TISSEMSILT</option>
+                                <option value="15000">TIZI OUZOU</option>
+                                <option value="13000">TLEMCEN</option>
+                                <option value="49000">TIMIMOUN</option>
+                                <option value="50000">BORDJ BADJI MOKHTAR</option>
+                                <option value="51000">OULED DJELLAL</option>
+                                <option value="52000">BENI ABBES</option>
+                                <option value="53000">IN SALAH</option>
+                                <option value="54000">IN GUEZZAM</option>
+                                <option value="55000">TOUGGOURT</option>
+                                <option value="56000">DJANET</option>
+                                <option value="57000">EL MGHAIR</option>
+                                <option value="58000">EL MENIAA</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Commune
+                                Nais:</label>
+                            <input type="text" id="COMMUNEN" name="COMMUNEN" placeholder="Entrez la commune"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Wilaya
+                                Res:</label>
+                            <select id="WILAYAR" name="WILAYAR"
+                                class="form-select rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="17000" selected="selected">DJELFA</option>
+                                <option value="1000">ADRAR</option>
+                                <option value="44000">AIN DEFLA</option>
+                                <option value="46000">AIN TEMOUCHENT</option>
+                                <option value="16000">ALGER</option>
+                                <option value="23000">ANNABA</option>
+                                <option value="5000">BATNA</option>
+                                <option value="8000">BECHAR</option>
+                                <option value="6000">BEJAIA</option>
+                                <option value="7000">BISKRA</option>
+                                <option value="9000">BLIDA</option>
+                                <option value="34000">BORDJ BOU ARRERIDJ</option>
+                                <option value="10000">BOUIRA</option>
+                                <option value="35000">BOUMERDES</option>
+                                <option value="2000">CHLEF</option>
+                                <option value="25000">CONSTANTINE</option>
+                                <option value="17000">DJELFA</option>
+                                <option value="32000">EL BAYADH</option>
+                                <option value="39000">EL OUED</option>
+                                <option value="36000">EL TAREF</option>
+                                <option value="99000">ETRANGER</option>
+                                <option value="47000">GHARDAIA</option>
+                                <option value="24000">GUELMA</option>
+                                <option value="33000">ILLIZI</option>
+                                <option value="18000">JIJEL</option>
+                                <option value="40000">KHENCHELA</option>
+                                <option value="3000">LAGHOUAT</option>
+                                <option value="28000">M'SILA</option>
+                                <option value="29000">MASCARA</option>
+                                <option value="26000">MEDEA</option>
+                                <option value="43000">MILA</option>
+                                <option value="27000">MOSTAGANEM</option>
+                                <option value="45000">NAAMA</option>
+                                <option value="31000">ORAN</option>
+                                <option value="30000">OUARGLA</option>
+                                <option value="4000">OUM EL BOUAGHI</option>
+                                <option value="48000">RELIZANE</option>
+                                <option value="20000">SAIDA</option>
+                                <option value="19000">SETIF</option>
+                                <option value="22000">SIDI BEL ABBES</option>
+                                <option value="21000">SKIKDA</option>
+                                <option value="41000">SOUK AHRAS</option>
+                                <option value="11000">TAMANRASSET</option>
+                                <option value="12000">TEBESSA</option>
+                                <option value="14000">TIARET</option>
+                                <option value="37000">TINDOUF</option>
+                                <option value="42000">TIPAZA</option>
+                                <option value="38000">TISSEMSILT</option>
+                                <option value="15000">TIZI OUZOU</option>
+                                <option value="13000">TLEMCEN</option>
+                                <option value="49000">TIMIMOUN</option>
+                                <option value="50000">BORDJ BADJI MOKHTAR</option>
+                                <option value="51000">OULED DJELLAL</option>
+                                <option value="52000">BENI ABBES</option>
+                                <option value="53000">IN SALAH</option>
+                                <option value="54000">IN GUEZZAM</option>
+                                <option value="55000">TOUGGOURT</option>
+                                <option value="56000">DJANET</option>
+                                <option value="57000">EL MGHAIR</option>
+                                <option value="58000">EL MENIAA</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sexe:</label>
+                            <select id="SEXE" name="SEXE"
+                                class="form-select rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="M">M</option>
+                                <option value="F">F</option>
+                            </select>
+                        </div>
+
+
+
+
+                        
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Commune
+                                Res:</label>
+                            <input type="text" id="COMMUNER" name="COMMUNER"
+                                placeholder="Entrez la commune de résidence"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Adresse
+                                Res:</label>
+                            <input id="ADRESSE" type="text" name="ADRESSE" value=""
+                                placeholder="Entrez l'adresse complète"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <!-- Signalements -->
+                        <div class="md:col-span-2 mt-4">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-3">Signalements médicaux
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input id="LD8" type="checkbox" name="LD8"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600 rounded">
+                                    <label for="LD8"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Obstacle
+                                        médico-légal à l'inhumation</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="LD9" type="checkbox" name="LD9"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600 rounded">
+                                    <label for="LD9" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Mise
+                                        immédiate
+                                        en cercueil hermétique en raison du risque de contagion</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="LD10" type="checkbox" name="LD10"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600 rounded">
+                                    <label for="LD10"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Existence d'une
+                                        prothèse fonctionnant au moyen d'une pile</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lieu du Décès -->
+                        <div class="md:col-span-2 mt-2">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-3">Lieu du Décès</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="flex items-center">
+                                    <input id="LD1" type="radio" name="LD" value="DOM"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="LD1"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Domicile</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="LD2" type="radio" name="LD" value="VP"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="LD2" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Voie
+                                        publique</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="LD4" type="radio" name="LD" value="SSP" checked=""
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="LD4"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Structure
+                                        publique</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="LD5" type="radio" name="LD" value="SSPV"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="LD5"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Structure
+                                        privée</label>
+                                </div>
+
+                                <div class="md:col-span-2 flex items-center">
+                                    <input id="LD3" type="radio" name="LD" value="AAP"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="LD3" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Autres
+                                        (à
+                                        préciser):</label>
+                                    <input id="LD6" type="text" name="AUTRES" value="" placeholder="Précisez"
+                                        class="form-input ml-2 rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date
+                                d'hospitalisation:</label>
+                            <div class="flex space-x-3">
+                                <input id="DATEHOSPI" type="date" name="DATEHOSPI"
+                                    class="form-input flex-1 rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <input id="HEURESHOSPI" type="time" name="HEURESHOSPI"
+                                    class="form-input w-32 rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Médecin
+                                déclarant:</label>
+                            <div class="flex">
+                                <input type="text" id="MEDECINHOSPIT" name="MEDECINHOSPIT"
+                                    class="form-input flex-1 rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <button type="button"
+                                    class="ml-2 p-2 bg-primary text-white rounded-lg hover:bg-primary/80">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenu de l'onglet 2 -->
+                <div id="tab2" class="tab-pane hidden">
+                    <div class="space-y-6">
+                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <h3 class="font-medium text-blue-800 dark:text-blue-200 mb-2">Partie I : Maladie(s) ou
+                                affection(s) morbide(s) ayant directement provoqué le décès</h3>
+
+                            <div class="space-y-4 mt-4">
+                                <div class="flex flex-col">
+
+
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cause
+                                        directe: a)</label>
+                                    <input id="CIM1" type="text" name="CIM1" value=""
+                                        placeholder="La définition n'inclut pas les symptômes ni les modes de décès (arrêt cardiorespiratoire)"
+                                        class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Due
+                                        à ou consécutive à: b)</label>
+                                    <input id="CIM2" type="text" name="CIM2" value=""
+                                        placeholder="La définition n'inclut pas les symptômes ni les modes de décès (arrêt cardiorespiratoire)"
+                                        class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Due
+                                        à ou consécutive à: c)</label>
+                                    <input id="CIM3" type="text" name="CIM3" value=""
+                                        placeholder="La définition n'inclut pas les symptômes ni les modes de décès (arrêt cardiorespiratoire)"
+                                        class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Due
+                                        à ou consécutive à: d)</label>
+                                    <input id="CIM4" type="text" name="CIM4" value=""
+                                        placeholder="La définition n'inclut pas les symptômes ni les modes de décès (arrêt cardiorespiratoire)"
+                                        class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <h3 class="font-medium text-blue-800 dark:text-blue-200 mb-2">Partie II : Autres états
+                                morbides ayant pu contribuer au décès, non mentionnés en partie I</h3>
+
+                            <div class="flex flex-col mt-4">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Autres
+                                    états:</label>
+                                <input id="CIM5" type="text" name="CIM5" value=""
+                                    placeholder="Entrez d'autres états morbides"
+                                    class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                        </div>
+
+
+
+                        <div
+                            class="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg text-sm text-yellow-800 dark:text-yellow-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            La dernière cause ligne (d) doit correspondre à la cause initiale
+                        </div>
+
+                        <!-- Cause de Décès -->
+                        <div class="mt-6">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-3">Cause de décès</h3>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="flex items-center">
+                                    <input id="CIM02" type="radio" name="CD" value="CN" checked=""
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="CIM02" class="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+                                        title="Cause endogène (maladie, sénescence)">Cause naturelle</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="CIM03" type="radio" name="CD" value="CV"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="CIM03" class="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+                                        title="Cause exogène (accident, suicide, homicide)">Cause violente</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="CIM04" type="radio" name="CD" value="CI"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="CIM04" class="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+                                        title="Indéterminée (homicide, suicide, accident)">Cause
+                                        indéterminée</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nature de la mort -->
+                        <div class="mt-6">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-3">Nature de la mort
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="flex items-center">
+                                    <input id="NDM2" type="radio" name="NDLM" value="NAT" checked=""
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="NDM2"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Naturelle</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="NDM3" type="radio" name="NDLM" value="ACC"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="NDM3"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Accident</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="NDM4" type="radio" name="NDLM" value="AID"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="NDM4" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Auto
+                                        induite</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="NDM5" type="radio" name="NDLM" value="AGR"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="NDM5"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Agression</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="NDM6" type="radio" name="NDLM" value="IND"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="NDM6"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Indéterminée</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="NDM7" type="radio" name="NDLM" value="AAP"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="NDM7" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Autres
+                                        (à
+                                        préciser):</label>
+                                    <input id="NDLMAAP" type="text" name="NDLMAAP" value="x"
+                                        class="form-input ml-2 rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenu de l'onglet 3 -->
+                <div id="tab3" class="tab-pane hidden">
+                    <div class="space-y-6">
+                        <!-- Décès maternel -->
+                        <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                            <h3 class="font-medium text-purple-800 dark:text-purple-200 mb-4">Décès maternel</h3>
+
+                            <div class="flex items-start mb-4">
+                                <div class="flex items-center h-5">
+                                    <input id="DECEMAT" type="checkbox" name="DECEMAT"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600 rounded">
+                                </div>
+                                <label for="DECEMAT" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Décès
+                                    maternel</label>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ml-8">
+                                <div class="flex items-center">
+                                    <input id="DGRO" type="radio" name="GRS" value="DGRO"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="DGRO" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Durant
+                                        la
+                                        grossesse</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="DACC" type="radio" name="GRS" value="DACC"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="DACC" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Durant
+                                        l'accouchement</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="DAVO" type="radio" name="GRS" value="DAVO"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="DAVO" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Durant
+                                        l'avortement</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="AGESTATION" type="radio" name="GRS" value="AGESTATION"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="AGESTATION"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Après la
+                                        gestation "post partum"</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="IDETER" type="radio" name="GRS" value="IDETER" checked=""
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600">
+                                    <label for="IDETER"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Indéterminé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mortinatalité, périnatalité -->
+                        <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <h3 class="font-medium text-green-800 dark:text-green-200 mb-4">Mortinatalité,
+                                périnatalité</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="flex items-center">
+                                    <input id="GM" type="checkbox" name="GM"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600 rounded">
+                                    <label for="GM"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Grossesse
+                                        multiple</label>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input id="MN" type="checkbox" name="MN"
+                                        class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600 rounded">
+                                    <label for="MN"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Mort-né</label>
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Age
+                                        gestationnel (en semaines):</label>
+                                    <input id="AGEGEST" type="number" name="AGEGEST" value="00" min="0" max="99"
+                                        class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Poids
+                                        à la naissance (en grammes):</label>
+                                    <input id="POIDNSC" type="number" name="POIDNSC" value="0000" min="0" max="9999"
+                                        class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Age
+                                        de la mère (en années):</label>
+                                    <input id="AGEMERE" type="number" name="AGEMERE" value="00" min="0" max="99"
+                                        class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+
+                                <div class="flex md:items-center">
+                                    <div class="flex items-center">
+                                        <input id="DPNAT" type="checkbox" name="DPNAT"
+                                            class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600 rounded">
+                                        <label for="DPNAT"
+                                            class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Si décès
+                                            périnatal préciser:</label>
+                                    </div>
+                                    <input id="EMDPNAT" type="text" name="EMDPNAT" value="" placeholder="Précisez"
+                                        class="form-input ml-2 rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Intervention chirurgicale -->
+                        <div class="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                            <h3 class="font-medium text-orange-800 dark:text-orange-200 mb-4">Intervention
+                                chirurgicale</h3>
+
+                            <div class="flex items-center">
+                                <input id="POSTOPP2" type="checkbox" name="POSTOPP2"
+                                    class="h-5 w-5 text-primary focus:ring-primary border-gray-300 dark:border-gray-600 rounded">
+                                <label for="POSTOPP2" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">4
+                                    semaines avant le décès</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenu de l'onglet 4 -->
+                <div id="tab4" class="tab-pane hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col">
+                            <div class="flex flex-row-reverse justify-end">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">:
+                                    المؤسسة</label>
+                            </div>
+                            <input id="INSTITUTION" type="text" name="INSTITUTION"
+                                placeholder=" المؤسسة العمومية للصحة الحوارية او الاستشفائية......" dir="rtl"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div class="flex flex-col">
+                            <div class="flex flex-row-reverse justify-end">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">:العيادة</label>
+                            </div>
+                            <input id="CLINIQUE" type="text" name="CLINIQUE" placeholder="العيادة م خ ب...او الخاصة.."
+                                dir="rtl"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col">
+                            <div class="flex flex-row-reverse justify-end">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">:اللقب</label>
+                            </div>
+                            <input id="NOMAR" type="text" name="NOMAR" value="" placeholder="أدخل اللقب" dir="rtl"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex flex-row-reverse justify-end">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">:الإسم</label>
+                            </div>
+                            <input id="PRENOMAR" type="text" name="PRENOMAR" value="" placeholder="أدخل الإسم" dir="rtl"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex flex-row-reverse justify-end">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">:إسم
+                                    الأب</label>
+                            </div>
+                            <input id="FILSDEAR" type="text" name="FILSDEAR" value="" placeholder="أدخل إسم الأب"
+                                dir="rtl"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex flex-row-reverse justify-end">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">:إسم
+                                    و لقب الأم</label>
+                            </div>
+                            <input id="ETDEAR" type="text" name="ETDEAR" value="" placeholder="أدخل إسم و لقب الأم"
+                                dir="rtl"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex flex-row-reverse justify-end">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">:إسم
+                                    و لقب الزوج</label>
+                            </div>
+                            <input id="NOMPRENOMAR" type="text" name="NOMPRENOMAR" value=""
+                                placeholder="أدخل إسم و لقب الزوج" dir="rtl"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="flex flex-row-reverse justify-end">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">:المهنة</label>
+                            </div>
+                            <input id="PROAR" type="text" name="PROAR" value="" placeholder="أدخل المهنة" dir="rtl"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div class="flex flex-col md:col-span-2">
+                            <div class="flex flex-row-reverse justify-end">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">:عنوان
+                                    الإقامة</label>
+                            </div>
+                            <input id="ADAR" type="text" name="ADAR" value="" placeholder="أدخل عنوان الإقامة" dir="rtl"
+                                class="form-input rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <!-- Champs cachés -->
+                        <input type="hidden" name="WILAYA" value="17000">
+                        <input type="hidden" name="STRUCTURE" value="7">
+                        <input type="hidden" name="STRUCTURED" value="7">
+                        <input type="hidden" name="login" value="DR DAOUDI">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire caché pour la génération PDF -->
+            <form id="pdfForm" action="generate_pdf.php" method="POST" target="pdfFrame" style="display: none;">
+                <input type="hidden" name="data" id="pdfFormData">
+            </form>
+            <iframe name="pdfFrame" style="display: none;"></iframe>
+
+            <!-- Boutons d'action -->
+            <div class="mt-8 flex justify-end space-x-4">
+                <button type="button" id="prev-tab"
+                    class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition opacity-50"
+                    disabled="">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Précédent
+                </button>
+                <button type="button" id="next-tab"
+                    class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 transition">
+                    Suivant
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block ml-1" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+                <button type="button" id="submitnew"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                    </svg>
+                    Certificat
+                </button>
+                <button type="button" id="submit-update" 
+                    class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" 
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Modifier
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

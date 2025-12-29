@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Certificats de Décès</title>
+    <style>
+        body {
+            width: 100%;
+            max-width: 100%;
+            min-height: 600px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            margin: 0;
+            padding: 0;
+        }
+
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            background-color: #5d5cde;
+            color: white;
+            z-index: 10;
+        }
+
+        tr:hover {
+            background-color: #f3f4f6;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .error-message {
+            display: none;
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .success-message {
+            display: none;
+            background-color: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        /* Tailwind utility classes */
+        .h-4 {
+            height: 1rem;
+        }
+
+        .w-4 {
+            width: 1rem;
+        }
+
+        .h-5 {
+            height: 1.25rem;
+        }
+
+        .w-5 {
+            width: 1.25rem;
+        }
+
+        .h-6 {
+            height: 1.5rem;
+        }
+
+        .w-6 {
+            width: 1.5rem;
+        }
+
+        .h-8 {
+            height: 2rem;
+        }
+
+        .w-8 {
+            width: 2rem;
+        }
+
+        .inline-block {
+            display: inline-block;
+        }
+
+        .block {
+            display: block;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .grid {
+            display: grid;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .items-end {
+            align-items: flex-end;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .mr-1 {
+            margin-right: 0.25rem;
+        }
+
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+
+        .mr-3 {
+            margin-right: 0.75rem;
+        }
+
+        .ml-auto {
+            margin-left: auto;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .p-2 {
+            padding: 0.5rem;
+        }
+
+        .p-3 {
+            padding: 0.75rem;
+        }
+
+        .p-4 {
+            padding: 1rem;
+        }
+
+        .p-6 {
+            padding: 1.5rem;
+        }
+
+        .px-3 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        .py-1 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .py-3 {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .py-4 {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .py-6 {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .rounded-full {
+            border-radius: 9999px;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+            line-height: 1rem;
+        }
+
+        .text-lg {
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+            line-height: 2rem;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .italic {
+            font-style: italic;
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .text-primary {
+            color: #5d5cde;
+        }
+
+        .text-gray-500 {
+            color: #6b7280;
+        }
+
+        .text-gray-600 {
+            color: #4b5563;
+        }
+
+        .text-gray-700 {
+            color: #374151;
+        }
+
+        .text-gray-900 {
+            color: #111827;
+        }
+
+        .text-blue-600 {
+            color: #2563eb;
+        }
+
+        .text-blue-800 {
+            color: #1e40af;
+        }
+
+        .text-blue-900 {
+            color: #1e3a8a;
+        }
+
+        .bg-primary {
+            background-color: #5d5cde;
+        }
+
+        .bg-white {
+            background-color: white;
+        }
+
+        .bg-gray-50 {
+            background-color: #f9fafb;
+        }
+
+        .bg-gray-700 {
+            background-color: #374151;
+        }
+
+        .bg-gray-800 {
+            background-color: #1f2937;
+        }
+
+        .bg-blue-50 {
+            background-color: #eff6ff;
+        }
+
+        .bg-blue-100 {
+            background-color: #dbeafe;
+        }
+
+        .bg-blue-600 {
+            background-color: #2563eb;
+        }
+
+        .bg-green-600 {
+            background-color: #16a34a;
+        }
+
+        .bg-yellow-500 {
+            background-color: #eab308;
+        }
+
+        .bg-red-600 {
+            background-color: #dc2626;
+        }
+
+        .hover\:bg-primary\/80:hover {
+            background-color: rgba(93, 92, 222, 0.8);
+        }
+
+        .hover\:bg-blue-700:hover {
+            background-color: #1d4ed8;
+        }
+
+        .hover\:bg-green-700:hover {
+            background-color: #15803d;
+        }
+
+        .hover\:bg-yellow-600:hover {
+            background-color: #ca8a04;
+        }
+
+        .hover\:bg-red-700:hover {
+            background-color: #b91c1c;
+        }
+
+        .border {
+            border-width: 1px;
+        }
+
+        .border-2 {
+            border-width: 2px;
+        }
+
+        .border-blue-200 {
+            border-color: #bfdbfe;
+        }
+
+        .border-gray-200 {
+            border-color: #e5e7eb;
+        }
+
+        .border-gray-300 {
+            border-color: #d1d5db;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .transition {
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .focus\:outline-none:focus {
+            outline: 2px solid transparent;
+        }
+
+        .focus\:ring-2:focus {
+            box-shadow: 0 0 0 2px rgba(93, 92, 222, 0.5);
+        }
+
+        .focus\:ring-primary:focus {
+            --tw-ring-color: #5d5cde;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .uppercase {
+            text-transform: uppercase;
+        }
+
+        .tracking-wider {
+            letter-spacing: 0.05em;
+        }
+
+        .min-w-full {
+            min-width: 100%;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .divide-y>*+* {
+            border-top-width: 1px;
+        }
+
+        .divide-gray-200>*+* {
+            border-color: #e5e7eb;
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .opacity-25 {
+            opacity: 0.25;
+        }
+
+        .opacity-50 {
+            opacity: 0.5;
+        }
+
+        .opacity-75 {
+            opacity: 0.75;
+        }
+
+        .whitespace-nowrap {
+            white-space: nowrap;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .pointer-events-none {
+            pointer-events: none;
+        }
+
+        .ring-2 {
+            box-shadow: 0 0 0 2px;
+        }
+
+        .ring-blue-500 {
+            --tw-ring-color: #3b82f6;
+            color: var(--tw-ring-color);
+        }
+
+        .ring-inset {
+            box-shadow: inset 0 0 0 2px var(--tw-ring-color);
+        }
+
+        @media print {
+            body {
+                background-color: white;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .table-container {
+                max-height: none;
+                overflow: visible;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .md\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="py-6 px-4">
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <!-- En-tête -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="bg-primary p-2 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <h1 class="text-2xl font-semibold text-primary">Gestion des Certificats de Décès</h1>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm">
+                    Consultez et gérez les certificats de décès enregistrés dans la base de données.
+                </p>
+                <!-- Ligne affichant la période -->
+                <div id="periodeLine" class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200"
+                    style="display: none;">
+                    <p class="text-sm text-blue-800">
+                        <strong>Période :</strong>
+                        Du <span id="dateDebutText"></span> au <span id="dateFinText"></span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Filtres de recherche -->
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg no-print">
+                <h2 class="text-lg font-medium text-gray-900 mb-4">Filtrer par période</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Date de début:</label>
+                        <input type="date" id="dateDebut"
+                            class="w-full border-2 border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Date de fin:</label>
+                        <input type="date" id="dateFin"
+                            class="w-full border-2 border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex items-end">
+                        <button id="btnRechercher"
+                            class="w-full bg-primary text-white rounded-lg px-4 py-2 hover:bg-primary/80 transition font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            Rechercher
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div id="errorMessage" class="error-message no-print"></div>
+            <div id="successMessage" class="success-message no-print"></div>
+
+            <!-- Loading -->
+            <div id="loading" class="loading no-print">
+                <svg class="animate-spin h-8 w-8 text-primary mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                <p class="mt-2 text-gray-600">Chargement des données...</p>
+            </div>
+
+            <!-- Statistiques -->
+            <div id="stats" class="mb-4 p-4 bg-blue-50 rounded-lg no-print" style="display: none;">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-blue-800">Nombre total de certificats trouvés:</p>
+                        <p class="text-2xl font-bold text-blue-900" id="totalCount">0</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <button id="btnExporter"
+                            class="bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 transition font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Exporter en CSV
+                        </button>
+                        <button id="btnImprimer"
+                            class="bg-primary text-white rounded-lg px-4 py-2 hover:bg-primary/80 transition font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            Imprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barre d'outils Actions (initialement désactivée) -->
+            <div id="toolbar"
+                class="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200 flex gap-4 items-center opacity-50 pointer-events-none transition-all duration-200">
+                <span class="text-sm font-medium text-gray-600 mr-2">Action sur la sélection :</span>
+
+                <button id="btnRecuperer"
+                    class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Récupérer
+                </button>
+
+                <button id="btnModifier"
+                    class="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Modifier
+                </button>
+
+                <button id="btnSupprimer"
+                    class="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Supprimer
+                </button>
+
+                <span id="selectedInfo" class="ml-auto text-sm text-gray-500 italic">Aucune ligne sélectionnée</span>
+            </div>
+
+            <!-- Tableau des résultats -->
+            <div class="table-container border border-gray-200 rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">N°</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nom</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Prénom</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Date de Décès
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Heure</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Lieu</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Médecin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                Sélectionnez une période et cliquez sur "Rechercher" pour afficher les résultats
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="gestion.js"></script>
+</body>
+
+</html>
