@@ -44,7 +44,27 @@
       "dest": "/dece/$1"
     },
     {
-      "src": "/(.*)",
+      "src": "/api/lister_dece",
+      "dest": "/api/lister_dece.js"
+    },
+    {
+      "src": "/api/supprimer_dece",
+      "dest": "/api/supprimer_dece.js"
+    },
+    {
+      "src": "/api/ajouter_dece",
+      "dest": "/api/ajouter_dece.js"
+    },
+    {
+      "src": "/api/modifier_dece",
+      "dest": "/api/modifier_dece.js"
+    },
+    {
+      "src": "/api/recuperer_donnees",
+      "dest": "/api/recuperer_donnees.js"
+    },
+    {
+      "src": "(.*)",
       "dest": "/$1.html"
     }
   ]

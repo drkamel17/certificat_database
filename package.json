@@ -1,0 +1,17 @@
+{
+  "name": "versalcertificat",
+  "version": "1.0.0",
+  "description": "Application de gestion de certificats médicaux",
+  "main": "api_simple.py",
+  "scripts": {
+    "start": "python api_simple.py",
+    "dev": "python api_simple.py"
+  },
+  "dependencies": {
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.1.6"
+  },
+  "keywords": ["certificats", "médicaux", "deces"],
+  "author": "",
+  "license": "ISC"
+}

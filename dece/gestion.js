@@ -122,29 +122,23 @@ async function rechercherCertificats() {
     }
 }
 
-// Fonction pour envoyer un message à l'application native
+// Fonction pour envoyer un message à l'API backend
 function sendNativeMessage(message) {
     return new Promise((resolve, reject) => {
         // Détecter le navigateur
-        const isFirefox = typeof browser !== 'undefined';
-        const isChrome = typeof chrome !== 'undefined' && !isFirefox;
+        const isFirefox = typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendNativeMessage;
+        const isChrome = typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendNativeMessage;
 
         if (isFirefox) {
             // Firefox
             try {
-                const port = browser.runtime.connectNative("com.daoudi.certificat");
-                port.onMessage.addListener((response) => {
+                browser.runtime.sendNativeMessage("com.daoudi.certificat", message)
+                .then(response => {
                     resolve(response);
-                    port.disconnect();
+                })
+                .catch(error => {
+                    reject(error);
                 });
-                port.onDisconnect.addListener(() => {
-                    if (browser.runtime.lastError) {
-                        reject(new Error(browser.runtime.lastError.message));
-                    } else {
-                        // Si pas de réponse mais déconnecté
-                    }
-                });
-                port.postMessage(message);
             } catch (e) {
                 reject(e);
             }
@@ -162,7 +156,53 @@ function sendNativeMessage(message) {
                 reject(e);
             }
         } else {
-            reject(new Error("Navigateur non supporté"));
+            // Si on est dans un contexte web standard, utiliser l'API backend
+            try {
+                const action = message.action;
+                let url = '';
+                let method = 'POST';
+                let data = {};
+
+                switch (action) {
+                    case 'lister_dece':
+                        url = 'http://localhost:5000/api/lister_dece';
+                        data = { dateDebut: message.dateDebut, dateFin: message.dateFin };
+                        break;
+                    case 'supprimer_dece':
+                        url = 'http://localhost:5000/api/supprimer_dece';
+                        data = { id: message.id };
+                        break;
+                    default:
+                        reject(new Error('Action non supportée: ' + action));
+                        return;
+                }
+
+                // Déterminer l'URL correcte en fonction du contexte
+                let fullUrl;
+                if (url.startsWith('/')) {
+                    // Si l'URL commence par '/', la construire par rapport à l'origine
+                    fullUrl = window.location.origin + url;
+                } else {
+                    fullUrl = url;
+                }
+                
+                fetch(fullUrl, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    resolve(result);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+            } catch (e) {
+                reject(e);
+            }
         }
     });
 }
@@ -307,7 +347,13 @@ function openPopup() {
         }
     } catch (error) {
         console.error('❌ Erreur ouverture popup:', error);
-        alert('Impossible d\'ouvrir la fenêtre.');
+        // Fallback pour les environnements web standards
+        try {
+            window.open('popup.html', '_blank');
+        } catch (fallbackError) {
+            console.error('❌ Erreur fallback:', fallbackError);
+            alert('Impossible d\'ouvrir la fenêtre popup.html.');
+        }
     }
 }
 

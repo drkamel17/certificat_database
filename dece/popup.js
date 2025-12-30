@@ -231,8 +231,8 @@ function setupTabs() {
     if (document.getElementById('gestion-button')) {
         document.getElementById('gestion-button').addEventListener('click', function () {
             // Ouvrir l'interface de gestion dans un nouvel onglet
-            const gestionUrl = chrome.runtime.getURL('dece/gestion.html');
-            chrome.tabs.create({ url: gestionUrl });
+            const gestionUrl = 'gestion.html';
+            window.open(gestionUrl, '_blank');
         });
     }
 
@@ -2523,9 +2523,8 @@ async function sauvegarderCertificatDeces(formData) {
     console.log('💾 Début de la sauvegarde du certificat de décès...');
 
     try {
-        // Préparer le message pour l'application native
+        // Préparer le message pour l'API backend
         const message = {
-            action: "ajouter_dece",
             nom: formData.nom || '',
             prenom: formData.prenom || '',
             dateNaissance: formData.dateNaissance || '',
@@ -2553,8 +2552,8 @@ async function sauvegarderCertificatDeces(formData) {
             DPNAT: formData.DPNAT ? 'Oui' : 'Non',
             EMDPNAT: formData.EMDPNAT || '',
             communeResidence: formData.communeResidence || '',
-            date_deces: formData.dateDeces || '',
-            heure_deces: formData.heureDeces || '',
+            dateDeces: formData.dateDeces || '',
+            heureDeces: formData.heureDeces || '',
             lieuDeces: formData.lieuDeces || '',
             autresLieuDeces: formData.autresLieuDeces || '',
             communeDeces: formData.communeDeces || '',
@@ -2583,6 +2582,8 @@ async function sauvegarderCertificatDeces(formData) {
             adresse: formData.adresse || '',
             date_entree: formData.date_entree || '',
             heure_entree: formData.heure_entree || '',
+            date_deces: formData.dateDeces || '',
+            heure_deces: formData.heureDeces || '',
             wilaya_deces: formData.wilaya_deces || '',
             medecin: formData.medecin || '',
             code_p: formData.code_p || '',
@@ -2590,23 +2591,31 @@ async function sauvegarderCertificatDeces(formData) {
             code_n: formData.code_n || ''
         };
 
-console.log('📤 Message à envoyer:', message);
+        console.log('📤 Message à envoyer:', message);
 
-        // Vérifier si l'API native est disponible avant d'essayer de l'utiliser
-        const apiNativeDisponible = (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendNativeMessage) ||
-            (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendNativeMessage);
-
-        if (apiNativeDisponible) {
-            console.log('📡 API native détectée, tentative de communication...');
-            try {
-                await envoyerMessageNatifDece(message);
-            } catch (nativeError) {
-                console.warn('⚠️ Communication avec API native échouée, utilisation de localStorage:', nativeError.message);
+        // Envoyer la requête à l'API backend
+        try {
+            const response = await fetch('http://localhost:5000/api/ajouter_dece', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                console.log('✅ Certificat de décès sauvegardé avec succès dans la base de données');
+                // alert('✅ Certificat de décès sauvegardé avec succès dans la base de données !');
+            } else {
+                console.error('❌ Erreur lors de la sauvegarde:', result.error);
+                // Fallback vers localStorage en cas d'erreur
                 sauvegarderDansLocalStorage(message);
             }
-        } else {
-            console.log('💾 API native non disponible, sauvegarde directe dans localStorage');
-            // Sauvegarder directement dans localStorage sans essayer l'API native
+        } catch (apiError) {
+            console.error('❌ Erreur de communication avec l\'API backend:', apiError.message);
+            // Fallback vers localStorage en cas d'erreur de communication
             sauvegarderDansLocalStorage(message);
         }
 
@@ -2633,94 +2642,103 @@ async function modifierCertificatDeces(formData) {
 
         console.log('✅ ID du certificat à modifier:', formData.id);
 
-        // Préparer le message pour l'application native
+        // Préparer le message pour l'API backend
         const message = {
-            action: "modifier_dece",
-            data: {
-                id: formData.id,
-                nom: formData.nom || '',
-                prenom: formData.prenom || '',
-                dateNaissance: formData.dateNaissance || '',
-                datePresume: formData.datePresume ? 'Oui' : 'Non',
-                wilaya_naissance: formData.wilaya_naissance || '',
-                sexe: formData.sexe || '',
-                pere: formData.pere || '',
-                mere: formData.mere || '',
-                communeNaissance: formData.communeNaissance || '',
-                wilayaResidence: formData.wilayaResidence || '',
-                place: formData.place || '',
-                placefr: formData.placefr || '',
-                DSG: formData.DSG || '',
-                DECEMAT: formData.DECEMAT ? 'Oui' : 'Non',
-                DGRO: formData.DGRO || '',
-                DACC: formData.DACC || '',
-                DAVO: formData.DAVO || '',
-                AGESTATION: formData.AGESTATION || '',
-                IDETER: formData.IDETER || '',
-                GM: formData.GM ? 'Oui' : 'Non',
-                MN: formData.MN ? 'Oui' : 'Non',
-                AGEGEST: formData.AGEGEST || '',
-                POIDNSC: formData.POIDNSC || '',
-                AGEMERE: formData.AGEMERE || '',
-                DPNAT: formData.DPNAT ? 'Oui' : 'Non',
-                EMDPNAT: formData.EMDPNAT || '',
-                communeResidence: formData.communeResidence || '',
-                date_deces: formData.dateDeces || '',
-                heure_deces: formData.heureDeces || '',
-                lieuDeces: formData.lieuDeces || '',
-                autresLieuDeces: formData.autresLieuDeces || '',
-                communeDeces: formData.communeDeces || '',
-                wilayaDeces: formData.wilayaDeces || '',
-                causeDeces: formData.causeDeces || '',
-                causeDirecte: formData.causeDirecte || '',
-                etatMorbide: formData.etatMorbide || '',
-                natureMort: formData.natureMort || '',
-                natureMortAutre: formData.natureMortAutre || '',
-                obstacleMedicoLegal: formData.obstacleMedicoLegal ? 'Oui' : 'Non',
-                contamination: formData.contamination ? 'Oui' : 'Non',
-                prothese: formData.prothese ? 'Oui' : 'Non',
-                POSTOPP2: formData.POSTOPP2 ? 'Oui' : 'Non',
-                CIM1: formData.CIM1 || '',
-                CIM2: formData.CIM2 || '',
-                CIM3: formData.CIM3 || '',
-                CIM4: formData.CIM4 || '',
-                CIM5: formData.CIM5 || '',
-                nom_ar: formData.nom_ar || '',
-                prenom_ar: formData.prenom_ar || '',
-                perear: formData.perear || '',
-                merear: formData.merear || '',
-                lieu_naissance: formData.lieu_naissance || '',
-                conjoint: formData.conjoint || '',
-                profession: formData.profession || '',
-                adresse: formData.adresse || '',
-                date_entree: formData.date_entree || '',
-                heure_entree: formData.heure_entree || '',
-                wilaya_deces: formData.wilaya_deces || '',
-                medecin: formData.medecin || '',
-                code_p: formData.code_p || '',
-                code_c: formData.code_c || '',
-                code_n: formData.code_n || ''
-            }
+            id: formData.id,
+            nom: formData.nom || '',
+            prenom: formData.prenom || '',
+            dateNaissance: formData.dateNaissance || '',
+            datePresume: formData.datePresume ? 'Oui' : 'Non',
+            wilaya_naissance: formData.wilaya_naissance || '',
+            sexe: formData.sexe || '',
+            pere: formData.pere || '',
+            mere: formData.mere || '',
+            communeNaissance: formData.communeNaissance || '',
+            wilayaResidence: formData.wilayaResidence || '',
+            place: formData.place || '',
+            placefr: formData.placefr || '',
+            DSG: formData.DSG || '',
+            DECEMAT: formData.DECEMAT ? 'Oui' : 'Non',
+            DGRO: formData.DGRO || '',
+            DACC: formData.DACC || '',
+            DAVO: formData.DAVO || '',
+            AGESTATION: formData.AGESTATION || '',
+            IDETER: formData.IDETER || '',
+            GM: formData.GM ? 'Oui' : 'Non',
+            MN: formData.MN ? 'Oui' : 'Non',
+            AGEGEST: formData.AGEGEST || '',
+            POIDNSC: formData.POIDNSC || '',
+            AGEMERE: formData.AGEMERE || '',
+            DPNAT: formData.DPNAT ? 'Oui' : 'Non',
+            EMDPNAT: formData.EMDPNAT || '',
+            communeResidence: formData.communeResidence || '',
+            dateDeces: formData.dateDeces || '',
+            heureDeces: formData.heureDeces || '',
+            lieuDeces: formData.lieuDeces || '',
+            autresLieuDeces: formData.autresLieuDeces || '',
+            communeDeces: formData.communeDeces || '',
+            wilayaDeces: formData.wilayaDeces || '',
+            causeDeces: formData.causeDeces || '',
+            causeDirecte: formData.causeDirecte || '',
+            etatMorbide: formData.etatMorbide || '',
+            natureMort: formData.natureMort || '',
+            natureMortAutre: formData.natureMortAutre || '',
+            obstacleMedicoLegal: formData.obstacleMedicoLegal ? 'Oui' : 'Non',
+            contamination: formData.contamination ? 'Oui' : 'Non',
+            prothese: formData.prothese ? 'Oui' : 'Non',
+            POSTOPP2: formData.POSTOPP2 ? 'Oui' : 'Non',
+            CIM1: formData.CIM1 || '',
+            CIM2: formData.CIM2 || '',
+            CIM3: formData.CIM3 || '',
+            CIM4: formData.CIM4 || '',
+            CIM5: formData.CIM5 || '',
+            nom_ar: formData.nom_ar || '',
+            prenom_ar: formData.prenom_ar || '',
+            perear: formData.perear || '',
+            merear: formData.merear || '',
+            lieu_naissance: formData.lieu_naissance || '',
+            conjoint: formData.conjoint || '',
+            profession: formData.profession || '',
+            adresse: formData.adresse || '',
+            date_entree: formData.date_entree || '',
+            heure_entree: formData.heure_entree || '',
+            date_deces: formData.dateDeces || '',
+            heure_deces: formData.heureDeces || '',
+            wilaya_deces: formData.wilaya_deces || '',
+            medecin: formData.medecin || '',
+            code_p: formData.code_p || '',
+            code_c: formData.code_c || '',
+            code_n: formData.code_n || ''
         };
 
-console.log('📤 Message à envoyer:', message);
+        console.log('📤 Message à envoyer:', message);
 
-        // Vérifier si l'API native est disponible avant d'essayer de l'utiliser
-        const apiNativeDisponible = (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendNativeMessage) ||
-            (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendNativeMessage);
-
-        if (apiNativeDisponible) {
-            console.log('📡 API native détectée, tentative de communication...');
-            try {
-                await envoyerMessageNatifDece(message);
-            } catch (nativeError) {
-                console.warn('⚠️ Communication avec API native échouée, utilisation de localStorage:', nativeError.message);
-                modifierDansLocalStorage(message);
+        // Envoyer la requête à l'API backend
+        try {
+            const response = await fetch('http://localhost:5000/api/modifier_dece', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                console.log('✅ Certificat de décès modifié avec succès dans la base de données');
+                // alert('✅ Certificat de décès modifié avec succès dans la base de données !');
+            } else {
+                console.error('❌ Erreur lors de la modification:', result.error);
+                // Fallback vers localStorage en cas d'erreur
+                const fallbackMessage = { data: message };
+                modifierDansLocalStorage(fallbackMessage);
             }
-        } else {
-            console.log('💾 API native non disponible, modification directe dans localStorage');
-            // Modifier directement dans localStorage sans essayer l'API native
-            modifierDansLocalStorage(message);
+        } catch (apiError) {
+            console.error('❌ Erreur de communication avec l\'API backend:', apiError.message);
+            // Fallback vers localStorage en cas d'erreur de communication
+            const fallbackMessage = { data: message };
+            modifierDansLocalStorage(fallbackMessage);
         }
 
     } catch (error) {
