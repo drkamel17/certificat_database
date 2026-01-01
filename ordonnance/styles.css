@@ -1,0 +1,108 @@
+body {
+    font-family: Arial, sans-serif; /* Police de caractères */
+    padding: 20px; /* Espacement interne */
+    background-color: #f9f9f9; /* Couleur de fond */
+}
+
+.certificat {
+    background-color: white; /* Couleur de fond du certificat */
+    border: 1px solid #ddd; /* Bordure autour du certificat */
+    padding: 20px; /* Espacement interne du certificat */
+    max-width: 600px; /* Largeur maximale */
+    margin: 60px auto 0; /* Marge supérieure et centrage */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ombre autour du certificat */
+}
+
+h1 {
+    text-align: center; /* Alignement du texte au centre */
+    color: #333; /* Couleur du texte */
+    text-decoration: underline; /* Souligner le texte */
+    font-size: 20px; /* Taille de la police */
+}
+
+p {
+    line-height: 1.5; /* Hauteur de ligne */
+    color: #555; /* Couleur du texte */
+}
+
+.editable-field {
+    border-bottom: 1px dashed #666; /* Bordure inférieure en pointillés */
+    display: inline-block; /* Affichage en ligne */
+    min-width: 50px; /* Largeur minimale */
+    min-height: 20px; /* Hauteur minimale */
+    padding: 2px 4px; /* Espacement interne */
+    margin: 0 3px; /* Marges latérales */
+}
+
+.editable-area {
+    border: 1px solid #ddd; /* Bordure autour de la zone éditable */
+    border-radius: 4px; /* Coins arrondis */
+    padding: 8px; /* Espacement interne */
+    margin: 5px 0; /* Marge supérieure et inférieure */
+    width: 100%; /* Largeur complète */
+    min-height: 20px; /* Hauteur minimale */
+    resize: vertical; /* Redimensionnement vertical uniquement */
+    overflow: hidden; /* Masquer le débordement */
+    font-family: inherit; /* Hériter de la police */
+    font-size: inherit; /* Hériter de la taille de police */
+    line-height: inherit; /* Hériter de la hauteur de ligne */
+}
+
+.editable-area:focus {
+    outline: none; /* Pas de contour lors du focus */
+    border-color: #007bff; /* Couleur de bordure lors du focus */
+}
+
+.print-button {
+    text-align: center; /* Centrer le contenu des boutons d'impression */
+    margin-top: 20px; /* Marge supérieure */
+}
+
+.print-button button {
+    padding: 10px 20px; /* Espacement interne des boutons */
+    font-size: 16px; /* Taille de la police des boutons */
+    background-color: #007bff; /* Couleur de fond des boutons */
+    color: white; /* Couleur du texte des boutons */
+    border: none; /* Pas de bordure */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur en main au survol */
+}
+
+.print-button button:hover {
+    background-color: #0056b3; /* Couleur de fond au survol */
+}
+
+@media print {
+    input[type="text"],
+    input[type="date"],
+    textarea {
+        border: none !important; /* Pas de bordure lors de l'impression */
+        background: none !important; /* Pas de fond lors de l'impression */
+        box-shadow: none !important; /* Pas d'ombre */
+        outline: none !important; /* Pas de contour */
+    }
+    
+    .print-button {
+        display: none; /* Cacher les boutons d'impression lors de l'impression */
+    }
+
+    body {
+        background-color: white; /* Couleur de fond blanche lors de l'impression */
+    }
+
+    .certificat {
+        border: none; /* Pas de bordure lors de l'impression */
+        box-shadow: none; /* Pas d'ombre */
+        margin-top: 0; /* Pas de marge supérieure */
+    }
+
+    .editable-field,
+    .editable-area {
+        border: none !important; /* Pas de bordure lors de l'impression */
+    }
+}
+.docteur {
+    font-weight: bold; /* Gras */
+    font-size: 18px; /* Taille de police augmentée */
+    margin-right: 50px; /* Ajout d'un espace à droite */
+}

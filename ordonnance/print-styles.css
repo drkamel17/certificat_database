@@ -1,0 +1,6 @@
+/* Styles pour l'impression */
+@media print {
+    .print-controls {
+        display: none !important;
+    }
+}

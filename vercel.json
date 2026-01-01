@@ -30,6 +30,18 @@
       "use": "@vercel/static"
     },
     {
+      "src": "ordonnance/**/*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "ordonnance/**/*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "ordonnance/**/*.html",
+      "use": "@vercel/static"
+    },
+    {
       "src": "templates/*.pdf",
       "use": "@vercel/static"
     }
@@ -42,6 +54,10 @@
     {
       "src": "/dece/(.*)",
       "dest": "/dece/$1"
+    },
+    {
+      "src": "/ordonnance/(.*)",
+      "dest": "/ordonnance/$1"
     },
     {
       "src": "/api/lister_dece",

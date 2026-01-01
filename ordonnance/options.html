@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestion des médicaments et ordonnances types</title>
+  <script src="browser-polyfill.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1, h2, h3, h4 {
+      color: #333;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .btn-secondary {
+      background-color: #6c757d;
+    }
+    .btn-secondary:hover {
+      background-color: #545b62;
+    }
+    .btn-danger {
+      background-color: #dc3545;
+    }
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+    .btn-success {
+      background-color: #28a745;
+    }
+    .btn-success:hover {
+      background-color: #218838;
+    }
+    .btn-warning {
+      background-color: #ffc107;
+      color: #000;
+    }
+    .btn-warning:hover {
+      background-color: #e0a800;
+    }
+    #message {
+      margin-top: 15px;
+      color: green;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+    }
+    .form-group {
+      margin: 15px 0;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .form-row {
+      display: flex;
+      gap: 10px;
+    }
+    .form-row .form-group {
+      flex: 1;
+      margin: 0 5px;
+    }
+    #liste-medicaments {
+      max-height: 200px; /* Limiter la hauteur pour éviter un débordement */
+      overflow-y: auto; /* Ajouter une barre de défilement si nécessaire */
+      border: 1px solid #ccc;
+      padding: 10px;
+      background-color: #f9f9f9;
+    }
+    #medicaments-liste {
+      list-style-type: none; /* Supprimer les puces de la liste */
+      padding: 0;
+      margin: 0;
+    }
+    #medicaments-liste li {
+      padding: 5px 0;
+      cursor: pointer;
+    }
+    #medicaments-liste li:hover {
+      background-color: #e9ecef;
+    }
+    .ordonnance-item {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      background-color: #f8f9fa;
+    }
+    .ordonnance-actions {
+      margin-top: 10px;
+    }
+    .ordonnance-medicament {
+      margin: 5px 0;
+      padding: 5px;
+      background-color: #e9ecef;
+      border-radius: 3px;
+    }
+    .ordonnance-medicament span {
+      margin-right: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gestion des médicaments et ordonnances types</h1>
+  
+  <!-- Section ordonnances types -->
+  <h2>Gestion des ordonnances types</h2>
+  
+  <h3>Importer des ordonnances types</h3>
+  <div style="margin-bottom: 15px;">
+    <input type="file" id="fichier-ordonnances-type" accept=".json" hidden />
+    <button id="choisir-ordonnances-type">Choisir un fichier d'ordonnances types</button>
+    <button id="ajouter-ordonnances-type">Ajouter les ordonnances types</button>
+  </div>
+  
+  <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+    <button id="charger-fichier-ordonnances" style="background-color: #6f42c1;">
+      <i class="fas fa-folder-open"></i> Charger fichier pour ord.html
+    </button>
+    <input type="file" id="fichier-ordonnances-pour-ord" accept=".json" hidden />
+    <p style="color: #666; font-size: 0.9em; margin-top: 10px;">
+      Ce bouton charge un fichier d'ordonnances types pour les utiliser dans ord.html
+    </p>
+  </div>
+  
+  <!-- Formulaire pour ajouter/modifier une ordonnance type -->
+  <div id="formulaire-ordonnance" class="hidden" style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #f8f9fa;">
+    <h4 id="titre-formulaire">Ajouter une nouvelle ordonnance type</h4>
+    <div class="form-group">
+      <label for="nom-ordonnance">Nom de l'ordonnance type :</label>
+      <input type="text" id="nom-ordonnance" placeholder="Ex: Angine, Diabète, etc.">
+    </div>
+    
+    <div id="medicaments-ordonnance">
+      <h5>Médicaments :</h5>
+      <div id="liste-medicaments-ordonnance"></div>
+      <button type="button" id="ajouter-medicament" class="btn-secondary">+ Ajouter un médicament</button>
+    </div>
+    
+    <div style="margin-top: 15px;">
+      <button id="enregistrer-ordonnance" class="btn-success">Enregistrer l'ordonnance</button>
+      <button id="annuler-ordonnance" class="btn-secondary">Annuler</button>
+      <button id="supprimer-ordonnance" class="btn-danger hidden">Supprimer cette ordonnance</button>
+    </div>
+  </div>
+  
+  <!-- Liste des ordonnances types -->
+  <div id="liste-ordonnances-types" style="margin-top: 20px;">
+    <h4>Liste des ordonnances types :</h4>
+    <div id="ordonnances-liste"></div>
+    <button id="recharger-ordonnances-types" class="btn-warning" style="margin-top: 10px;">
+      Recharger les ordonnances types
+    </button>
+  </div>
+  
+  <!-- Section médicaments personnalisés -->
+  <h2 style="margin-top: 30px; color: #333;">Médicaments personnalisés</h2>
+  <div style="margin-top: 15px;">
+    <button id="exporter-medicaments-personnalises" style="background-color: #28a745;">
+      <i class="fas fa-download"></i> Exporter les médicaments personnalisés
+    </button>
+    <input type="file" id="importer-medicaments-personnalises" accept=".json" hidden />
+    <button id="btn-importer-medicaments" style="background-color: #17a2b8;">
+      <i class="fas fa-upload"></i> Importer des médicaments personnalisés
+    </button>
+  </div>
+
+  <div id="infos-medicaments-personnalises" style="margin-top: 15px; color: #666; font-style: italic;">
+    Ces médicaments sont sauvegardés dans le localStorage de votre navigateur.
+  </div>
+
+  <div id="message"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>

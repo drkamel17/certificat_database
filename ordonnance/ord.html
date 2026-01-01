@@ -1,0 +1,1083 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Gestion Médicale - Ordonnances & Certificats</title>
+    <script src="browser-polyfill.js"></script>
+    <script src="csp-safe-functions.js"></script>
+    <script src="window-utils.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #059669;
+            --accent-color: #dc2626;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --border-radius: 12px;
+            --gap: 1rem;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            padding: 0;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            transition: all 0.3s ease;
+        }
+
+        /* Header Bar */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            height: 70px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .app-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            width: 100%;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .left-column {
+            flex: 0 0 580px;
+            background: var(--surface-color);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            height: calc(100vh - 70px);
+            transition: all 0.3s ease;
+            min-width: 300px;
+            max-width: 800px;
+        }
+
+        .right-column {
+            flex: 1;
+            background: var(--background-color);
+            overflow-y: auto;
+            height: calc(100vh - 70px);
+            transition: all 0.3s ease;
+            min-width: 400px;
+        }
+
+        /* Resizable divider */
+        .resize-divider {
+            width: 6px;
+            background: var(--border-color);
+            cursor: col-resize;
+            position: relative;
+            transition: background-color 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .resize-divider:hover {
+            background: var(--primary-color);
+        }
+
+        .resize-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 1px;
+        }
+
+        .resize-divider.dragging {
+            background: var(--primary-color);
+        }
+
+        .collapsed {
+            flex: 0 0 0;
+            width: 0;
+            border-right: none;
+            overflow: hidden;
+            display: none;
+        }
+
+        .expanded {
+            flex: 1;
+            width: 100%;
+            margin-left: 0;
+        }
+
+        .toggle-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .return-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: none;
+            z-index: 10;
+        }
+
+        .expanded .return-button {
+            display: block;
+        }
+
+        .return-button:hover {
+            background: #047857;
+        }
+        /* Cards and Sections */
+        .card {
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #f8fafc;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .section-padding {
+            padding: 1.5rem;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        /* Capitalize proper nouns (names) */
+        #nom, #prenom {
+            text-transform: capitalize;
+        }
+
+        input, button, select, textarea {
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+            font-family: inherit;
+        }
+
+        input, select, textarea {
+            padding: 0.75rem;
+            background: var(--surface-color);
+            color: var(--text-primary);
+            width: 100%;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #047857;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        /* Form Layout */
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: nowrap;
+            align-items: end;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .form-col-auto {
+            flex: 0 0 auto;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: normal;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .radio-group input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .button-group-end {
+            justify-content: flex-end;
+        }
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+        
+        /* Editable fields in table */
+        .med-input, .poso-input, .qt-input {
+            width: 100%;
+            border: 1px solid transparent;
+            background: transparent;
+            padding: 0.25rem 0.5rem;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+        }
+        
+        .med-input:focus, .poso-input:focus, .qt-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Medication Container */
+        .medication-input {
+            display: flex;
+            gap: 0.75rem;
+            align-items: end;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .medication-field {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .medication-field-small {
+            flex: 0 0 120px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: var(--surface-color);
+            margin: 5% auto;
+            padding: 0;
+            border: none;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: var(--text-primary);
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .mb-0 {
+            margin-bottom: 0;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mt-2 {
+            margin-top: 1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Select with button layout */
+        .select-with-button {
+            display: flex;
+            gap: 0.75rem;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .select-with-button select {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Info display */
+        .info-display {
+            /* Ancien style positionné de manière fixe */
+            /* position: fixed;
+            top: 90px;
+            right: 20px; */
+            /* Nouveau style - positionné dans le flux normal */
+            position: static;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 0.5rem; /* Réduit le padding */
+            box-shadow: var(--shadow-md);
+            z-index: 999;
+            max-width: 250px; /* Réduit la largeur maximale */
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.75rem; /* Réduit la taille de police */
+        }
+
+        /* Links */
+        .external-link {
+            background: linear-gradient(135deg, var(--accent-color), #b91c1c);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .external-link:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .left-column {
+                flex: none;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .right-column {
+                flex: none;
+                height: auto;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .medication-input {
+                flex-direction: column;
+            }
+        }
+
+        /* Print styles for A5 format optimization */
+        @media print {
+            @page {
+                size: A5;
+                margin: 0.2cm 0.2cm 0.2cm 0.2cm;
+            }
+            
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                font-size: 10pt !important;
+                line-height: 1.2 !important;
+                transform-origin: top center;
+                max-width: none !important;
+            }
+            
+            .certificat {
+                margin: 0 !important;
+                padding: 2px !important;
+                border: none !important;
+                box-shadow: none !important;
+                background: white !important;
+                max-width: 100% !important;
+                transform-origin: top center;
+            }
+            
+            /* Optimize spacing for A5 */
+            h1 {
+                font-size: 14pt !important;
+                margin: 5px 0 !important;
+            }
+            
+            .info {
+                font-size: 9pt !important;
+            }
+            
+            /* Medication list optimization */
+            div[style*="margin-bottom: 15px"] {
+                margin-bottom: 5px !important;
+            }
+            
+            /* Font size adjustments for A5 */
+            span[style*="font-size: 14px"] {
+                font-size: 10px !important;
+            }
+            
+            /* Hide non-essential elements */
+            .print-button,
+            .no-print {
+                display: none !important;
+            }
+            
+            /* Ensure content fits A5 with minimal margins */
+            .certificat > * {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                padding-left: 2px !important;
+                padding-right: 2px !important;
+            }
+            
+            /* Additional space optimization */
+            * {
+                margin-top: 0 !important;
+                margin-bottom: 2px !important;
+            }
+        }
+
+        /* Compact Patient Information Section */
+        .patient-info-compact {
+            padding: 1rem !important;
+        }
+
+        .patient-info-compact .card-header {
+            padding: 0.75rem 1rem !important;
+        }
+
+        .patient-info-compact .card-title {
+            font-size: 1rem !important;
+        }
+
+        .patient-info-compact label {
+            font-size: 0.75rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+
+        .patient-info-compact input {
+            padding: 0.5rem !important;
+            font-size: 0.8rem !important;
+            height: 32px !important;
+        }
+
+        .patient-info-compact .form-row {
+            margin-bottom: 0.5rem !important;
+        }
+
+        /* Compact Actions Section */
+        .actions-compact .card-content {
+            padding: 1rem !important;
+        }
+
+        .actions-compact .button-group {
+            margin-bottom: 0.75rem !important;
+        }
+
+        .actions-compact button {
+            padding: 0.5rem 1rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        /* Compact Settings Section */
+        .settings-compact {
+            padding: 1rem !important;
+        }
+
+        .settings-compact .card-header {
+            padding: 0.75rem 1rem !important;
+        }
+
+        .settings-compact .card-title {
+            font-size: 1rem !important;
+        }
+
+        .settings-compact label {
+            font-size: 0.75rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+
+        .settings-compact input,
+        .settings-compact textarea {
+            padding: 0.5rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        .settings-compact textarea {
+            min-height: 60px !important;
+        }
+
+        .settings-compact .form-row {
+            margin-bottom: 0.75rem !important;
+        }
+
+        .settings-compact .button-group {
+            margin-bottom: 0.75rem !important;
+        }
+
+        .settings-compact button {
+            padding: 0.5rem 1rem !important;
+            font-size: 0.8rem !important;
+        }
+    </style>
+
+</head>
+<body>
+    <!-- Header Bar -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo">
+                <i class="fas fa-stethoscope"></i>
+            </div>
+            <div>
+                <div class="app-title">Système de Gestion Médicale</div>
+                <div class="app-subtitle">Ordonnances & Certificats - Dr Daoudi</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="info-display" id="infos-generales">
+                <div id="affichage-polyclinique"></div>
+                <div id="affichage-docteur"></div>
+            </div>
+            <button id="toggleButton" class="toggle-button">
+                <i class="fas fa-expand-arrows-alt"></i>
+                Mode plein écran
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Column - Settings and Forms -->
+        <div class="left-column" id="leftColumn">
+            <div class="section-padding">
+                <!-- Info displays -->
+                <div id="infos-etab"></div>
+                <!-- Ancien emplacement de info-display supprimé -->
+
+                <!-- Settings Card -->
+                <div class="card settings-compact" id="settings-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-cog"></i>
+                            Paramètres de l'établissement
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="form-row">
+                            <div class="form-col" style="flex: 2;">
+                                <label for="polyclinique">Polyclinique (FR)</label>
+                                <textarea id="polyclinique" rows="2" placeholder="Nom de la polyclinique / Adresse (FR)"></textarea>
+                            </div>
+                            <div class="form-col" style="flex: 2;">
+                                <label for="polyclinique-ar">Polyclinique (AR)</label>
+                                <textarea id="polyclinique-ar" rows="2" placeholder="اسم وعنوان العيادة باللغة العربية" dir="rtl"></textarea>
+                            </div>
+                            <div class="form-col" style="flex: 1;">
+                                <label for="docteur">Nom du docteur</label>
+                                <input type="text" id="docteur" placeholder="Nom de docteur">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <button id="etablissemnt" class="btn-secondary" style="flex: 1; margin-right: 0.5rem;">
+                                <i class="fas fa-building"></i>
+                                Insérer depuis DEM
+                            </button>
+                            <button id="savePolycliniqueDocteur" class="btn-primary" style="flex: 1;">
+                                <i class="fas fa-save"></i>
+                                Sauvegarder
+                            </button>
+                        </div>
+
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="header-option" value="with-header" checked>
+                                Avec en-tête
+                            </label>
+                            <label>
+                                <input type="radio" name="header-option" value="without-header">
+                                Sans en-tête
+                            </label>
+                            <label>
+                                <input type="radio" name="header-option" value="DEM-header">
+                                Style DEM
+                            </label>
+                            <label>
+                                Date de consultation
+                                <input type="date" name="date-consultation" style="margin-left: 0.5rem; font-size: 0.8rem !important; padding: 0.4rem !important;">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patient Information Card -->
+                <div class="card patient-info-compact">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-user"></i>
+                            Informations du patient
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="form-row" id="infos-patient">
+                            <div class="form-col" style="flex: 2; min-width: 120px;">
+                                <label for="nom">Nom</label>
+                                <input type="text" id="nom" placeholder="Nom">
+                            </div>
+                            <div class="form-col" style="flex: 2; min-width: 120px;">
+                                <label for="prenom">Prénom</label>
+                                <input type="text" id="prenom" placeholder="Prénom">
+                            </div>
+                            <div class="form-col-auto" style="flex: 0 0 140px;">
+                                <label for="date-naissance">Date naissance</label>
+                                <input type="date" id="date-naissance">
+                            </div>
+                            <div class="form-col-auto" style="flex: 0 0 80px;">
+                                <label for="age">Âge</label>
+                                <input type="text" id="age" placeholder="Âge">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col" style="flex: 0 0 200px;">
+                                <label for="numero">Numéro Patient</label>
+                                <input type="text" id="numero" placeholder="Numéro Patient">
+                            </div>
+                            <div class="form-col-auto" style="flex: 0 0 100px;">
+                                <label for="poids">Poids (kg)</label>
+                                <input type="text" id="poids" placeholder="Poids">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Card -->
+                <div class="card actions-compact">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-tools"></i>
+                            Actions rapides
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <!-- Primary Actions -->
+                        <div class="button-group">
+                            
+                            <button id="ouvrir-options" class="btn-secondary" style="flex: 1;">
+                                <i class="fas fa-folder-open"></i>
+                                Ordonnances types
+                            </button>
+                        </div>
+                        
+                        <!-- Management Actions -->
+                        <div class="button-group">
+                           
+                        </div>
+
+                        <!-- Certificates -->
+                        <div class="button-group">
+                            <button id="certificat" class="btn-secondary" style="flex: 1;">
+                                <i class="fas fa-certificate"></i>
+                                Certificat
+                            </button>
+                            <button id="certdece" class="btn-secondary" style="flex: 1;">
+                                <i class="fas fa-file-medical"></i>
+                                Certificat décès
+                            </button>
+                        </div>
+
+                        <!-- External Link -->
+                        <div class="text-center">
+                            <a href="https://drive.google.com/drive/folders/1YOnA04kj1a4UxC_4vnm3bJRdMl2uFS7y" target="_blank" class="external-link" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
+                                <i class="fas fa-external-link-alt"></i>
+                                Instructions Prévention
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resizable Divider -->
+        <div class="resize-divider" id="resizeDivider"></div>
+
+        <!-- Right Column - Prescription Management -->
+        <div class="right-column" id="rightColumn">
+            <button id="returnButton" class="return-button">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </button>
+            
+            <div class="section-padding">
+                <!-- Prescription Entry Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-prescription-bottle-alt"></i>
+                            Saisie de l'ordonnance
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="medication-input">
+                            <div class="medication-field">
+                                <label for="medicament">Médicament</label>
+                                <input list="medicaments" id="medicament" placeholder="Tapez pour rechercher un médicament">
+                                <datalist id="medicaments"></datalist>
+                            </div>
+                            <div class="medication-field-small">
+                                <label for="posologie">Posologie</label>
+                                <input type="text" id="posologie" placeholder="Posologie">
+                            </div>
+                            <div class="medication-field-small">
+                                <label for="quantite">Quantité</label>
+                                <input type="text" id="quantite" placeholder="Quantité">
+                            </div>
+                        </div>
+                        <button id="ajouter" class="btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Ajouter à l'ordonnance
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Prescription List Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-list"></i>
+                            Liste de l'ordonnance
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <table id="ordonnance-table">
+                            <thead>
+                                <tr>
+                                    <th>Médicament</th>
+                                    <th>Posologie</th>
+                                    <th>Quantité</th>
+                                    <th class="no-print">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        
+                        <div class="button-group button-group-end mt-2">
+                            <button id="generer-pdf" class="btn-primary">
+                                <i class="fas fa-file-pdf"></i>
+                                Générer l'Ordonnance
+                            </button>
+                            <button id="enregistrer-type" class="btn-secondary">
+                                <i class="fas fa-save"></i>
+                                Enregistrer comme ordonnance type
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saved Prescriptions Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-archive"></i>
+                            Ordonnances types enregistrées
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label for="liste-ordonnances-types">Ordonnance type:</label>
+                            <input type="text" id="recherche-ordonnances-types" placeholder="Rechercher une ordonnance..." style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            <div class="select-with-button">
+                                <select id="liste-ordonnances-types">
+                                    <option value="">Sélectionnez une ordonnance type</option>
+                                </select>
+                                <button id="charger-ordonnance-type" class="btn-primary">
+                                    <i class="fas fa-download"></i>
+                                    Charger
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for medication management -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="margin: 0;">
+                    <i class="fas fa-pills"></i>
+                    Médicaments enregistrés
+                </h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <ul id="liste-medicaments-enregistres"></ul>
+                <button id="vider-medicaments" class="btn-danger">
+                    <i class="fas fa-trash-alt"></i>
+                    Supprimer tous les médicaments
+                </button>
+            </div>
+        </div>
+    </div>
+	
+
+    <script src="medicaments-data.js"></script>
+    <script src="ordonnances-types-data.js"></script>
+    <script src="popup.js"></script>
+    <script src="ord-inline-scripts.js"></script>
+    <script src="ord.js"></script>
+</body>
+</html>
