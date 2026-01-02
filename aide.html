@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aide - Application de Certificats Médicaux</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            padding: 40px;
+        }
+        .header {
+            text-align: center;
+            color: #1976d2;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .header i {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            color: #2c3e50;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f9ff;
+        }
+        .section h2 {
+            color: #1976d2;
+            margin-top: 0;
+            font-size: 1.6em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section h2 i {
+            font-size: 1.3em;
+        }
+        .highlight {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #1976d2;
+        }
+        .important {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+        .steps {
+            list-style-type: none;
+            padding: 0;
+        }
+        .steps li {
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .steps li:last-child {
+            border-bottom: none;
+        }
+        .step-number {
+            background-color: #1976d2;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #7f8c8d;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+            background-color: #1976d2;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .nav-button:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+        }
+        .nav-button.info {
+            background-color: #4CAF50;
+        }
+        .nav-button.info:hover {
+            background-color: #45a049;
+        }
+        .nav-button.warning {
+            background-color: #FF9800;
+        }
+        .nav-button.warning:hover {
+            background-color: #e68a00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-question-circle"></i>
+            <h1>Guide d'utilisation de l'Application</h1>
+            <p>Comprenez comment fonctionne notre solution médicale intégrée</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-info-circle"></i> Présentation de l'Application</h2>
+            <p>
+                Notre application est une solution médicale intégrée qui permet aux professionnels de santé de générer 
+                rapidement et efficacement différents types de documents médicaux : certificats médicaux, ordonnances, 
+                certificats de décès, et schémas de vaccination. L'application offre une interface conviviale et 
+                intuitive pour une gestion optimale des documents médicaux.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-cogs"></i> Fonctionnement de l'Application</h2>
+            <div class="highlight">
+                <p><strong>Comment l'application fonctionne-t-elle ?</strong></p>
+                <ul class="steps">
+                    <li>
+                        <div class="step-number">1</div>
+                        <div>
+                            <strong>Interface utilisateur :</strong> L'application propose une interface web moderne et intuitive 
+                            pour la création de différents types de documents médicaux.
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-number">2</div>
+                        <div>
+                            <strong>Saisie des données :</strong> Les utilisateurs remplissent les formulaires avec les 
+                            informations nécessaires pour chaque type de document.
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-number">3</div>
+                        <div>
+                            <strong>Génération automatique :</strong> L'application génère automatiquement les documents 
+                            selon les normes médicales en vigueur.
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-number">4</div>
+                        <div>
+                            <strong>Impression et sauvegarde :</strong> Les documents peuvent être imprimés directement 
+                            ou sauvegardés dans la base de données.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-database"></i> Conservation des Données</h2>
+            <div class="important">
+                <p><strong>Pour conserver vos données, vous devez activer le serveur API :</strong></p>
+                <ul class="steps">
+                    <li>
+                        <div class="step-number">1</div>
+                        <div>
+                            <strong>Placement des fichiers :</strong> Le fichier <code>api_simple.py</code> doit être 
+                            placé dans le dossier de votre projet.
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-number">2</div>
+                        <div>
+                            <strong>Dossier database :</strong> Le dossier <code>database</code> doit être placé 
+                            également dans le dossier de votre projet. C'est dans ce dossier que sera créé le fichier 
+                            <code>data.db</code> contenant toutes vos données.
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-number">3</div>
+                        <div>
+                            <strong>Démarrage du serveur :</strong> Pour activer la sauvegarde des données, vous pouvez :
+                            <ul>
+                                <li>Exécuter la commande : <code>python api_simple.py</code> dans votre terminal</li>
+                                <li>Ou exécuter directement le fichier <code>start_api.bat</code> qui se trouve dans le dossier téléchargé</li>
+                            </ul>
+                            <strong><a href="https://h7.cl/apicertificat" target="_blank" style="color: #1976d2; text-decoration: none;">Télécharger le serveur API ici</a></strong>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-number">4</div>
+                        <div>
+                            <strong>Activation du serveur :</strong> Une fois le serveur démarré, l'application 
+                            pourra sauvegarder les certificats et ordonnances dans la base de données SQLite.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-folder"></i> Structure des Fichiers</h2>
+            <p>
+                Voici la structure recommandée de votre projet pour que tout fonctionne correctement :
+            </p>
+            <pre style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; overflow-x: auto;">
+e:/votre_projet/
+├── api_simple.py          &lt;- Serveur API (à la racine)
+├── database/              &lt;- Dossier de la base de données
+│   └── data.db            &lt;- Fichier de base de données (généré automatiquement)
+└── 
+            </pre>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-exclamation-triangle"></i> Informations Importantes</h2>
+            <ul class="steps">
+                <li>
+                    <div class="step-number">•</div>
+                    <div>
+                        <strong>Sans le serveur API :</strong> Si le serveur API n'est pas démarré, les données 
+                        seront sauvegardées temporairement dans le navigateur (localStorage) mais ne seront pas 
+                        persistantes.
+                    </div>
+                </li>
+                <li>
+                    <div class="step-number">•</div>
+                    <div>
+                        <strong>Sécurité des données :</strong> La base de données SQLite est locale et sécurisée. 
+                        Assurez-vous de sauvegarder régulièrement le fichier <code>data.db</code>.
+                    </div>
+                </li>
+                <li>
+                    <div class="step-number">•</div>
+                    <div>
+                        <strong>Port du serveur :</strong> Le serveur API s'exécute sur le port 5000 par défaut. 
+                        Assurez-vous que ce port est disponible sur votre système.
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="index.html" class="nav-button">
+                <i class="fas fa-home"></i> Page d'accueil
+            </a>
+            <a href="#" class="nav-button info" onclick="window.print()">
+                <i class="fas fa-print"></i> Imprimer cette aide
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>Solution Médicale Intégrée | Guide d'utilisation | Développé par Dr Daoudi</p>
+        </div>
+    </div>
+</body>
+</html>
