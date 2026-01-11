@@ -4,6 +4,18 @@ function capitalizeNames(text) {
     return text.toLowerCase().replace(/\b\w/g, letter => letter.toUpperCase());
 }
 
+function escapeHTML(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>'"]/g,
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag]));
+}
+
 // Fonction personnalisée pour conserver les retours à la ligne
 function trimPreserveNewlines(text) {
     return text.replace(/^\s+|\s+$/g, '');
@@ -72,8 +84,8 @@ function storeActiveTabId() {
 
 // Fonction pour générer l'en-tête
 function generateHeader() {
-    const polyclinique = localStorage.getItem('polyclinique') || '';
-    const polycliniqueAr = localStorage.getItem('polyclinique-ar') || '';
+    const polyclinique = escapeHTML(localStorage.getItem('polyclinique') || '');
+    const polycliniqueAr = escapeHTML(localStorage.getItem('polyclinique-ar') || '');
 
     return `
     <div id="head" style="border: 1px solid #000; padding: 10px; margin-bottom: 20px;">
@@ -106,7 +118,7 @@ function generateHeader() {
 // Fonction pour afficher le numéro depuis localStorage
 function displayNumero() {
     const numero = localStorage.getItem('numero') || 'Aucun numéro trouvé';
-   
+
 }
 
 // Fonction pour configurer les écouteurs de boutons
@@ -135,9 +147,9 @@ function brucellose() {
         console.error('Le formulaire n\'a pas été trouvé');
         return;
     }
-    
+
     // Afficher le numéro avant de générer l'ordonnance
-displayNumero();
+    displayNumero();
 
     // Récupérer les éléments du formulaire
     const radios = document.querySelectorAll('input[name="brucellose"]:checked');
@@ -195,14 +207,14 @@ displayNumero();
                 { medicament: "Ciprofloxacine 500mg", posologie: "01 cp 02 fois par jour", quantite: "42 jours" }
             ];
             break;
-			 case 'B chronique':
+        case 'B chronique':
             alert("Pas d'indication au traitement sauf en cas d'existence d'un foyer focalisé");
             return;
 
         case 'femme enceinte':
             medicaments = [
-			    { medicament: "Bacrim (cotrimoxazole) 480mg", posologie: "02cp 02 fois par jour", quantite: "42 jours" },
-                { medicament: "Rifampicine 300mg ou (150)mg", posologie: "900mg en une prise à distance des repas", quantite: "42 jours" }    
+                { medicament: "Bacrim (cotrimoxazole) 480mg", posologie: "02cp 02 fois par jour", quantite: "42 jours" },
+                { medicament: "Rifampicine 300mg ou (150)mg", posologie: "900mg en une prise à distance des repas", quantite: "42 jours" }
             ];
             break;
         case 'enfant inf de 08 ans 01':
@@ -210,14 +222,14 @@ displayNumero();
                 alert("Saisissez le poids de l'enfant");
                 return;
             }
-            
+
             // Calcul des posologies
             const posologieBacrim = ((poids * 75) / 200).toString() + " ml 02 fois par jour";
-            
+
             // Définir le médicament et la posologie selon le poids
             let gentamicineMedicament;
             let posologieGentamicine;
-            
+
             if (poids < 8) {
                 gentamicineMedicament = "Gentamicine 40 mg";
                 posologieGentamicine = "1/2 amp en IM";
@@ -231,7 +243,7 @@ displayNumero();
                 gentamicineMedicament = "Gentamicine 80 mg";
                 posologieGentamicine = "01 amp en IM 02 fois / jour";
             }
-            
+
             medicaments = [
                 { medicament: "Bacrim (cotrimoxazole) 240mg sirop", posologie: posologieBacrim, quantite: "42 jours" },
                 { medicament: gentamicineMedicament, posologie: posologieGentamicine, quantite: "07 jours" }
@@ -243,11 +255,11 @@ displayNumero();
                 alert("Saisissez le poids de l'enfant");
                 return;
             }
-            
+
             // Calcul des posologies
             const posologieBactrim = ((poids * 75) / 200).toString() + " ml 02 fois par jour";
             const posologieRifampicine = (poids * 15).toString() + " mg en une prise à distance des repas";
-            
+
             medicaments = [
                 { medicament: "Bactrim (cotrimoxazole) 240mg sirop", posologie: posologieBactrim, quantite: "42 jours" },
                 { medicament: "Rifampicine pédiatrique", posologie: posologieRifampicine, quantite: "42 jours" }
@@ -258,12 +270,14 @@ displayNumero();
                 alert("Saisissez le poids de l'enfant");
                 return;
             }
-            
+
             // Calcul des posologies
-            const posologieDoxycycline = (poids * 5).toString() + " mg en une prise au milieu de repas";
+            let doxiValue1 = poids * 5;
+            if (doxiValue1 > 200) doxiValue1 = 200;
+            const posologieDoxycycline = doxiValue1.toString() + " mg en une prise au milieu de repas";
             let medicament2;
             let posologie2;
-            
+
             // Conditions pour Gentamicine selon le poids
             if (poids < 20) {
                 medicament2 = "Gentamicine 40 mg";
@@ -275,11 +289,11 @@ displayNumero();
                 medicament2 = "Gentamicine 80 mg";
                 posologie2 = "01 amp en IM";
             }
-            
+
             medicaments = [
                 { medicament: "Doxycycline 100 mg cp", posologie: posologieDoxycycline, quantite: "42 jours" },
                 { medicament: medicament2, posologie: posologie2, quantite: "42 jours" }
-            ];    
+            ];
             break;
 
         case 'enfant plus de 08 ans 02':
@@ -287,15 +301,22 @@ displayNumero();
                 alert("Saisissez le poids de l'enfant");
                 return;
             }
+
+            let doxiValue = poids * 5;
+            if (doxiValue > 200) doxiValue = 200;
             
-            const posologieDoxi = (poids * 5).toString() + " mg en une prise au milieu de repas";
-            const posologieRifam = (poids * 25).toString() + " mg en une prise à distance des repas";
-            
+            let rifamValue = poids * 25;
+            if (rifamValue > 900) rifamValue = 900;
+
+            const posologieDoxi = doxiValue.toString() + " mg en une prise au milieu de repas";
+            const posologieRifam = rifamValue.toString() + " mg en une prise à distance des repas";
+
             medicaments = [
                 { medicament: "Doxycycline 100 mg cp", posologie: posologieDoxi, quantite: "42 jours" },
                 { medicament: "Rifampicine pédiatrique", posologie: posologieRifam, quantite: "42 jours" }
             ];
-			
+            break;
+
     }
 
     if (medicaments.length === 0) {
@@ -314,11 +335,11 @@ displayNumero();
                 <div style="display: flex; justify-content: space-between; align-items: baseline;">
                     <span style="flex: 1;">
                         <span style="font-weight: bold; min-width: 20px; display: inline-block;">${nbr}.</span>
-                        <span style="white-space: normal;">${item.medicament}</span>
+                        <span style="white-space: normal;">${escapeHTML(item.medicament)}</span>
                     </span>
-                    <span style="margin-left: 20px; white-space: nowrap;">${item.quantite}</span>
+                    <span style="margin-left: 20px; white-space: nowrap;">${escapeHTML(item.quantite)}</span>
                 </div>
-                <div style="margin-left: 30px; color: #555; font-style: italic; margin-top: 5px;">${item.posologie}</div>
+                <div style="margin-left: 30px; color: #555; font-style: italic; margin-top: 5px;">${escapeHTML(item.posologie)}</div>
             </div>`;
     });
 
@@ -500,17 +521,17 @@ displayNumero();
             
             <div class="patient-info">
                 <div class="info-row">
-                    <div class="info nom"><strong>Nom :</strong> ${nom}</div>
-                    <div class="info numero"><strong>Numéro :</strong> ${localStorage.getItem('numero') || ''}</div>
+                    <div class="info nom"><strong>Nom :</strong> ${escapeHTML(nom)}</div>
+                    <div class="info numero"><strong>Numéro :</strong> ${escapeHTML(localStorage.getItem('numero') || '')}</div>
                 </div>
                 <div class="info-row">
-                    <div class="info prenom"><strong>Prénom :</strong> ${prenom}</div>
-                    <div class="info today"><strong>La date :</strong> ${formattedDate}</div>
+                    <div class="info prenom"><strong>Prénom :</strong> ${escapeHTML(prenom)}</div>
+                    <div class="info today"><strong>La date :</strong> ${escapeHTML(formattedDate)}</div>
                 </div>
                 <div class="info-row">
-                    <div class="info date-naissance"><strong>Date de naissance :</strong> ${dob || 'Non renseigné'}${ageText}</div>
+                    <div class="info date-naissance"><strong>Date de naissance :</strong> ${escapeHTML(dob || 'Non renseigné')}${escapeHTML(ageText)}</div>
                     <div class="info barcode">
-                        <svg id="barcode" data-numero="${localStorage.getItem('numero') || ''}"></svg>
+                        <svg id="barcode" data-numero="${escapeHTML(localStorage.getItem('numero') || '')}"></svg>
                     </div>
                 </div>
             </div>
@@ -522,29 +543,17 @@ displayNumero();
         <div class="print-button">
             <button id="printButton">Imprimer l'ordonnance</button>
         </div>
-        <script src="JsBarcode.all.min.js"></script>
-        <script src="barcode.js"></script>
-        <script src="print.js"></script>
+        <script src="${chrome.runtime.getURL('JsBarcode.all.min.js')}"></script>
+        <script src="${chrome.runtime.getURL('barcode.js')}"></script>
+        <script src="${chrome.runtime.getURL('print.js')}"></script>
     </body>
     </html>`;
 
+    const blob = new Blob([ordonnanceContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const newWindow = window.open(url, "_blank");
 
-
-    const newWindow = window.open("", "_blank");
-    if (newWindow) {
-        newWindow.document.write(ordonnanceContent);
-        newWindow.document.close();
-
-        // Attacher l'événement d'impression directement après la fermeture du document
-        newWindow.onload = function () {
-            const printButton = newWindow.document.getElementById('printButton');
-            if (printButton) {
-                printButton.addEventListener('click', function () {
-                    newWindow.print();
-                });
-            }
-        };
-    } else {
+    if (!newWindow) {
         alert("Le popup a été bloqué par votre navigateur. Veuillez autoriser les popups pour ce site.");
     }
 }
@@ -567,5 +576,3 @@ function showFormatStatus(message) {
         status.remove();
     }, 2000);
 }
-
-
