@@ -543,9 +543,9 @@ function brucellose() {
         <div class="print-button">
             <button id="printButton">Imprimer l'ordonnance</button>
         </div>
-        <script src="${chrome.runtime.getURL('JsBarcode.all.min.js')}"></script>
-        <script src="${chrome.runtime.getURL('barcode.js')}"></script>
-        <script src="${chrome.runtime.getURL('print.js')}"></script>
+         <script src="JsBarcode.all.min.js"></script>
+        <script src="barcode.js"></script>
+        <script src="print.js"></script>
     </body>
     </html>`;
 
