@@ -1,4 +1,5 @@
 let ordonnancesTypesChargees = {};
+let ordonnanceList = [];
 
 window.mettreAJourListeOrdonnancesTypes = async function(ordonnancesTypes = null) {
     const select = document.getElementById('liste-ordonnances-types');
@@ -38,8 +39,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     const resizeDivider = document.getElementById('resizeDivider');
     const toggleButton = document.getElementById('toggleButton');
     const returnButton = document.getElementById('returnButton');
-
-    const ordonnanceList = [];
 
     function waitForMedicaments() {
         return new Promise((resolve) => {
@@ -308,7 +307,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
-    async function mettreAJourTableau() {
+    window.mettreAJourTableau = async function() {
         const tbody = document.querySelector('#ordonnance-table tbody');
         tbody.innerHTML = '';
 
@@ -704,7 +703,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                                     displayValue: false
                                 });
                             } catch (e) {
-                                console.log('Erreur génération barcode:', e);
                             }
                         }
                     }
@@ -982,7 +980,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                                     displayValue: false
                                 });
                             } catch (e) {
-                                console.log('Erreur génération barcode:', e);
                             }
                         }
                     }
@@ -1461,13 +1458,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 function chargerOrdonnancesTypesDuFichier() {
     const fromLocalStorage = JSON.parse(localStorage.getItem('ordonnancesTypesPourOrd') || '{}');
     
-    console.log('🔄 Chargement des ordonnances types...');
-    console.log('- Ordonnances dans localStorage :', Object.keys(fromLocalStorage).length);
-    
     if (typeof ordonnancesTypesData !== 'undefined' && Object.keys(ordonnancesTypesData).length > 0) {
-        console.log('✅ Ordonnances chargées depuis ordonnances-types-data.js !');
-        console.log('- Ordonnances dans le fichier JS :', Object.keys(ordonnancesTypesData).length);
-        
         const sourcesData = JSON.parse(localStorage.getItem('ordonnancesTypesSources') || '{}');
         const fusion = { ...ordonnancesTypesData };
         let nbAjoutes = 0;
@@ -1494,16 +1485,7 @@ function chargerOrdonnancesTypesDuFichier() {
         ordonnancesTypesChargees = fusion;
         localStorage.setItem('ordonnancesTypesPourOrd', JSON.stringify(fusion));
         mettreAJourListeOrdonnancesTypes(fusion);
-        
-        console.log('✅ Fusion terminée !');
-        console.log('- Ordonnances du fichier JS :', Object.keys(ordonnancesTypesData).length);
-        console.log('- Ordonnances personnalisées (localStorage) :', Object.keys(fromLocalStorage).length);
-        console.log('- Ordonnances ajoutées :', nbAjoutes);
-        console.log('- Ordonnances remplacées :', nbRemplaces);
-        console.log('- Total final :', Object.keys(fusion).length);
     } else {
-        console.log('⚠️ Impossible de charger ordonnances-types-data.js');
-        console.log('💡 Utilisation des données localStorage uniquement...');
         if (Object.keys(fromLocalStorage).length > 0) {
             ordonnancesTypesChargees = fromLocalStorage;
             const sourcesData = {};
@@ -1513,10 +1495,286 @@ function chargerOrdonnancesTypesDuFichier() {
             localStorage.setItem('ordonnancesTypesSources', JSON.stringify(sourcesData));
             window.ordonnancesTypesSources = sourcesData;
             mettreAJourListeOrdonnancesTypes(fromLocalStorage);
-            console.log('✅ Liste chargée depuis localStorage :', Object.keys(fromLocalStorage).length, 'ordonnances');
-        } else {
-            console.log('⚠️ Aucune ordonnance disponible !');
-            console.log('💡 Utilisez le bouton "Charger fichier pour ord.html" dans options.html pour charger vos ordonnances.');
         }
     }
 }
+
+// Fonctions pour gérer les ordonnances archivées par patient
+window.showPatientNameDialog = function() {
+    const nomInput = document.getElementById('nom');
+    const prenomInput = document.getElementById('prenom');
+    const currentPatientNameSpan = document.getElementById('current-patient-name');
+    
+    if (nomInput && prenomInput && currentPatientNameSpan) {
+        const nom = nomInput.value.trim();
+        const prenom = prenomInput.value.trim();
+        
+        if (nom && prenom) {
+            currentPatientNameSpan.textContent = nom + ' ' + prenom;
+        } else if (nom) {
+            currentPatientNameSpan.textContent = nom;
+        } else if (prenom) {
+            currentPatientNameSpan.textContent = prenom;
+        } else {
+            currentPatientNameSpan.textContent = '-';
+        }
+    }
+    
+    document.getElementById('patientNameModal').style.display = 'block';
+}
+
+window.closePatientNameModal = function() {
+    document.getElementById('patientNameModal').style.display = 'none';
+    // Réinitialiser le formulaire
+    document.getElementById('patient-name-input').value = '';
+    document.getElementById('use-current-patient').checked = false;
+}
+
+window.togglePatientNameInput = function(checkbox) {
+    const input = document.getElementById('patient-name-input');
+    if (checkbox.checked) {
+        const nomInput = document.getElementById('nom');
+        const prenomInput = document.getElementById('prenom');
+        
+        if (nomInput && prenomInput) {
+            const nom = nomInput.value.trim();
+            const prenom = prenomInput.value.trim();
+            
+            if (nom && prenom) {
+                input.value = nom + ' ' + prenom;
+            } else if (nom) {
+                input.value = nom;
+            } else if (prenom) {
+                input.value = prenom;
+            }
+        }
+        input.disabled = true;
+    } else {
+        input.disabled = false;
+    }
+}
+
+// Sauvegarder l'ordonnance dans le dossier du patient
+window.savePatientPrescription = async function() {
+    const patientNameInput = document.getElementById('patient-name-input');
+    let patientName = patientNameInput.value.trim();
+    
+    if (!patientName) {
+        alert('Veuillez entrer un nom de patient ou cocher "Utiliser le nom actuel du patient"');
+        return;
+    }
+    
+    if (ordonnanceList.length === 0) {
+        alert('Aucune ordonnance à enregistrer');
+        return;
+    }
+    
+    // Sauvegarder l'ordonnance avec le nom du patient
+    let patientPrescriptions = JSON.parse(localStorage.getItem('ordonnancesPatients') || '{}');
+    patientPrescriptions[patientName] = {
+        ordonnance: [...ordonnanceList],
+        date: new Date().toISOString(),
+        nom: document.getElementById('nom').value,
+        prenom: document.getElementById('prenom').value,
+        dateNaissance: document.getElementById('date-naissance').value,
+        numero: document.getElementById('numero').value
+    };
+    
+    localStorage.setItem('ordonnancesPatients', JSON.stringify(patientPrescriptions));
+    
+    // Mettre à jour la liste des ordonnances archivées
+    mettreAJourListeOrdonnancesArchivees(patientPrescriptions);
+    
+    alert('Ordonnance enregistrée dans le dossier du patient !');
+    
+    // Fermer la modale
+    closePatientNameModal();
+}
+
+window.mettreAJourListeOrdonnancesArchivees = async function(prescriptions = null) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const select = document.getElementById('liste-ordonnances-archivee');
+    
+    if (!prescriptions) {
+        let rawData = localStorage.getItem('ordonnancesPatients');
+        
+        if (!rawData) {
+            prescriptions = {};
+        } else {
+            try {
+                prescriptions = JSON.parse(rawData);
+            } catch (e) {
+                prescriptions = {};
+            }
+        }
+    }
+    
+    if (select) {
+        select.innerHTML = '<option value="">Sélectionnez une ordonnance archivée</option>';
+        
+        const nomsTries = Object.keys(prescriptions).sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
+        
+        nomsTries.forEach(nom => {
+            const option = document.createElement('option');
+            option.value = nom;
+            option.textContent = nom;
+            select.appendChild(option);
+        });
+    }
+};
+
+// Charger une ordonnance archivée
+async function chargerOrdonnanceArchivee() {
+    const select = document.getElementById('liste-ordonnances-archivee');
+    const selectedPatient = select.value;
+    
+    if (!selectedPatient) {
+        alert('Veuillez sélectionner une ordonnance archivée');
+        return;
+    }
+    
+    const patientPrescriptions = JSON.parse(localStorage.getItem('ordonnancesPatients') || '{}');
+    const prescription = patientPrescriptions[selectedPatient];
+    
+    if (prescription) {
+        // Charger les informations du patient
+        if (prescription.nom) document.getElementById('nom').value = prescription.nom;
+        if (prescription.prenom) document.getElementById('prenom').value = prescription.prenom;
+        if (prescription.dateNaissance) document.getElementById('date-naissance').value = prescription.dateNaissance;
+        if (prescription.numero) document.getElementById('numero').value = prescription.numero;
+        
+        // Calculer l'âge si la date de naissance est présente
+        if (prescription.dateNaissance) {
+            const age = calculerAge(prescription.dateNaissance);
+            document.getElementById('age').value = age;
+        }
+        
+        // Charger l'ordonnance
+        ordonnanceList.length = 0;
+        ordonnanceList.push(...prescription.ordonnance);
+        await mettreAJourTableau();
+        
+        alert('Ordonnance chargée avec succès !');
+    }
+}
+
+// Fonction pour filtrer les ordonnances archivées
+function setupPatientPrescriptionFilter() {
+    const rechercheInput = document.getElementById('recherche-ordonnances-archivee');
+    const selectOrdonnances = document.getElementById('liste-ordonnances-archivee');
+    
+    if (rechercheInput && selectOrdonnances) {
+        rechercheInput.addEventListener('input', function() {
+            const valeur = this.value.trim().toUpperCase();
+            const options = selectOrdonnances.getElementsByTagName('option');
+            
+            let nbVisible = 0;
+            
+            for (let i = 0; i < options.length; i++) {
+                const option = options[i];
+                if (option.value === '') {
+                    option.style.display = '';
+                    continue;
+                }
+                
+                if (valeur === '' || option.text.toUpperCase().startsWith(valeur)) {
+                    option.style.display = '';
+                    nbVisible++;
+                } else {
+                    option.style.display = 'none';
+                }
+            }
+
+            if (valeur.length > 0) {
+                selectOrdonnances.size = Math.min(5, nbVisible + 1);
+            } else {
+                selectOrdonnances.size = 1;
+            }
+        });
+
+        rechercheInput.addEventListener('focus', function() {
+            selectOrdonnances.size = 5;
+            rechercheInput.focus();
+        });
+
+        selectOrdonnances.addEventListener('blur', function() {
+            selectOrdonnances.size = 1;
+        });
+    }
+}
+
+// Charger les événements pour les nouveaux boutons
+function initPatientPrescriptionEvents() {
+    // Événements pour charger les ordonnances archivées
+    const chargerOrdonnanceArchiveeBtn = document.getElementById('charger-ordonnance-archivee');
+    if (chargerOrdonnanceArchiveeBtn) {
+        chargerOrdonnanceArchiveeBtn.addEventListener('click', chargerOrdonnanceArchivee);
+    }
+    
+    const actualiserBtn = document.getElementById('actualiser-ordonnances-archivees');
+    if (actualiserBtn) {
+        actualiserBtn.addEventListener('click', async () => {
+            await mettreAJourListeOrdonnancesArchivees();
+            alert('Liste actualisée !');
+        });
+    }
+    
+    setupPatientPrescriptionFilter();
+    
+    setTimeout(async () => {
+        await mettreAJourListeOrdonnancesArchivees();
+    }, 200);
+}
+
+// Appeler la fonction d'initialisation des événements après le chargement complet de la page
+setTimeout(initPatientPrescriptionEvents, 300);
+
+// Créer un canal de communication pour recevoir les notifications des autres onglets
+const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('ordonnances_storage') : null;
+
+if (channel) {
+    channel.addEventListener('message', function(e) {
+        if (e.data.type === 'ordonnancesPatientsUpdated') {
+            setTimeout(() => {
+                mettreAJourListeOrdonnancesArchivees();
+            }, 100);
+        }
+    });
+}
+
+window.addEventListener('storage', function(e) {
+    if (e.key === 'ordonnancesPatients') {
+        setTimeout(() => {
+            mettreAJourListeOrdonnancesArchivees();
+        }, 500);
+    }
+});
+
+let lastStoredData = localStorage.getItem('ordonnancesPatients') || '{}';
+setInterval(async () => {
+    const currentStoredData = localStorage.getItem('ordonnancesPatients') || '{}';
+    
+    if (currentStoredData !== lastStoredData) {
+        await mettreAJourListeOrdonnancesArchivees();
+        lastStoredData = currentStoredData;
+    }
+}, 3000);
+
+setTimeout(() => {
+    const testOptions = localStorage.getItem('test_options_html');
+    
+    if (!testOptions) {
+        const warningDiv = document.createElement('div');
+        warningDiv.style.cssText = 'background: #fff3cd; color: #856404; padding: 10px; margin: 10px 0; border-radius: 5px; font-size: 0.9rem;';
+        warningDiv.innerHTML = `
+            <strong>⚠️ Attention :</strong> Le navigateur ne partage pas le localStorage entre les fichiers.<br>
+            Après avoir importé des données dans <em>options.html</em>, cliquez sur le bouton <span style="background: #6c757d; color: white; padding: 2px 6px; border-radius: 3px;">🔄</span> pour actualiser la liste.
+        `;
+        
+        const archivedCard = document.querySelector('#right-column .card:nth-child(3) .card-content');
+        if (archivedCard) {
+            archivedCard.insertBefore(warningDiv, archivedCard.firstChild);
+        }
+    }
+}, 500);
