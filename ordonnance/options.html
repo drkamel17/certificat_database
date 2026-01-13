@@ -129,23 +129,17 @@
   <!-- Section ordonnances types -->
   <h2>Gestion des ordonnances types</h2>
   
-  <h3>Importer des ordonnances types</h3>
+  <h3>Exporter / Importer des ordonnances types</h3>
   <div style="margin-bottom: 15px;">
     <input type="file" id="fichier-ordonnances-type" accept=".json" hidden />
-    <button id="choisir-ordonnances-type">Choisir un fichier d'ordonnances types</button>
-    <button id="ajouter-ordonnances-type">Ajouter les ordonnances types</button>
-  </div>
-  
-  <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
-    <button id="charger-fichier-ordonnances" style="background-color: #6f42c1;">
-      <i class="fas fa-folder-open"></i> Charger fichier pour ord.html
+    <button id="exporter-ordonnances-types" style="background-color: #28a745;">
+      <i class="fas fa-download"></i> Exporter les ordonnances types
     </button>
-    <input type="file" id="fichier-ordonnances-pour-ord" accept=".json" hidden />
-    <p style="color: #666; font-size: 0.9em; margin-top: 10px;">
-      Ce bouton charge un fichier d'ordonnances types pour les utiliser dans ord.html
-    </p>
+    <button id="importer-ordonnances-types" style="background-color: #17a2b8;">
+      <i class="fas fa-upload"></i> Importer les ordonnances types
+    </button>
   </div>
-  
+
   <!-- Formulaire pour ajouter/modifier une ordonnance type -->
   <div id="formulaire-ordonnance" class="hidden" style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #f8f9fa;">
     <h4 id="titre-formulaire">Ajouter une nouvelle ordonnance type</h4>
@@ -192,7 +186,45 @@
     Ces médicaments sont sauvegardés dans le localStorage de votre navigateur.
   </div>
 
+  <!-- Section pour exporter/importer les ordonnances archivées -->
+  <h2 style="margin-top: 30px; color: #333;">Ordonnances archivées par patient</h2>
+  <div style="margin-top: 15px;">
+    <button id="exporter-ordonnances-archivees" style="background-color: #28a745; margin-right: 10px;">
+      <i class="fas fa-download"></i> Exporter les ordonnances archivées
+    </button>
+    <input type="file" id="importer-ordonnances-archivees" accept=".json" hidden />
+    <button id="btn-importer-ordonnances-archivees" style="background-color: #17a2b8;">
+      <i class="fas fa-upload"></i> Importer les ordonnances archivées
+    </button>
+  </div>
+
+  <div id="infos-ordonnances-archivees" style="margin-top: 15px; color: #666; font-style: italic;">
+    Ces ordonnances sont sauvegardées dans le localStorage de votre navigateur.
+  </div>
+
+  <div id="firefox-warning" style="margin-top: 15px; padding: 10px; background: #fff3cd; color: #856404; border-radius: 5px; border-left: 3px solid #ffc107; display: none;">
+    <strong>⚠️ Firefox détecté :</strong><br>
+    Si vous utilisez Firefox avec le protocole <code>file://</code>, les données ne seront pas partagées automatiquement avec ord.html.<br>
+    <strong>Solutions :</strong>
+    <ul style="margin: 5px 0 0 20px; padding: 0;">
+      <li>Utilisez un serveur local (ex: <code>python -m http.server 8000</code>)</li>
+      <li>Ouvrez ord.html après avoir importé les données</li>
+      <li>Cliquez sur le bouton d'actualisation dans ord.html</li>
+    </ul>
+  </div>
+
   <div id="message"></div>
+  
+  <script>
+    // Détecter Firefox et afficher l'avertissement
+    document.addEventListener('DOMContentLoaded', function() {
+        const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+        const isFileProtocol = window.location.protocol === 'file:';
+        if (isFirefox && isFileProtocol) {
+            document.getElementById('firefox-warning').style.display = 'block';
+        }
+    });
+  </script>
 
   <script src="options.js"></script>
 </body>
