@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -549,13 +549,11 @@
             flex: 1;
             min-width: 200px;
         }
-
-              /* Info display */
+       /* Info display */
         .info-display {
     font-size: 0.7rem;
     opacity: 0.85;
 }
-
         /* Links */
         .external-link {
             background: linear-gradient(135deg, var(--accent-color), #b91c1c);
@@ -817,6 +815,7 @@
                         </div>
 
                         <div class="form-row">
+                           
                             <button id="savePolycliniqueDocteur" class="btn-primary" style="flex: 1;">
                                 <i class="fas fa-save"></i>
                                 Sauvegarder
@@ -898,7 +897,7 @@
                             
                             <button id="ouvrir-options" class="btn-secondary" style="flex: 1;">
                                 <i class="fas fa-folder-open"></i>
-                                Gestion des médicaments et ordonnances types
+                                Ordonnances types
                             </button>
                         </div>
                         
@@ -908,7 +907,16 @@
                         </div>
 
                         <!-- Certificates -->
-                        
+                        <div class="button-group">
+                            <button id="certificat" class="btn-secondary" style="flex: 1;">
+                                <i class="fas fa-certificate"></i>
+                                Certificat
+                            </button>
+                            <button id="certdece" class="btn-secondary" style="flex: 1;">
+                                <i class="fas fa-file-contract"></i>
+                                Certificat décès
+                            </button>
+                        </div>
 
                         <!-- External Link -->
                         <div class="text-center">
@@ -994,6 +1002,37 @@
                                 <i class="fas fa-save"></i>
                                 Enregistrer comme ordonnance type
                             </button>
+                            <button id="enregistrer-dossier-patient" class="btn-secondary" onclick="showPatientNameDialog()">
+                                <i class="fas fa-folder-open"></i>
+                                Enregistrer dans dossier patient
+                            </button>
+                            
+                            <!-- Modal for patient name input -->
+                            <div id="patientNameModal" class="modal">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 style="margin: 0;">
+                                            <i class="fas fa-user"></i>
+                                            Nom du patient
+                                        </h3>
+                                        <span class="close" onclick="closePatientNameModal()">&times;</span>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="patient-name-input">Entrez le nom du patient ou choisissez une option :</label>
+                                            <input type="text" id="patient-name-input" placeholder="Nom du patient" style="width: 100%; padding: 0.5rem; margin: 0.5rem 0; border: 1px solid #ddd; border-radius: 4px;">
+                                            <small style="display: block; margin-top: 0.5rem; color: #666;">
+                                                <input type="checkbox" id="use-current-patient" onchange="togglePatientNameInput(this)"> 
+                                                Utiliser le nom actuel du patient (<span id="current-patient-name">-</span>)
+                                            </small>
+                                        </div>
+                                        <button id="save-patient-prescription" class="btn-primary" style="width: 100%;" onclick="savePatientPrescription()">
+                                            <i class="fas fa-save"></i>
+                                            Enregistrer l'ordonnance
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1019,6 +1058,37 @@
                                     Charger
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Archived Prescriptions Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-folder"></i>
+                            Ordonnances archivées par patient
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label for="liste-ordonnances-archivee">Ordonnance archivée:</label>
+                            <input type="text" id="recherche-ordonnances-archivee" placeholder="Rechercher une ordonnance archivée..." style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            <div class="select-with-button">
+                                <select id="liste-ordonnances-archivee">
+                                    <option value="">Sélectionnez une ordonnance archivée</option>
+                                </select>
+                                <button id="actualiser-ordonnances-archivees" class="btn-secondary" title="Actualiser la liste depuis le localStorage">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button id="charger-ordonnance-archivee" class="btn-primary">
+                                    <i class="fas fa-download"></i>
+                                    Charger
+                                </button>
+                            </div>
+                            <p style="color: #666; font-size: 0.8rem; margin-top: 0.5rem;">
+                                <small>⚠️ Firefox : Cliquez sur le bouton d'actualisation après avoir importé des données depuis options.html</small>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -1054,5 +1124,3 @@
     <script src="ord.js"></script>
 </body>
 </html>
-
-
