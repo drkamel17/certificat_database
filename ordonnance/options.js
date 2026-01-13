@@ -1,5 +1,7 @@
 let contenuJSON = [];
-let contenuOrdonnancesTypes = [];
+
+// Créer un canal de communication pour notifier les autres onglets (si supporté)
+const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('ordonnances_storage') : null;
 
 // Simuler chrome.storage avec localStorage
 const storage = {
@@ -25,15 +27,76 @@ const storage = {
 };
 
 // === Chargement de la page ===
-document.addEventListener("DOMContentLoaded", async () => {
-    // === Ajout des écouteurs uniquement quand le DOM est prêt ===
-    document.getElementById("choisir-ordonnances-type").addEventListener("click", () => {
-        document.getElementById("fichier-ordonnances-type").click();
+ document.addEventListener("DOMContentLoaded", async () => {
+    // === Exporter ordonnances types ===
+    document.getElementById("exporter-ordonnances-types").addEventListener("click", function() {
+        const ordonnancesTypes = JSON.parse(localStorage.getItem('ordonnancesTypesPourOrd') || '{}');
+
+        if (Object.keys(ordonnancesTypes).length === 0) {
+            showMessage("Aucune ordonnance type à exporter.", "red");
+            return;
+        }
+
+        const dataStr = JSON.stringify(ordonnancesTypes, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+        const exportFileDefaultName = 'ordonnances-types.json';
+
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+
+        showMessage(`${Object.keys(ordonnancesTypes).length} ordonnance(s) type(s) exportée(s) avec succès.`, "green");
     });
 
-    document.getElementById("fichier-ordonnances-type").addEventListener("change", handleFileChangeOrdonnancesTypes);
+    // === Importer ordonnances types ===
+    const btnImporterOrdonnancesTypes = document.getElementById("importer-ordonnances-types");
+    const importOrdonnancesTypesInput = document.getElementById("fichier-ordonnances-type");
 
-    document.getElementById("ajouter-ordonnances-type").addEventListener("click", ajouterOrdonnancesTypes);
+    if (btnImporterOrdonnancesTypes && importOrdonnancesTypesInput) {
+        btnImporterOrdonnancesTypes.addEventListener("click", function() {
+            importOrdonnancesTypesInput.click();
+        });
+
+        importOrdonnancesTypesInput.addEventListener("change", function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedOrdonnances = JSON.parse(e.target.result);
+
+                    if (typeof importedOrdonnances !== 'object' || Array.isArray(importedOrdonnances)) {
+                        showMessage("Format de fichier invalide. Le fichier doit contenir un objet d'ordonnances types.", "red");
+                        return;
+                    }
+
+                    localStorage.setItem('ordonnancesTypesPourOrd', JSON.stringify(importedOrdonnances));
+                    localStorage.setItem('ordonnancesTypes', JSON.stringify(importedOrdonnances));
+
+                    showMessage(`${Object.keys(importedOrdonnances).length} ordonnance(s) type(s) importée(s) avec succès.`, "green");
+                    importOrdonnancesTypesInput.value = '';
+
+                    // Recharger la liste pour afficher les ordonnances importées
+                    chargerOrdonnancesTypes();
+
+                    // Avertissement pour Firefox
+                    const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+                    const isFileProtocol = window.location.protocol === 'file:';
+                    if (isFirefox && isFileProtocol) {
+                        setTimeout(() => {
+                            showMessage("⚠️ Firefox : Cliquez sur le bouton d'actualisation dans ord.html pour voir les nouvelles ordonnances.", "#856404");
+                        }, 1000);
+                    }
+                } catch (error) {
+                    showMessage("Erreur lors de l'import : " + error.message, "red");
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
 
     // Écouteurs pour la gestion des ordonnances types
     document.getElementById("enregistrer-ordonnance").addEventListener("click", enregistrerOrdonnance);
@@ -67,6 +130,112 @@ document.addEventListener("DOMContentLoaded", async () => {
     // === Importer médicaments personnalisés ===
     const btnImporterMeds = document.getElementById("btn-importer-medicaments");
     const importMedsInput = document.getElementById("importer-medicaments-personnalises");
+
+    // === Exporter ordonnances archivées ===
+    document.getElementById("exporter-ordonnances-archivees").addEventListener("click", function() {
+        const ordonnancesArchivees = JSON.parse(localStorage.getItem('ordonnancesPatients') || '{}');
+
+        if (Object.keys(ordonnancesArchivees).length === 0) {
+            showMessage("Aucune ordonnance archivée à exporter.", "red");
+            return;
+        }
+
+        const dataStr = JSON.stringify(ordonnancesArchivees, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+        const exportFileDefaultName = 'ordonnances-archivees.json';
+
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+
+        showMessage(`${Object.keys(ordonnancesArchivees).length} ordonnance(s) archivée(s) exportée(s) avec succès.`, "green");
+    });
+
+    // === Importer ordonnances archivées ===
+    const btnImporterOrdonnances = document.getElementById("btn-importer-ordonnances-archivees");
+    const importOrdonnancesInput = document.getElementById("importer-ordonnances-archivees");
+
+    if (btnImporterOrdonnances && importOrdonnancesInput) {
+        btnImporterOrdonnances.addEventListener("click", function() {
+            importOrdonnancesInput.click();
+        });
+
+        importOrdonnancesInput.addEventListener("change", function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedOrdonnances = JSON.parse(e.target.result);
+
+                    if (typeof importedOrdonnances !== 'object' || Array.isArray(importedOrdonnances)) {
+                        showMessage("Format de fichier invalide. Le fichier doit contenir un objet d'ordonnances archivées.", "red");
+                        return;
+                    }
+
+                    let ordonnancesArchivees = JSON.parse(localStorage.getItem('ordonnancesPatients') || '{}');
+                    let nbAjoutes = 0;
+                    let nbMisesAJour = 0;
+
+                    Object.keys(importedOrdonnances).forEach(patientName => {
+                        if (ordonnancesArchivees[patientName]) {
+                            // Si le patient existe déjà, on met à jour
+                            ordonnancesArchivees[patientName] = importedOrdonnances[patientName];
+                            nbMisesAJour++;
+                        } else {
+                            // Sinon on ajoute le nouveau patient
+                            ordonnancesArchivees[patientName] = importedOrdonnances[patientName];
+                            nbAjoutes++;
+                        }
+                    });
+
+                    // Sauvegarder les données
+                    localStorage.setItem('ordonnancesPatients', JSON.stringify(ordonnancesArchivees));
+                    console.log('Données stockées:', localStorage.getItem('ordonnancesPatients'));
+                    
+                    // Envoyer un message via BroadcastChannel pour notifier les autres onglets
+                    if (channel) {
+                        channel.postMessage({
+                            type: 'ordonnancesPatientsUpdated',
+                            data: ordonnancesArchivees
+                        });
+                        console.log('Message envoyé via BroadcastChannel');
+                    }
+                    
+                    // L'événement 'storage' est automatiquement déclenché par le navigateur dans les autres onglets/fenêtres
+
+                    let message = "";
+                    if (nbAjoutes > 0) {
+                        message += `${nbAjoutes} ordonnance(s) archivée(s) ajoutée(s). `;
+                    }
+                    if (nbMisesAJour > 0) {
+                        message += `${nbMisesAJour} ordonnance(s) archivée(s) mise(s) à jour. `;
+                    }
+                    if (message === "") {
+                        message = "Aucune donnée à importer.";
+                    }
+                    showMessage(message.trim(), "green");
+                    
+                    // Avertissement pour Firefox
+                    const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+                    const isFileProtocol = window.location.protocol === 'file:';
+                    if (isFirefox && isFileProtocol) {
+                        setTimeout(() => {
+                            showMessage("⚠️ Firefox : Cliquez sur le bouton d'actualisation dans ord.html pour voir les nouvelles ordonnances.", "#856404");
+                        }, 1000);
+                    }
+                    
+                    importOrdonnancesInput.value = '';
+                } catch (error) {
+                    showMessage("Erreur lors de l'import : " + error.message, "red");
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
 
     if (btnImporterMeds && importMedsInput) {
         btnImporterMeds.addEventListener("click", function() {
@@ -111,6 +280,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // === Chargement initial ===
     try {
+        // Test de localStorage
+        console.log('📌 Test de localStorage dans options.html');
+        const testValue = localStorage.getItem('test_ord_html');
+        console.log('✅ Test lu depuis localStorage:', testValue);
+        localStorage.setItem('test_options_html', new Date().toISOString());
+        console.log('✅ Test écrit dans localStorage, clé: test_options_html');
+        
         chargerOrdonnancesTypes();
         showMessage("Données chargées avec succès.", "green");
     } catch (error) {
@@ -121,86 +297,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // === Fonctions ===
 
-// Gérer le fichier d'ordonnances types
-function handleFileChangeOrdonnancesTypes(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            contenuOrdonnancesTypes = JSON.parse(e.target.result);
-            if (typeof contenuOrdonnancesTypes !== "object") throw new Error();
-            showMessage("Fichier d'ordonnances types chargé avec succès !", "green");
-        } catch {
-            showMessage("Fichier JSON invalide !", "red");
-        }
-    };
-    reader.readAsText(file);
-}
-
-// Ajouter les ordonnances types
-function ajouterOrdonnancesTypes() {
-    if (Object.keys(contenuOrdonnancesTypes).length === 0) {
-        showMessage("Aucun contenu à ajouter.", "red");
-        return;
-    }
-
-    storage.get("ordonnancesTypes", (result) => {
-        let existants = result.ordonnancesTypes || {};
-        let fusion = { ...existants, ...contenuOrdonnancesTypes };
-
-        storage.set({ ordonnancesTypes: fusion }, () => {
-            localStorage.setItem("ordonnancesTypes", JSON.stringify(fusion));
-            // Mettre à jour également la clé utilisée par ord.html
-            localStorage.setItem("ordonnancesTypesPourOrd", JSON.stringify(fusion));
-            chargerOrdonnancesTypes();
-            showMessage("Ordonnances types ajoutées avec succès !", "green");
-        });
-    });
-}
-
 // Charger les ordonnances types
 function chargerOrdonnancesTypes() {
-    storage.get("ordonnancesTypes", (result) => {
-        let data = result.ordonnancesTypes || {};
-        remplirListeOrdonnancesTypes(data);
-    });
-}
-
-// === Charger fichier d'ordonnances pour ord.html ===
-const chargerFichierOrdonnancesBtn = document.getElementById("charger-fichier-ordonnances");
-const fichierOrdonnancesPourOrdInput = document.getElementById("fichier-ordonnances-pour-ord");
-
-if (chargerFichierOrdonnancesBtn && fichierOrdonnancesPourOrdInput) {
-    chargerFichierOrdonnancesBtn.addEventListener("click", function() {
-        fichierOrdonnancesPourOrdInput.click();
-    });
-
-    fichierOrdonnancesPourOrdInput.addEventListener("change", function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const data = JSON.parse(e.target.result);
-
-                if (typeof data !== 'object') {
-                    showMessage("Format de fichier invalide. Le fichier doit contenir un objet d'ordonnances types.", "red");
-                    return;
-                }
-
-                localStorage.setItem('ordonnancesTypesPourOrd', JSON.stringify(data));
-
-                showMessage(`Fichier chargé avec succès ! ${Object.keys(data).length} ordonnance(s) type(s) disponible(s) dans ord.html.`, "green");
-                fichierOrdonnancesPourOrdInput.value = '';
-            } catch (error) {
-                showMessage("Erreur lors du chargement du fichier : " + error.message, "red");
-            }
-        };
-        reader.readAsText(file);
-    });
+    let data = JSON.parse(localStorage.getItem("ordonnancesTypesPourOrd") || '{}');
+    remplirListeOrdonnancesTypes(data);
 }
 
 // Remplir la liste HTML des ordonnances types
@@ -250,11 +350,10 @@ function remplirListeOrdonnancesTypes(data) {
 
 // Fonction pour modifier une ordonnance existante
 function modifierOrdonnance(nom) {
-    storage.get("ordonnancesTypes", (result) => {
-        const data = result.ordonnancesTypes || {};
-        const ordonnance = data[nom];
+    let data = JSON.parse(localStorage.getItem("ordonnancesTypesPourOrd") || '{}');
+    const ordonnance = data[nom];
 
-        if (ordonnance) {
+    if (ordonnance) {
             // Afficher le formulaire
             document.getElementById("formulaire-ordonnance").classList.remove("hidden");
             document.getElementById("titre-formulaire").textContent = `Modifier l'ordonnance: ${nom}`;
@@ -301,7 +400,6 @@ function modifierOrdonnance(nom) {
             // Faire défiler vers le formulaire
             document.getElementById("formulaire-ordonnance").scrollIntoView({ behavior: "smooth" });
         }
-    });
 }
 
 // Fonction pour ajouter un médicament dans le formulaire
@@ -374,27 +472,22 @@ function enregistrerOrdonnance() {
     }
 
     // Sauvegarder l'ordonnance
-    storage.get("ordonnancesTypes", (result) => {
-        const data = result.ordonnancesTypes || {};
-        const ancienNom = document.getElementById("nom-ordonnance").value; // Récupérer l'ancien nom si modification
+    let data = JSON.parse(localStorage.getItem("ordonnancesTypesPourOrd") || '{}');
+    const ancienNom = document.getElementById("nom-ordonnance").value;
 
-        // Supprimer l'ancienne entrée si c'est une modification
-        if (document.getElementById("titre-formulaire").textContent.includes("Modifier")) {
-            delete data[ancienNom];
-        }
+    // Supprimer l'ancienne entrée si c'est une modification
+    if (document.getElementById("titre-formulaire").textContent.includes("Modifier")) {
+        delete data[ancienNom];
+    }
 
-        // Ajouter la nouvelle/la mise à jour
-        data[nom] = medicaments;
+    // Ajouter la nouvelle/la mise à jour
+    data[nom] = medicaments;
 
-        storage.set({ ordonnancesTypes: data }, () => {
-            localStorage.setItem("ordonnancesTypes", JSON.stringify(data));
-            // Mettre à jour également la clé utilisée par ord.html
-            localStorage.setItem("ordonnancesTypesPourOrd", JSON.stringify(data));
-            chargerOrdonnancesTypes();
-            annulerOrdonnance();
-            showMessage(`Ordonnance "${nom}" enregistrée avec succès !`, "green");
-        });
-    });
+    localStorage.setItem("ordonnancesTypes", JSON.stringify(data));
+    localStorage.setItem("ordonnancesTypesPourOrd", JSON.stringify(data));
+    chargerOrdonnancesTypes();
+    annulerOrdonnance();
+    showMessage(`Ordonnance "${nom}" enregistrée avec succès !`, "green");
 }
 
 // Fonction pour annuler la modification/ajout d'une ordonnance
@@ -416,18 +509,13 @@ function supprimerOrdonnance() {
 
 // Fonction pour supprimer une ordonnance directement
 function supprimerOrdonnanceDirecte(nom) {
-    storage.get("ordonnancesTypes", (result) => {
-        const data = result.ordonnancesTypes || {};
-        delete data[nom];
+    let data = JSON.parse(localStorage.getItem("ordonnancesTypesPourOrd") || '{}');
+    delete data[nom];
 
-        storage.set({ ordonnancesTypes: data }, () => {
-            localStorage.setItem("ordonnancesTypes", JSON.stringify(data));
-            // Mettre à jour également la clé utilisée par ord.html
-            localStorage.setItem("ordonnancesTypesPourOrd", JSON.stringify(data));
-            chargerOrdonnancesTypes();
-            showMessage(`Ordonnance "${nom}" supprimée avec succès !`, "green");
-        });
-    });
+    localStorage.setItem("ordonnancesTypes", JSON.stringify(data));
+    localStorage.setItem("ordonnancesTypesPourOrd", JSON.stringify(data));
+    chargerOrdonnancesTypes();
+    showMessage(`Ordonnance "${nom}" supprimée avec succès !`, "green");
 }
 
 // Afficher un message à l'utilisateur
