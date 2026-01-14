@@ -796,13 +796,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 .info.today { top: 40px; left: 270px; }
                 .info.numero { 
                     top: 10px; 
-                    left: 270px; 
+                    left: 360px; 
                     color: transparent;
                 }
                 .info.poids { top: 70px; left: 270px; }
                 .info.barcode {
-                    top: -150px;
-                    left: 420px;
+                    top: 35px;
+                    left: 350px;
                     display: none !important;
                 }
                 .info.barcode svg {
@@ -874,8 +874,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     
                     .info.barcode {
                         display: block !important;
-                        top: -30px !important;
-                        left: 420px !important;
+                        top:10px !important;
+                        left: 380px !important;
                     }
                     
                     .info.barcode svg {
@@ -925,7 +925,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="info prenom"><strong>Prenom :</strong> ${prenom}</div>
                 <div class="info date-naissance"><strong>Date de naissance :</strong> ${dateNaissance} (${age})</div>
                 <div class="info today"><strong>La date :</strong> ${formattedDate}</div>
-                <div class="info numero"><strong>Numero :</strong> ${numero}</div>
+                <div class="info numero"> ${numero}</div>
                 ${poids ? `<div class="info poids" style="top: 70px; left: 400px;"><strong>Poids :</strong> ${poids}</div>` : ''}
                 <div class="info barcode">
                     <svg id="barcode" data-numero="${numero || '0'}"></svg>
