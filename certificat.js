@@ -27,29 +27,33 @@ function loadData() {
     const polyclinique = localStorage.getItem('polyclinique') || '';
     const polycliniqueAr = localStorage.getItem('polyclinique-ar') || '';
     const docteur = localStorage.getItem('docteur') || '';
-    
+
     // Charger les données du patient
     const patientNomPrenom = localStorage.getItem('patientNomPrenom') || '';
     const patientAge = localStorage.getItem('patientAge') || '';
     const patientDateNaissance = localStorage.getItem('patientDateNaissance') || '';
     const dateCertificat = localStorage.getItem('dateCertificat') || '';
-    
+
     document.getElementById('polyclinique').value = polyclinique;
     document.getElementById('polyclinique-ar').value = polycliniqueAr;
     document.getElementById('docteur').value = docteur;
-    
+
     // Remplir les champs du patient
     document.getElementById('patientNomPrenom').value = patientNomPrenom;
     document.getElementById('patientAge').value = patientAge;
     document.getElementById('patientDateNaissance').value = patientDateNaissance;
     document.getElementById('dateCertificat').value = dateCertificat;
-    
+
     // Si aucune date n'est définie, utiliser la date du jour
     if (!dateCertificat) {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('dateCertificat').value = today;
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const year = today.getFullYear();
+        const formattedDate = `${day}/${month}/${year}`;
+        document.getElementById('dateCertificat').value = formattedDate;
     }
-    
+
     // Initialiser l'état des boutons de format
     const format = localStorage.getItem('certificatFormat');
     if (format === 'sansEntete') {
@@ -63,25 +67,25 @@ function loadData() {
 // Fonction pour calculer l'âge à partir de la date de naissance
 function calculerAge(dateNaissance) {
     if (!dateNaissance) return '';
-    
+
     const today = new Date();
     const birthDate = new Date(dateNaissance);
-    
+
     // Calculer la différence en millisecondes
     const diffTime = Math.abs(today - birthDate);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
+
     // Si moins de 30 jours, afficher en jours
     if (diffDays < 30) {
         return diffDays + ' jours';
     }
-    
+
     // Si moins de 2 ans, afficher en mois
     if (diffDays < 730) { // ~2 ans
         const diffMonths = Math.floor(diffDays / 30.44);
         return diffMonths + ' mois';
     }
-    
+
     // Sinon, afficher en années
     const diffYears = Math.floor(diffDays / 365.25);
     return diffYears + ' ans';
@@ -92,23 +96,23 @@ function saveData() {
     const polyclinique = document.getElementById('polyclinique').value;
     const polycliniqueAr = document.getElementById('polyclinique-ar').value;
     const docteur = document.getElementById('docteur').value;
-    
+
     // Sauvegarder les données du patient
     const patientNomPrenom = document.getElementById('patientNomPrenom').value;
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value;
-    
+
     localStorage.setItem('polyclinique', polyclinique);
     localStorage.setItem('polyclinique-ar', polycliniqueAr);
     localStorage.setItem('docteur', docteur);
-    
+
     // Sauvegarder les données du patient
     localStorage.setItem('patientNomPrenom', patientNomPrenom);
     localStorage.setItem('patientAge', patientAge);
     localStorage.setItem('patientDateNaissance', patientDateNaissance);
     localStorage.setItem('dateCertificat', dateCertificat);
-    
+
     alert('Informations sauvegardées avec succès!');
 }
 
@@ -149,23 +153,23 @@ function generateHeader() {
 function setupFormatButtons() {
     const formatAvecEnteteBtn = document.getElementById('formatAvecEntete');
     const formatSansEnteteBtn = document.getElementById('formatSansEntete');
-    
+
     if (formatAvecEnteteBtn) {
-        formatAvecEnteteBtn.addEventListener('click', function() {
+        formatAvecEnteteBtn.addEventListener('click', function () {
             // Mettre à jour le localStorage
             localStorage.setItem('certificatFormat', 'avecEntete');
-            
+
             // Mettre à jour l'interface utilisateur
             formatAvecEnteteBtn.classList.add('selected-format');
             formatSansEnteteBtn.classList.remove('selected-format');
         });
     }
-    
+
     if (formatSansEnteteBtn) {
-        formatSansEnteteBtn.addEventListener('click', function() {
+        formatSansEnteteBtn.addEventListener('click', function () {
             // Mettre à jour le localStorage
             localStorage.setItem('certificatFormat', 'sansEntete');
-            
+
             // Mettre à jour l'interface utilisateur
             formatSansEnteteBtn.classList.add('selected-format');
             formatAvecEnteteBtn.classList.remove('selected-format');
@@ -174,10 +178,10 @@ function setupFormatButtons() {
 }
 
 // Configurer les gestionnaires d'événements lorsque le DOM est chargé
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadData();
     setupFormatButtons();
-    
+
     // Ecouteur pour le bouton de catégorie de leishmaniose
     document.getElementById('catLeishmaniose').addEventListener('click', () => {
         console.log("Bouton Catégorie de Leishmaniose cliqué");
@@ -206,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const classe02 = document.getElementById('classe02');
         const classe03 = document.getElementById('classe03');
         const prex = document.getElementById('prex');
-        
+
         // Supprimer la classe 'hidden' pour les rendre visibles
         if (classe02) classe02.classList.remove('hidden');
         if (classe03) classe03.classList.remove('hidden');
@@ -342,13 +346,13 @@ document.addEventListener('DOMContentLoaded', function() {
 function genererCertificat() {
     const polyclinique = document.getElementById('polyclinique').value;
     const docteur = document.getElementById('docteur').value;
-    
+
     // Get patient information from the form fields
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '[Nom de l\'élève]';
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Construire la partie de l'âge/date de naissance
     let ageInfo = '';
     if (patientAge) {
@@ -358,13 +362,13 @@ function genererCertificat() {
     } else {
         ageInfo = 'né(e) le [Date de naissance]';
     }
-    
+
     // Format the date for display
     const formattedDate = new Date(dateCertificat).toLocaleDateString('fr-FR');
-    
+
     // Vérifier le format choisi
     const avecEntete = localStorage.getItem('certificatFormat') === 'avecEntete';
-    
+
     let enteteContent = '';
     if (avecEntete) {
         enteteContent = generateHeader();
@@ -372,7 +376,7 @@ function genererCertificat() {
         // Espace vide pour garder la meme mise en page
         enteteContent = '<div style="height: 155px;"></div>';
     }
-    
+
     const certificatHtml = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -846,13 +850,13 @@ Dont certificat&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br>
         // Créer une fonction de sauvegarde dans la fenêtre parent
         const sauvegarderFn = async function (message) {
             console.log('🔗 Sauvegarde depuis popup, message:', message);
-            
+
             // Implémentation de la vraie logique de sauvegarde en base de données
             try {
                 // Utiliser l'API locale via l'extension
                 if (typeof chrome !== 'undefined' && chrome.runtime) {
                     const extensionId = 'cmcpbphlonkllmnfkhefdjaddokophpb';
-                    
+
                     return new Promise((resolve, reject) => {
                         const requestData = {
                             action: 'addArretTravail',
@@ -865,17 +869,17 @@ Dont certificat&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br>
                                 date_naissance: message.date_naissance
                             }
                         };
-                        
+
                         chrome.runtime.sendMessage(
                             extensionId,
                             requestData,
-                            function(response) {
+                            function (response) {
                                 if (chrome.runtime.lastError) {
                                     console.error('Erreur Chrome runtime:', chrome.runtime.lastError);
                                     reject(new Error(chrome.runtime.lastError.message));
                                     return;
                                 }
-                               
+
                                 if (response && response.success) {
                                     console.log('✅ Arrêt de travail sauvegardé avec succès via API locale');
                                     resolve({ ok: true, message: 'Arrêt de travail sauvegardé avec succès' });
@@ -890,7 +894,7 @@ Dont certificat&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br>
                 } else if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendMessage) {
                     // Alternative pour Firefox
                     const extensionId = 'cmcpbphlonkllmnfkhefdjaddokophpb';
-                    
+
                     const requestData = {
                         action: 'addArretTravail',
                         arretData: {
@@ -902,9 +906,9 @@ Dont certificat&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br>
                             date_naissance: message.date_naissance
                         }
                     };
-                    
+
                     const response = await browser.runtime.sendMessage(extensionId, requestData);
-                    
+
                     if (response && response.success) {
                         console.log('✅ Arrêt de travail sauvegardé avec succès via API locale (Firefox)');
                         return { ok: true, message: 'Arrêt de travail sauvegardé avec succès' };
@@ -949,7 +953,7 @@ function inaptitudeSport() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const docteur = document.getElementById('docteur').value || localStorage.getItem('docteur') || "";
 
@@ -962,7 +966,7 @@ function inaptitudeSport() {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Format the date for display
     const formattedDate = new Date(dateCertificat).toLocaleDateString('fr-FR');
 
@@ -1234,10 +1238,10 @@ function justification() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const docteur = document.getElementById('docteur').value || localStorage.getItem('docteur') || "";
-    
+
     // Construire la partie de l'âge/date de naissance
     let ageInfo = '';
     if (patientAge) {
@@ -1247,13 +1251,13 @@ function justification() {
     } else {
         ageInfo = 'né(e) le [Date de naissance]';
     }
-    
+
     // Format the date for display
     const formattedDate = new Date(dateCertificat).toLocaleDateString('fr-FR');
-    
+
     // Vérifier le format choisi
     const avecEntete = localStorage.getItem('certificatFormat') === 'avecEntete';
-    
+
     let enteteContent = '';
     if (avecEntete) {
         enteteContent = generateHeader();
@@ -1261,7 +1265,7 @@ function justification() {
         // Espace vide pour garder la meme mise en page
         enteteContent = '<div style="height: 155px;"></div>';
     }
-    
+
     const certificatHtml = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -1478,7 +1482,7 @@ ${enteteContent}
 </body>
 </html>
     `;
-    
+
     const newWindow = window.open();
     newWindow.document.write(certificatHtml);
     newWindow.document.close();
@@ -1748,13 +1752,13 @@ border: none !important;
 function genererChronique() {
     const polyclinique = document.getElementById('polyclinique').value;
     const docteur = document.getElementById('docteur').value;
-    
+
     // Get patient information from the form fields
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '[Nom du patient]';
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Construire la partie de l'âge/date de naissance
     let ageInfo = '';
     if (patientAge) {
@@ -1764,13 +1768,13 @@ function genererChronique() {
     } else {
         ageInfo = 'né(e) le [Date de naissance]';
     }
-    
+
     // Format the date for display
     const formattedDate = new Date(dateCertificat).toLocaleDateString('fr-FR');
-    
+
     // Vérifier le format choisi
     const avecEntete = localStorage.getItem('certificatFormat') === 'avecEntete';
-    
+
     let enteteContent = '';
     if (avecEntete) {
         enteteContent = generateHeader();
@@ -1778,7 +1782,7 @@ function genererChronique() {
         // Espace vide pour garder la meme mise en page
         enteteContent = '<div style="height: 155px;"></div>';
     }
-    
+
     const certificatHtml = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -1885,7 +1889,7 @@ function genererChronique() {
 </body>
 </html>
     `;
-    
+
     const newWindow = window.open();
     newWindow.document.write(certificatHtml);
     newWindow.document.close();
@@ -1898,7 +1902,7 @@ function genererProlongation() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Split patient name into first and last name
     let nom = '';
     let prenom = '';
@@ -1907,10 +1911,10 @@ function genererProlongation() {
         nom = parts[0] || '';
         prenom = parts.slice(1).join(' ') || '';
     }
-    
+
     // Use date of birth if available
     const dob = patientDateNaissance || '[Date de naissance]';
-    
+
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -2140,7 +2144,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </html>
     `;
 
-var newWindow = window.open("", "_blank");
+    var newWindow = window.open("", "_blank");
     if (newWindow) {
         // Stocker la référence de la fenêtre pour le script de sauvegarde
         window.lastOpenedWindow = newWindow;
@@ -2225,37 +2229,37 @@ var newWindow = window.open("", "_blank");
                 },
                 body: JSON.stringify(message)
             })
-            .then(response => response.json())
-            .then(data => {
-                // Afficher les messages dans la fenêtre popup
-                if (newWindow && !newWindow.closed) {
-                    if (data && data.success) {
-                        newWindow.alert('Prolongation d\'arrêt de travail sauvegardée avec succès !');
-                    } else {
-                        const errorMsg = data ? data.error : 'Réponse invalide';
-                        newWindow.alert('Erreur lors de la sauvegarde: ' + errorMsg);
+                .then(response => response.json())
+                .then(data => {
+                    // Afficher les messages dans la fenêtre popup
+                    if (newWindow && !newWindow.closed) {
+                        if (data && data.success) {
+                            newWindow.alert('Prolongation d\'arrêt de travail sauvegardée avec succès !');
+                        } else {
+                            const errorMsg = data ? data.error : 'Réponse invalide';
+                            newWindow.alert('Erreur lors de la sauvegarde: ' + errorMsg);
+                        }
                     }
-                }
-            })
-            .catch(error => {
-                console.error('❌ Erreur lors de la sauvegarde:', error);
-                
-                // Afficher les messages dans la fenêtre popup
-                if (newWindow && !newWindow.closed) {
-                    // Fallback: Afficher les données pour copie manuelle si l'API n'est pas accessible
-                    if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
-                        const fallbackMessage = `
+                })
+                .catch(error => {
+                    console.error('❌ Erreur lors de la sauvegarde:', error);
+
+                    // Afficher les messages dans la fenêtre popup
+                    if (newWindow && !newWindow.closed) {
+                        // Fallback: Afficher les données pour copie manuelle si l'API n'est pas accessible
+                        if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
+                            const fallbackMessage = `
 API non accessible. Veuillez démarrer le serveur avec: python api_simple.py
 Ou copiez ces données manuellement:
 
 ${JSON.stringify(message, null, 2)}
                         `;
-                        newWindow.alert(fallbackMessage);
-                    } else {
-                        newWindow.alert('Erreur lors de la sauvegarde: ' + error.message);
+                            newWindow.alert(fallbackMessage);
+                        } else {
+                            newWindow.alert('Erreur lors de la sauvegarde: ' + error.message);
+                        }
                     }
-                }
-            });
+                });
         }
 
         // Rendre la fonction accessible globalement
@@ -2299,13 +2303,13 @@ ${JSON.stringify(message, null, 2)}
 function genererLettre() {
     const polyclinique = document.getElementById('polyclinique').value;
     const docteur = document.getElementById('docteur').value;
-    
+
     // Get patient information from the form fields
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '[Nom du patient]';
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Construire la partie de l'âge/date de naissance
     let ageInfo = '';
     if (patientAge) {
@@ -2315,13 +2319,13 @@ function genererLettre() {
     } else {
         ageInfo = 'né(e) le [Date de naissance]';
     }
-    
+
     // Format the date for display
     const formattedDate = new Date(dateCertificat).toLocaleDateString('fr-FR');
-    
+
     // Vérifier le format choisi
     const avecEntete = localStorage.getItem('certificatFormat') === 'avecEntete';
-    
+
     let enteteContent = '';
     if (avecEntete) {
         enteteContent = generateHeader();
@@ -2329,7 +2333,7 @@ function genererLettre() {
         // Espace vide pour garder la meme mise en page
         enteteContent = '<div style="height: 155px;"></div>';
     }
-    
+
     const certificatHtml = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -2430,7 +2434,7 @@ function genererLettre() {
 </body>
 </html>
     `;
-    
+
     const newWindow = window.open();
     newWindow.document.write(certificatHtml);
     newWindow.document.close();
@@ -2443,7 +2447,7 @@ function genererDeces() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const patientDateDeces = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const docteur = localStorage.getItem('docteur') || "";
 
@@ -2456,13 +2460,13 @@ function genererDeces() {
     } else {
         ageInfo = 'né(e) le [Date de naissance]';
     }
-    
+
     // Format the date for display
     const formattedDate = new Date(patientDateDeces).toLocaleDateString('fr-FR');
-    
+
     // Vérifier le format choisi
     const avecEntete = localStorage.getItem('certificatFormat') === 'avecEntete';
-    
+
     let enteteContent = '';
     if (avecEntete) {
         enteteContent = generateHeader();
@@ -2470,7 +2474,7 @@ function genererDeces() {
         // Espace vide pour garder la meme mise en page
         enteteContent = '<div style="height: 155px;"></div>';
     }
-    
+
     const certificatHtml = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -2573,7 +2577,7 @@ function genererDeces() {
 </body>
 </html>
     `;
-    
+
     const newWindow = window.open();
     newWindow.document.write(certificatHtml);
     newWindow.document.close();
@@ -2809,13 +2813,13 @@ sauvegarderModifications();
 function genererChronique() {
     const polyclinique = document.getElementById('polyclinique').value;
     const docteur = document.getElementById('docteur').value;
-    
+
     // Get patient information from the form fields
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '[Nom du patient]';
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Construire la partie de l'âge/date de naissance
     let ageInfo = '';
     if (patientAge) {
@@ -2825,13 +2829,13 @@ function genererChronique() {
     } else {
         ageInfo = 'né(e) le [Date de naissance]';
     }
-    
+
     // Format the date for display
     const formattedDate = new Date(dateCertificat).toLocaleDateString('fr-FR');
-    
+
     // Vérifier le format choisi
     const avecEntete = localStorage.getItem('certificatFormat') === 'avecEntete';
-    
+
     let enteteContent = '';
     if (avecEntete) {
         enteteContent = generateHeader();
@@ -2839,7 +2843,7 @@ function genererChronique() {
         // Espace vide pour garder la meme mise en page
         enteteContent = '<div style="height: 155px;"></div>';
     }
-    
+
     const certificatHtml = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -2946,7 +2950,7 @@ function genererChronique() {
 </body>
 </html>
     `;
-    
+
     const newWindow = window.open();
     newWindow.document.write(certificatHtml);
     newWindow.document.close();
@@ -2958,13 +2962,13 @@ function genererChronique() {
 function genererLettre() {
     const polyclinique = document.getElementById('polyclinique').value;
     const docteur = document.getElementById('docteur').value;
-    
+
     // Get patient information from the form fields
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '[Nom du patient]';
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Construire la partie de l'âge/date de naissance
     let ageInfo = '';
     if (patientAge) {
@@ -2974,13 +2978,13 @@ function genererLettre() {
     } else {
         ageInfo = 'né(e) le [Date de naissance]';
     }
-    
+
     // Format the date for display
     const formattedDate = new Date(dateCertificat).toLocaleDateString('fr-FR');
-    
+
     // Vérifier le format choisi
     const avecEntete = localStorage.getItem('certificatFormat') === 'avecEntete';
-    
+
     let enteteContent = '';
     if (avecEntete) {
         enteteContent = generateHeader();
@@ -2988,7 +2992,7 @@ function genererLettre() {
         // Espace vide pour garder la meme mise en page
         enteteContent = '<div style="height: 155px;"></div>';
     }
-    
+
     const certificatHtml = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -3094,7 +3098,7 @@ function genererLettre() {
 </body>
 </html>
     `;
-    
+
     const newWindow = window.open();
     newWindow.document.write(certificatHtml);
     newWindow.document.close();
@@ -3113,7 +3117,7 @@ function genererLettre() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Split patient name into first and last name
     let nom = '';
     let prenom = '';
@@ -3122,10 +3126,10 @@ function genererLettre() {
         nom = parts[0] || '';
         prenom = parts.slice(1).join(' ') || '';
     }
-    
+
     // Use date of birth if available
     const dob = patientDateNaissance || '[Date de naissance]';
-    
+
     const docteur = localStorage.getItem('docteur') || "";
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const polycliniqueAr = localStorage.getItem('polyclinique-ar') || "";
@@ -3321,9 +3325,9 @@ function genererLettre() {
         '',
         '<p>Je vous le(la) confie pour avis et éventuelle prise en charge spécialisée.<\/p>',
         '<\/p>',
-'<p style="text-align: right; margin-right: 50px;">',
-            'Confraternellement Dr docteur',
-            '<\/p>',
+        '<p style="text-align: right; margin-right: 50px;">',
+        'Confraternellement Dr docteur',
+        '<\/p>',
         '<\/div>',
         '',
         '<style>',
@@ -3459,7 +3463,7 @@ function genererRadiox() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Split patient name into first and last name
     let nom = '';
     let prenom = '';
@@ -3468,10 +3472,10 @@ function genererRadiox() {
         nom = parts[0] || '';
         prenom = parts.slice(1).join(' ') || '';
     }
-    
+
     // Use date of birth if available
     const dob = patientDateNaissance || '[Date de naissance]';
-    
+
     const docteur = localStorage.getItem('docteur') || "";
 
     const today = new Date();
@@ -3482,7 +3486,7 @@ function genererRadiox() {
 
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const polycliniqueAr = localStorage.getItem('polyclinique-ar') || "";
-    
+
     // Vérifier le format choisi
     const avecEntete = localStorage.getItem('certificatFormat') === 'avecEntete';
     let enteteContent = '';
@@ -3674,21 +3678,21 @@ function genererRadiox() {
         enteteContent,
         '<div class="certificat">',
         '<h1>Cher confrère<\/h1>',
-'<div class="contenu-certificat" style="margin-top: 1.5cm !important;">',
+        '<div class="contenu-certificat" style="margin-top: 1.5cm !important;">',
         '<p>',
-'Permettez-moi de vous adresser le(a) nommé(e) <strong><input type="text" value="' + nom + ' ' + prenom + '" style="width: 180px;" id="patientNomPrenom"><\/strong>,',
+        'Permettez-moi de vous adresser le(a) nommé(e) <strong><input type="text" value="' + nom + ' ' + prenom + '" style="width: 180px;" id="patientNomPrenom"><\/strong>,',
         'né(e) le <strong><input type="text" value="' + dob + '" style="width: 120px;" id="patientDateNaissance"><\/strong>, qui consulte chez nous pour :<br>',
         '<textarea id="raisonConsultation" class="editable-area" placeholder="Raison de la consultation"><\/textarea>',
         '',
         'Pour faire un :<br>',
         '<textarea id="typeExploration" class="editable-area" placeholder="Type d\'exploration"><\/textarea>',
-'<\/p>',
+        '<\/p>',
         '<p style="text-align: right; margin-top: 30px;">',
         'Confraternellement<br>',
         '<span class="docteur" style="font-weight: bold;">Dr ' + docteur + '<\/span>',
         '<\/p>',
-		
-'<\/div>',
+
+        '<\/div>',
         '<\/div>',
         '<div class="print-button" style="display: flex; align-items: center; justify-content: center; gap: 15px;">',
         '    <div style="display: flex; align-items: center; gap: 8px;">',
@@ -3768,7 +3772,7 @@ function genererReprise() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Split patient name into first and last name
     let nom = '';
     let prenom = '';
@@ -3777,10 +3781,10 @@ function genererReprise() {
         nom = parts[0] || '';
         prenom = parts.slice(1).join(' ') || '';
     }
-    
+
     // Use date of birth if available
     const dob = patientDateNaissance || '[Date de naissance]';
-    
+
     const docteur = localStorage.getItem('docteur') || "";
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const polycliniqueAr = localStorage.getItem('polyclinique-ar') || "";
@@ -4035,7 +4039,7 @@ function genererNonGrossesse() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Split patient name into first and last name
     let nom = '';
     let prenom = '';
@@ -4044,10 +4048,10 @@ function genererNonGrossesse() {
         nom = parts[0] || '';
         prenom = parts.slice(1).join(' ') || '';
     }
-    
+
     // Use date of birth if available
     const dob = patientDateNaissance || '[Date de naissance]';
-    
+
     const docteur = localStorage.getItem('docteur') || "";
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const polycliniqueAr = localStorage.getItem('polyclinique-ar') || "";
@@ -4309,7 +4313,7 @@ function genererChronique() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Split patient name into first and last name
     let nom = '';
     let prenom = '';
@@ -4318,10 +4322,10 @@ function genererChronique() {
         nom = parts[0] || '';
         prenom = parts.slice(1).join(' ') || '';
     }
-    
+
     // Use date of birth if available
     const dob = patientDateNaissance || '[Date de naissance]';
-    
+
     const docteur = localStorage.getItem('docteur') || "";
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const polycliniqueAr = localStorage.getItem('polyclinique-ar') || "";
@@ -4948,9 +4952,9 @@ async function sauvegarderCBV(certificatWindow) {
                 },
                 body: JSON.stringify(message)
             });
-            
+
             const data = await response.json();
-            
+
             // Afficher les messages dans la fenêtre popup
             if (certificatWindow && !certificatWindow.closed) {
                 if (data && data.success) {
@@ -4962,7 +4966,7 @@ async function sauvegarderCBV(certificatWindow) {
             }
         } catch (error) {
             console.error('❌ Erreur lors de la sauvegarde:', error);
-            
+
             // Afficher les messages dans la fenêtre popup
             if (certificatWindow && !certificatWindow.closed) {
                 // Fallback: Afficher les données pour copie manuelle si l'API n'est pas accessible
@@ -4988,13 +4992,13 @@ ${JSON.stringify(message, null, 2)}
 function genererArretTravail() {
     const polyclinique = document.getElementById('polyclinique').value;
     const docteur = document.getElementById('docteur').value;
-    
+
     // Get patient information from the form fields
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '[Nom de l\'élève]';
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Construire la partie de l'âge/date de naissance
     let ageInfo = '';
     if (patientAge) {
@@ -5004,13 +5008,13 @@ function genererArretTravail() {
     } else {
         ageInfo = 'né(e) le [Date de naissance]';
     }
-    
+
     // Format the date for display
     const formattedDate = new Date(dateCertificat).toLocaleDateString('fr-FR');
-    
+
     // Vérifier le format choisi
     const avecEntete = localStorage.getItem('certificatFormat') === 'avecEntete';
-    
+
     let enteteContent = '';
     if (avecEntete) {
         enteteContent = generateHeader();
@@ -5018,8 +5022,8 @@ function genererArretTravail() {
         // Espace vide pour garder la meme mise en page
         enteteContent = '<div style="height: 155px;"></div>';
     }
-    
-const certificatHtml = `
+
+    const certificatHtml = `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -5489,7 +5493,7 @@ Dont certificat&nbsp&nbsp&nbsp&nbsp&nbsp<br>
         // Créer une fonction de sauvegarde dans la fenêtre parent
         const sauvegarderFn = async function (message) {
             console.log('🔗 Sauvegarde depuis popup, message:', message);
-            
+
             try {
                 // Appeler l'API locale Python
                 const response = await fetch('http://localhost:5000/api/ajouter_arret_travail', {
@@ -5499,12 +5503,12 @@ Dont certificat&nbsp&nbsp&nbsp&nbsp&nbsp<br>
                     },
                     body: JSON.stringify(message)
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     console.log('✅ Arrêt de travail sauvegardé avec succès:', result.message);
-                    
+
                     // Afficher un message de succès discret
                     const successDiv = document.createElement('div');
                     successDiv.style.cssText = `
@@ -5522,20 +5526,20 @@ Dont certificat&nbsp&nbsp&nbsp&nbsp&nbsp<br>
                     `;
                     successDiv.textContent = result.message;
                     document.body.appendChild(successDiv);
-                    
+
                     // Supprimer le message après 3 secondes
                     setTimeout(() => {
                         if (successDiv.parentNode) {
                             successDiv.parentNode.removeChild(successDiv);
                         }
                     }, 3000);
-                    
+
                     return { success: true, message: result.message };
                 } else {
                     console.error('❌ Erreur lors de la sauvegarde:', result.error);
                     return { success: false, error: result.error };
                 }
-                
+
             } catch (error) {
                 console.error('❌ Erreur réseau:', error);
                 return { success: false, error: 'Erreur de connexion à l\'API locale. Vérifiez que le serveur Python est démarré.' };
@@ -5555,9 +5559,9 @@ Dont certificat&nbsp&nbsp&nbsp&nbsp&nbsp<br>
 function setupFormatButtons() {
     const formatAvecEnteteBtn = document.getElementById("formatAvecEntete");
     const formatSansEnteteBtn = document.getElementById("formatSansEntete");
-    
+
     if (formatAvecEnteteBtn) {
-        formatAvecEnteteBtn.addEventListener("click", function() {
+        formatAvecEnteteBtn.addEventListener("click", function () {
             localStorage.setItem('certificatFormat', 'avecEntete');
             this.classList.add('selected-format');
             if (formatSansEnteteBtn) {
@@ -5565,9 +5569,9 @@ function setupFormatButtons() {
             }
         });
     }
-    
+
     if (formatSansEnteteBtn) {
-        formatSansEnteteBtn.addEventListener("click", function() {
+        formatSansEnteteBtn.addEventListener("click", function () {
             localStorage.setItem('certificatFormat', 'sansEntete');
             this.classList.add('selected-format');
             if (formatAvecEnteteBtn) {
@@ -5578,52 +5582,52 @@ function setupFormatButtons() {
 }
 
 // Configurer les gestionnaires d'événements lorsque le DOM est chargé
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadData();
     setupFormatButtons();
-    
+
     // Initialiser le format au chargement
     const format = localStorage.getItem('certificatFormat');
     const formatAvecEnteteBtn = document.getElementById('formatAvecEntete');
     const formatSansEnteteBtn = document.getElementById('formatSansEntete');
-    
+
     if (format === 'sansEntete' && formatSansEnteteBtn) {
         formatSansEnteteBtn.classList.add('selected-format');
     } else if (formatAvecEnteteBtn) {
         // Par défaut, on utilise avec en-tete
         formatAvecEnteteBtn.classList.add('selected-format');
     }
-    
+
     // Écouteurs pour les boutons
     const saveBtn = document.getElementById("SavePolycliniqueDocteur");
     if (saveBtn) {
         saveBtn.addEventListener("click", saveData);
     }
-    
+
     const certificatBtn = document.getElementById("genererCertificat");
     if (certificatBtn) {
         certificatBtn.addEventListener("click", genererCertificat);
     }
- 
+
     const inaptSportBtn = document.getElementById("inaptSport");
     if (inaptSportBtn) {
         inaptSportBtn.addEventListener("click", inaptitudeSport);
     }
-    
+
     const arretBtn = document.getElementById("genererArret");
     if (arretBtn) {
         arretBtn.addEventListener("click", genererArretTravail);
     }
-    
+
     const radioxBtn = document.getElementById("genererRadiox");
     if (radioxBtn) {
         radioxBtn.addEventListener("click", genererRadiox);
     }
-    
+
     // Écouteur pour le champ date de naissance - calcul automatique de l'âge
     const dateNaissanceInput = document.getElementById('patientDateNaissance');
     if (dateNaissanceInput) {
-        dateNaissanceInput.addEventListener('change', function() {
+        dateNaissanceInput.addEventListener('change', function () {
             const dateNaissance = this.value;
             if (dateNaissance) {
                 const ageCalcule = calculerAge(dateNaissance);
@@ -5634,13 +5638,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Écouteur pour le champ âge - effacer la date de naissance si l'âge est modifié manuellement
     const ageInput = document.getElementById('patientAge');
     if (ageInput) {
-        ageInput.addEventListener('input', function() {
+        ageInput.addEventListener('input', function () {
             // Si l'utilisateur commence à taper dans le champ âge, on ne force plus le calcul automatique
-// Mais on ne vide la date de naissance que si l'âge est significativement différent
+            // Mais on ne vide la date de naissance que si l'âge est significativement différent
             // Pour permettre les deux modes de saisie
         });
     }
@@ -5650,12 +5654,12 @@ document.addEventListener('DOMContentLoaded', function() {
 function ouvrirCertificatLeishmaniose() {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
-    
+
     // Extraire nom et prénom
     const nomPrenomArray = patientNomPrenom.split(' ');
     const nom = nomPrenomArray[nomPrenomArray.length - 1] || '';
     const prenom = nomPrenomArray.slice(0, -1).join(' ') || '';
-    
+
     const patientInfo = {
         nom: nom,
         prenom: prenom,
@@ -5873,7 +5877,7 @@ function genererBonSante() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Construire la partie de l'âge/date de naissance
     let ageInfo = '';
     if (patientAge) {
@@ -5883,10 +5887,10 @@ function genererBonSante() {
     } else {
         ageInfo = 'né(e) le [Date de naissance]';
     }
-    
+
     // Format the date for display
     const formattedDate = new Date(dateCertificat).toLocaleDateString('fr-FR');
-    
+
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const docteur = localStorage.getItem('docteur') || "";
 
@@ -6100,12 +6104,12 @@ ${enteteContent}
 // Fonction pour générer une requisition
 function genererRequisition() {
     console.log("Fonction genererRequisition appelée");
-    
+
     // Récupérer les informations du patient
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Créer les informations du patient
     const patientInfo = {
         nom: patientNomPrenom.split(' ')[0] || '',
@@ -6131,12 +6135,12 @@ function genererRequisition() {
     `;
 
     document.body.appendChild(modal);
-    
+
     // Ecouteur pour le bouton requisitionApte
     document.querySelector('#requisitionApte').addEventListener('click', () => {
         requisitionApte(); // Ouvre la modale de choix Zagreb ou Essens
     });
-    
+
     // Ecouteur pour le bouton requisitionInapte
     document.querySelector('#requisitionInapte').addEventListener('click', () => {
         requisitionInapte(); // Appelle la fonction Tissulairesanssar
@@ -6235,7 +6239,7 @@ function requisitionApte() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Construire la partie de l'âge/date de naissance
     let ageInfo = '';
     let dob = '';
@@ -6453,7 +6457,7 @@ function requisitionInapte() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value || new Date().toISOString().split('T')[0];
-    
+
     // Construire la partie de l'âge/date de naissance
     let ageInfo = '';
     let dob = '';
@@ -6670,9 +6674,9 @@ Le présent certificat est remis à  l'autorité compétente pour servir et valo
 //cat Leishmaniose inf a 03 lesions
 
 function ouvrirCertificatLeishmanioseDetail() {
-	  const nom = document.getElementById('patientNomPrenom').value || '';
+    const nom = document.getElementById('patientNomPrenom').value || '';
     const dob = document.getElementById('patientDateNaissance').value;
-    
+
 
     const today = new Date();
     const year = today.getFullYear();
@@ -6899,7 +6903,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function catLeishmanioseplus3() {
     const nom = document.getElementById('patientNomPrenom').value || '';
     const dob = document.getElementById('patientDateNaissance').value;
-    
+
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -7128,7 +7132,7 @@ function ouvrirCertificatMalVision() {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Diviser le nom et prénom
     let nom = '';
     let prenom = '';
@@ -7137,7 +7141,7 @@ function ouvrirCertificatMalVision() {
         nom = parts[0] || '';
         prenom = parts.slice(1).join(' ') || '';
     }
-    
+
     // Utiliser la date de naissance si disponible
     const dob = patientDateNaissance || '';
 
@@ -7719,19 +7723,19 @@ function ouvrirModalPrex() {
 </div>
 `;
     openModal(modalContent);
-// Écouteur pour le bouton Immunocompétent
+    // Écouteur pour le bouton Immunocompétent
     document.querySelector('#immunocompetent').addEventListener('click', () => {
         // Demander uniquement la date (pas de poids nécessaire pour prophylaxie pré-exposition)
         demanderDateImmunocompetent();
     });
 
-// Écouteur pour le bouton Immunodéprimé
+    // Écouteur pour le bouton Immunodéprimé
     document.querySelector('#immunodeprime').addEventListener('click', () => {
         // Demander uniquement la date (pas de poids nécessaire pour prophylaxie pré-exposition)
         demanderDateImmunoDeprime();
     });
 
-// Écouteur pour le bouton Avec ATCD Prophylaxie Pré-exposition
+    // Écouteur pour le bouton Avec ATCD Prophylaxie Pré-exposition
     document.querySelector('#prophylaxiePreExpositionSchema3').addEventListener('click', () => {
         // Demander uniquement la date (pas de poids nécessaire pour prophylaxie pré-exposition)
         demanderDateATCDProphylaxie();
@@ -7980,12 +7984,12 @@ function zegreb(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Sauvegarder les informations du patient dans le localStorage pour la sauvegarde
     localStorage.setItem('patientNomPrenom', patientNomPrenom);
     localStorage.setItem('patientAge', patientAge);
     localStorage.setItem('patientDateNaissance', patientDateNaissance);
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -7995,7 +7999,7 @@ function zegreb(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer les dates pour le schéma Zagreb (J0, J7, J21)
     const dateJour0 = new Date(dateMorsure);
     const datePlus7 = new Date(dateJour0);
@@ -8267,12 +8271,12 @@ function essens(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Sauvegarder les informations du patient dans le localStorage pour la sauvegarde
     localStorage.setItem('patientNomPrenom', patientNomPrenom);
     localStorage.setItem('patientAge', patientAge);
     localStorage.setItem('patientDateNaissance', patientDateNaissance);
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -8282,7 +8286,7 @@ function essens(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer les dates pour le schéma Essen (J0, J3, J7, J14)
     const dateJour0 = new Date(dateMorsure);
     const datePlus3 = new Date(dateJour0);
@@ -8558,7 +8562,7 @@ function risqueHemorragiqueClasse2(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -8568,7 +8572,7 @@ function risqueHemorragiqueClasse2(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer les dates pour le schéma Risque Hémorragique (J0, J7, J21, J28)
     const dateJour0 = new Date(dateMorsure);
     const datePlus7 = new Date(dateJour0);
@@ -8844,7 +8848,7 @@ function prophylaxiePreExpositionSchema1Classe2(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -8854,7 +8858,7 @@ function prophylaxiePreExpositionSchema1Classe2(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer les dates pour le schéma ATCD Vaccinaux Schéma 1 (J0, J3)
     const dateJour0 = new Date(dateMorsure);
     const datePlus3 = new Date(dateJour0);
@@ -9119,7 +9123,7 @@ function prophylaxiePreExpositionSchema2Classe2(dateMorsure) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -9129,7 +9133,7 @@ function prophylaxiePreExpositionSchema2Classe2(dateMorsure) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer les dates pour le schéma ATCD Vaccinaux Schéma 2 (J0 uniquement)
     const dateJour0 = new Date(dateMorsure);
 
@@ -9389,7 +9393,7 @@ function vaccinc3(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -9399,7 +9403,7 @@ function vaccinc3(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer le SAR (Sérum Antirabique) en fonction du poids
     const poids = parseFloat(poidsInput) || 0;
     let sar = poids / 5;
@@ -9407,7 +9411,7 @@ function vaccinc3(dateMorsure, poidsInput) {
         sar = 15;
     }
     sar = Math.round(sar * 100) / 100;
-    
+
     // Calculer les dates pour le schéma Zagreb 3 (J0, J7, J21)
     const dateJour0 = new Date(dateMorsure);
     const datePlus7 = new Date(dateJour0);
@@ -9677,7 +9681,7 @@ function essen3(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -9687,7 +9691,7 @@ function essen3(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer le SAR (Sérum Antirabique) en fonction du poids
     const poids = parseFloat(poidsInput) || 0;
     let sar = poids / 5;
@@ -9695,7 +9699,7 @@ function essen3(dateMorsure, poidsInput) {
         sar = 15;
     }
     sar = Math.round(sar * 100) / 100;
-    
+
     // Calculer les dates pour le schéma Essen 3 (J0, J3, J7, J14)
     const dateJour0 = new Date(dateMorsure);
     const datePlus3 = new Date(dateJour0);
@@ -9974,7 +9978,7 @@ function vaccint3(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -9984,7 +9988,7 @@ function vaccint3(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer le SAR (Sérum Antirabique) en fonction du poids
     const poids = parseFloat(poidsInput) || 0;
     let sar = poids / 5;
@@ -9992,11 +9996,11 @@ function vaccint3(dateMorsure, poidsInput) {
         sar = 15;
     }
     sar = Math.round(sar * 100) / 100;
-    
+
     // Calculer les dates pour le schéma Tissulaire avec SAR (J0, J3, J7, J14, J24,J34, J90)
 
 
-  
+
 
     const dateJour0 = new Date(dateMorsure);
     const dateJour1 = new Date(dateJour0);
@@ -10021,8 +10025,8 @@ function vaccint3(dateMorsure, poidsInput) {
     dateJour34.setDate(dateJour0.getDate() + 34);
     const dateJour90 = new Date(dateJour0);
     dateJour90.setDate(dateJour0.getDate() + 90);
-	
-	 // Formatage des dates
+
+    // Formatage des dates
     const formatDate = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
 
@@ -10295,7 +10299,7 @@ function risqueHemorragique3(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -10305,7 +10309,7 @@ function risqueHemorragique3(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer le SAR (Sérum Antirabique) en fonction du poids
     const poids = parseFloat(poidsInput) || 0;
     let sar = poids / 5;
@@ -10313,7 +10317,7 @@ function risqueHemorragique3(dateMorsure, poidsInput) {
         sar = 15;
     }
     sar = Math.round(sar * 100) / 100;
-    
+
     // Calculer les dates pour le schéma Risque Hémorragique (J0, J3, J7)
     const dateJour0 = new Date(dateMorsure);
     const dateJour3 = new Date(dateJour0);
@@ -10328,7 +10332,7 @@ function risqueHemorragique3(dateMorsure, poidsInput) {
     const dateFormattedJour0 = formatDate(dateJour0);
     const dateFormattedJour3 = formatDate(dateJour3);
     const dateFormattedJour7 = formatDate(dateJour7);
-  
+
 
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const polycliniqueAr = localStorage.getItem('polyclinique-ar') || "";
@@ -10593,7 +10597,7 @@ function prophylaxiePreExpositionSchema1Classe3(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -10603,7 +10607,7 @@ function prophylaxiePreExpositionSchema1Classe3(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer le SAR (Sérum Antirabique) en fonction du poids
     const poids = parseFloat(poidsInput) || 0;
     let sar = poids / 5;
@@ -10611,7 +10615,7 @@ function prophylaxiePreExpositionSchema1Classe3(dateMorsure, poidsInput) {
         sar = 15;
     }
     sar = Math.round(sar * 100) / 100;
-    
+
     // Calculer les dates pour le schéma ATCD Vaccinaux Schéma 1 (J0, J3, J7, J14)
     const dateJour0 = new Date(dateMorsure);
     const datePlus3 = new Date(dateJour0);
@@ -10887,7 +10891,7 @@ function prophylaxiePreExpositionSchema2Classe3(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -10897,7 +10901,7 @@ function prophylaxiePreExpositionSchema2Classe3(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer le SAR (Sérum Antirabique) en fonction du poids
     const poids = parseFloat(poidsInput) || 0;
     let sar = poids / 5;
@@ -10905,7 +10909,7 @@ function prophylaxiePreExpositionSchema2Classe3(dateMorsure, poidsInput) {
         sar = 15;
     }
     sar = Math.round(sar * 100) / 100;
-    
+
     // Calculer les dates pour le schéma ATCD Vaccinaux Schéma 2 (J0 uniquement)
     const dateJour0 = new Date(dateMorsure);
 
@@ -11166,7 +11170,7 @@ function genererCertificatProphylaxieImmunocompetent(dateDebut) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -11176,12 +11180,12 @@ function genererCertificatProphylaxieImmunocompetent(dateDebut) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer les dates pour la prophylaxie pré-exposition immunocompétent
     const dateJour0 = new Date(dateDebut);
     const datePlus7 = new Date(dateJour0);
     datePlus7.setDate(dateJour0.getDate() + 7);
-    
+
     // Ajouter 12 mois (365 jours) pour le rappel
     const datePlus12Mois = new Date(dateJour0);
     datePlus12Mois.setFullYear(dateJour0.getFullYear() + 1);
@@ -11444,7 +11448,7 @@ function prophylaxiePreExpositionSchema3(dateMorsure) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -11454,7 +11458,7 @@ function prophylaxiePreExpositionSchema3(dateMorsure) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer les dates pour le schéma Prophylaxie Pré-exposition Schema 3
     const dateJour0 = new Date(dateMorsure);
     const datePlus7 = new Date(dateJour0);
@@ -11673,12 +11677,12 @@ function genererCertificatProphylaxieImmunoDeprime(dateDebut) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Extraire nom et prénom
     const nomPrenomArray = patientNomPrenom.split(' ');
     const nom = nomPrenomArray[nomPrenomArray.length - 1] || '';
     const prenom = nomPrenomArray.slice(0, -1).join(' ') || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -11908,7 +11912,7 @@ function Tissulairesanssar(dateMorsure, poidsInput) {
     const patientNomPrenom = document.getElementById('patientNomPrenom').value || '';
     const patientAge = document.getElementById('patientAge').value || '';
     const patientDateNaissance = document.getElementById('patientDateNaissance').value || '';
-    
+
     // Utiliser la date de naissance si disponible, sinon l'âge
     let ageInfo = '';
     if (patientDateNaissance) {
@@ -11918,7 +11922,7 @@ function Tissulairesanssar(dateMorsure, poidsInput) {
     } else {
         ageInfo = '[Date de naissance]';
     }
-    
+
     // Calculer les dates pour le schéma Tissulaire sans SAR
     const dateJour0 = new Date(dateMorsure);
     const dateJour1 = new Date(dateJour0);
