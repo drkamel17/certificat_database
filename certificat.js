@@ -33,6 +33,7 @@ function loadData() {
     const patientAge = localStorage.getItem('patientAge') || '';
     const patientDateNaissance = localStorage.getItem('patientDateNaissance') || '';
     const dateCertificat = localStorage.getItem('dateCertificat') || '';
+    const patientNumero = localStorage.getItem('patientNumero') || '';
 
     document.getElementById('polyclinique').value = polyclinique;
     document.getElementById('polyclinique-ar').value = polycliniqueAr;
@@ -43,6 +44,7 @@ function loadData() {
     document.getElementById('patientAge').value = patientAge;
     document.getElementById('patientDateNaissance').value = patientDateNaissance;
     document.getElementById('dateCertificat').value = dateCertificat;
+    document.getElementById('patientNumero').value = patientNumero;
 
     // Si aucune date n'est définie, utiliser la date du jour
     if (!dateCertificat) {
@@ -102,6 +104,7 @@ function saveData() {
     const patientAge = document.getElementById('patientAge').value;
     const patientDateNaissance = document.getElementById('patientDateNaissance').value;
     const dateCertificat = document.getElementById('dateCertificat').value;
+    const patientNumero = document.getElementById('patientNumero').value;
 
     localStorage.setItem('polyclinique', polyclinique);
     localStorage.setItem('polyclinique-ar', polycliniqueAr);
@@ -112,6 +115,7 @@ function saveData() {
     localStorage.setItem('patientAge', patientAge);
     localStorage.setItem('patientDateNaissance', patientDateNaissance);
     localStorage.setItem('dateCertificat', dateCertificat);
+    localStorage.setItem('patientNumero', patientNumero);
 
     alert('Informations sauvegardées avec succès!');
 }
@@ -225,11 +229,14 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('requisition').addEventListener('click', function () {
         const modal = document.createElement('div');
         modal.className = 'modal';
+        // Récupérer les informations du patient à partir des champs du formulaire
+        const patientNumero = document.getElementById('patientNumero') ? document.getElementById('patientNumero').value : '';
+
         modal.innerHTML = `
         <div class="modal-content">
             <h3>Requisition Médicale</h3>
             <div class="info barcode" style="height: 80px;">
-                <svg id="barcode" data-numero="${patientInfo.numero || ''}" style="height: 100%;"></svg>
+                <svg id="barcode" data-numero="${patientNumero || ''}" style="height: 100%;"></svg>
             </div>
             <div class="button-group">
 				 <button class="modal-button" id="requisitionApte">Apte pour garde à  vue</button>
@@ -240,21 +247,31 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
 
         document.body.appendChild(modal);
-        // Ecouteur pour le bouton requisitionApte
-        document.querySelector('#requisitionApte').addEventListener('click', () => {
-            requisitionApte(); // Ouvre la modale de choix Zagreb ou Essens
-        });
-        // Ecouteur pour le bouton requisitionInapte
-        document.querySelector('#requisitionInapte').addEventListener('click', () => {
-            requisitionInapte(); // Appelle la fonction Tissulairesanssar
-        });
 
-        // Ajouter un écouteur de clic pour fermer la modale
+        // DÉLÉGATION D'ÉVÉNEMENTS: Écouter tous les clics sur la modale
         modal.addEventListener('click', function (event) {
+
+            // Vérifier si c'est le bouton Apte
+            if (event.target.id === 'requisitionApte') {
+                event.stopPropagation();
+                event.preventDefault();
+                modal.remove();
+                requisitionApte();
+                return;
+            }
+
+            // Vérifier si c'est le bouton Inapte
+            if (event.target.id === 'requisitionInapte') {
+                event.stopPropagation();
+                event.preventDefault();
+                modal.remove();
+                requisitionInapte();
+                return;
+            }
+
             // Si l'utilisateur clique en dehors du contenu de la modale
             if (event.target === modal) {
                 modal.remove();
-                // Rafraîchir la page
                 window.location.reload();
             }
         });
@@ -6135,21 +6152,49 @@ function genererRequisition() {
     `;
 
     document.body.appendChild(modal);
+    console.log("Modal ajoutée au DOM");
 
     // Ecouteur pour le bouton requisitionApte
-    document.querySelector('#requisitionApte').addEventListener('click', () => {
-        requisitionApte(); // Ouvre la modale de choix Zagreb ou Essens
-    });
+    const btnApte = document.querySelector('#requisitionApte');
+    console.log("Bouton requisitionApte trouvé:", btnApte);
+
+    if (btnApte) {
+        btnApte.addEventListener('click', (event) => {
+            console.log("🔴🔴🔴 CLIC DÉTECTÉ sur requisitionApte! 🔴🔴🔴");
+            event.stopPropagation(); // Empêcher la propagation vers la modale
+            event.preventDefault(); // Empêcher le comportement par défaut
+            console.log("Appel de la fonction requisitionApte()");			
+            requisitionApte();
+			
+        });
+        console.log("Event listener ajouté pour requisitionApte");
+    } else {
+        console.error("Bouton requisitionApte non trouvé!");
+    }
 
     // Ecouteur pour le bouton requisitionInapte
-    document.querySelector('#requisitionInapte').addEventListener('click', () => {
-        requisitionInapte(); // Appelle la fonction Tissulairesanssar
-    });
+    const btnInapte = document.querySelector('#requisitionInapte');
+    console.log("Bouton requisitionInapte trouvé:", btnInapte);
+
+    if (btnInapte) {
+        btnInapte.addEventListener('click', (event) => {
+            console.log("🔴🔴🔴 CLIC DÉTECTÉ sur requisitionInapte! 🔴🔴🔴");
+            event.stopPropagation(); // Empêcher la propagation vers la modale
+            event.preventDefault(); // Empêcher le comportement par défaut
+            console.log("Appel de la fonction requisitionInapte()");
+            requisitionInapte();
+        });
+        console.log("Event listener ajouté pour requisitionInapte");
+    } else {
+        console.error("Bouton requisitionInapte non trouvé!");
+    }
 
     // Ajouter un écouteur de clic pour fermer la modale
     modal.addEventListener('click', function (event) {
+        console.log("Clic détecté sur la modale, target:", event.target);
         // Si l'utilisateur clique en dehors du contenu de la modale
         if (event.target === modal) {
+            console.log("Clic en dehors du contenu - fermeture de la modale");
             modal.remove();
             // Rafraîchir la page
             window.location.reload();
@@ -6174,9 +6219,12 @@ function genererRequisition() {
     .modal-content {
         background-color: white;
         padding: 20px;
-        border-radius: 5px;
+        border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 90%;
         text-align: center;
+        z-index: 1001;
     }
     .button-group {
         display: flex;
@@ -6185,53 +6233,41 @@ function genererRequisition() {
         margin-top: 20px;
     }
     .modal-button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-    .modal-button:first-child {
-        background-color: #4CAF50;
-        color: white;
-        z-index: 1000;
-    }
-    .modal-content {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        max-width: 400px;
-        width: 90%;
-        text-align: center;
-    }
-    .button-group {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-    }
-    .button-group button {
         flex: 1;
-        padding: 12px;
+        padding: 12px 20px;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
         transition: background-color 0.3s;
+        z-index: 1002;
+        position: relative;
     }
-    .button-group button:hover {
-        background-color: #f0f0f0;
+    .modal-button:first-child {
+        background-color: #4CAF50;
+        color: white;
+    }
+    .modal-button:last-child {
+        background-color: #f44336;
+        color: white;
+    }
+    .modal-button:hover {
+        opacity: 0.9;
     }
     `;
     document.head.appendChild(style);
+    console.log("Styles CSS ajoutés pour la modal");
 }
 
 // Fonctions pour la requisition
 function requisitionApte() {
+
     // Fermer la modale si elle existe
     const existingModal = document.querySelector('.modal');
+
     if (existingModal) {
         existingModal.remove();
-        window.location.reload();
+
     }
 
     // Get patient information from the new fields
@@ -6425,7 +6461,9 @@ function requisitionApte() {
 `;
 
     const newWindow = window.open("", "_blank");
+
     if (newWindow) {
+
         newWindow.document.write(certificatContent);
         newWindow.document.close();
         newWindow.onload = function () {
@@ -6440,16 +6478,19 @@ function requisitionApte() {
             }
         };
     } else {
-        console.log("Popup bloquée par le navigateur.");
+        alert("Popup bloquée par le navigateur.");
     }
+	window.location.reload();
 }
 
 function requisitionInapte() {
+
     // Fermer la modale si elle existe
     const existingModal = document.querySelector('.modal');
+
     if (existingModal) {
         existingModal.remove();
-        window.location.reload();
+
     }
 
     // Get patient information from the new fields
@@ -6651,7 +6692,9 @@ Le présent certificat est remis à  l'autorité compétente pour servir et valo
 `;
 
     const newWindow = window.open("", "_blank");
+
     if (newWindow) {
+
         newWindow.document.write(certificatContent);
         newWindow.document.close();
         newWindow.onload = function () {
@@ -6666,8 +6709,9 @@ Le présent certificat est remis à  l'autorité compétente pour servir et valo
             }
         };
     } else {
-        console.log("Popup bloquée par le navigateur.");
+        console.error("Popup bloquée par le navigateur (Inapte).");
     }
+	window.location.reload();
 }
 
 
