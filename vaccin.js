@@ -11,6 +11,17 @@ class VaccinationApp {
             }
         };
 
+        // Fonction utilitaire pour convertir dd/mm/yyyy en Date JavaScript
+        this.parseFrenchDate = function(dateStr) {
+            if (!dateStr) return null;
+            const parts = dateStr.split('/');
+            if (parts.length !== 3) return null;
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1; // Les mois commencent à 0 en JavaScript
+            const year = parseInt(parts[2], 10);
+            return new Date(year, month, day);
+        };
+
         this.vaccineConfig = {
             "BCG": {
                 icon: "🛡️",
@@ -115,7 +126,11 @@ class VaccinationApp {
             // Initialiser avec aujourd'hui pour la date de consultation
             const consultationDate = document.getElementById('consultationDate');
             if (consultationDate && !consultationDate.value) {
-                consultationDate.valueAsDate = new Date();
+                const today = new Date();
+                const day = String(today.getDate()).padStart(2, '0');
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const year = today.getFullYear();
+                consultationDate.value = `${day}/${month}/${year}`;
             }
 
             // Charger les données depuis l'API locale si l'extension est disponible
@@ -241,7 +256,7 @@ class VaccinationApp {
         const ageDisplay = document.getElementById('patientAgeDisplay');
 
         if (dateInput.value) {
-            const birthDate = new Date(dateInput.value);
+            const birthDate = this.parseFrenchDate(dateInput.value);
             const currentDate = new Date();
             const ageDays = Math.floor((currentDate - birthDate) / (1000 * 60 * 60 * 24));
 
@@ -345,12 +360,12 @@ class VaccinationApp {
 
     validateVaccineLogic(vaccineName, vaccineDate) {
         try {
-            const vaccineDateObj = new Date(vaccineDate);
+            const vaccineDateObj = this.parseFrenchDate(vaccineDate);
             const birthDate = this.data.dateNaissance;
 
             if (!birthDate) return false;
 
-            const birthDateObj = new Date(birthDate);
+            const birthDateObj = this.parseFrenchDate(birthDate);
             const ageDays = Math.floor((vaccineDateObj - birthDateObj) / (1000 * 60 * 60 * 24));
 
             const config = this.vaccineConfig[vaccineName];
@@ -377,7 +392,7 @@ class VaccinationApp {
                 const prevVaccineInput = this.getInputByVaccineName(config.dependsOn);
                 if (!prevVaccineInput || !prevVaccineInput.value) return false;
 
-                const prevDateObj = new Date(prevVaccineInput.value);
+                const prevDateObj = this.parseFrenchDate(prevVaccineInput.value);
                 const intervalDays = Math.floor((vaccineDateObj - prevDateObj) / (1000 * 60 * 60 * 24));
 
                 if (intervalDays < config.minIntervalDays) return false;
@@ -649,7 +664,7 @@ class VaccinationApp {
         const modal = document.getElementById('reportModal');
         const content = document.getElementById('reportContent');
 
-        const birthDate = new Date(this.data.dateNaissance);
+        const birthDate = this.parseFrenchDate(this.data.dateNaissance);
         const currentDate = new Date();
         const ageDays = Math.floor((currentDate - birthDate) / (1000 * 60 * 60 * 24));
         const years = Math.floor(ageDays / 365);
@@ -660,7 +675,7 @@ class VaccinationApp {
             <div class="report-header">
                 <h3>👤 Informations de l'enfant</h3>
                 <p><strong>Nom:</strong> ${this.data.prenomEnfant} ${this.data.nomEnfant}</p>
-                <p><strong>Date de naissance:</strong> ${new Date(this.data.dateNaissance).toLocaleDateString('fr-FR')}</p>
+                <p><strong>Date de naissance:</strong> ${this.data.dateNaissance}</p>
                 <p><strong>Âge:</strong> ${years} ans, ${months} mois</p>
             </div>
 
@@ -691,7 +706,7 @@ class VaccinationApp {
             reportHTML += `
                 <tr>
                     <td style="border: 1px solid #ddd; padding: 8px;">${this.vaccineConfig[vaccineName].icon} ${vaccineName}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${date ? new Date(date).toLocaleDateString('fr-FR') : '-'}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${date || '-'}</td>
                     <td style="border: 1px solid #ddd; padding: 8px;">${status}</td>
                 </tr>
             `;
@@ -732,7 +747,7 @@ class VaccinationApp {
         const modal = document.getElementById('schemaModal');
         const content = document.getElementById('schemaContent');
 
-        const birthDate = new Date(this.data.dateNaissance);
+        const birthDate = this.parseFrenchDate(this.data.dateNaissance);
         const currentDate = new Date();
         const ageDays = Math.floor((currentDate - birthDate) / (1000 * 60 * 60 * 24));
         const years = Math.floor(ageDays / 365);
@@ -745,7 +760,7 @@ class VaccinationApp {
                     <h1>SCHÉMA DE RATTRAPAGE VACCINAL</h1>
                     <div class="patient-info">
                         <div><strong>Enfant:</strong> ${this.data.prenomEnfant} ${this.data.nomEnfant}</div>
-                        <div><strong>Né(e) le:</strong> ${birthDate.toLocaleDateString('fr-FR')} (${years} ans, ${months} mois)</div>
+                        <div><strong>Né(e) le:</strong> ${this.data.dateNaissance} (${years} ans, ${months} mois)</div>
                         <div><strong>Généré le:</strong> ${currentDate.toLocaleDateString('fr-FR')}</div>
                         ${this.data.conditions.poidsInf2000 ? '<div><strong>⚠️ Condition:</strong> Poids < 2000g</div>' : ''}
                         ${this.data.conditions.mereHbsPositif ? '<div><strong>⚠️ Condition:</strong> Mère HBs positif</div>' : ''}
@@ -803,7 +818,7 @@ class VaccinationApp {
                 // Âge actuel lors de la vaccination
                 let currentAgeText = '-';
                 if (currentVaccination) {
-                    const vaccineDate = new Date(currentVaccination);
+                    const vaccineDate = this.parseFrenchDate(currentVaccination);
                     const ageDaysAtVaccine = Math.floor((vaccineDate - birthDate) / (1000 * 60 * 60 * 24));
                     const yearsAtVaccine = Math.floor(ageDaysAtVaccine / 365);
                     const monthsAtVaccine = Math.floor((ageDaysAtVaccine % 365) / 30);
@@ -882,7 +897,9 @@ class VaccinationApp {
     }
 
     calculateRecommendedDate(vaccineName, config, birthDate, proposedDates = {}) {
-        const minAgeDate = new Date(birthDate.getTime() + (config.minAgeDays * 24 * 60 * 60 * 1000));
+        // birthDate est maintenant une string dd/mm/yyyy, on doit la convertir
+        const birthDateObj = this.parseFrenchDate(birthDate);
+        const minAgeDate = new Date(birthDateObj.getTime() + (config.minAgeDays * 24 * 60 * 60 * 1000));
 
         // Si dépend d'un autre vaccin
         if (config.dependsOn) {
@@ -891,12 +908,12 @@ class VaccinationApp {
 
             if (prevVaccineDate) {
                 // Vaccin précédent fait - utiliser sa date réelle
-                const prevDate = new Date(prevVaccineDate);
+                const prevDate = this.parseFrenchDate(prevVaccineDate);
                 const minIntervalDate = new Date(prevDate.getTime() + (config.minIntervalDays * 24 * 60 * 60 * 1000));
                 return minIntervalDate > minAgeDate ? minIntervalDate : minAgeDate;
             } else if (proposedDates[config.dependsOn]) {
                 // Vaccin précédent pas fait mais date proposée disponible
-                const prevProposedDate = new Date(proposedDates[config.dependsOn]);
+                const prevProposedDate = proposedDates[config.dependsOn]; // C'est déjà un Date object
                 const minIntervalDate = new Date(prevProposedDate.getTime() + (config.minIntervalDays * 24 * 60 * 60 * 1000));
                 return minIntervalDate > minAgeDate ? minIntervalDate : minAgeDate;
             } else {
