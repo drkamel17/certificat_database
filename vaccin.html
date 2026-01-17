@@ -31,12 +31,12 @@
                     </div>
                     <div class="form-group">
                         <label for="birthDate">Date de Naissance</label>
-                        <input type="date" id="birthDate">
+                        <input type="text" id="birthDate" placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                         <small id="patientAgeDisplay" style="display: none; color: #666; font-style: italic;"></small>
                     </div>
                     <div class="form-group">
                         <label for="consultationDate">Date de Consultation</label>
-                        <input type="date" id="consultationDate">
+                        <input type="text" id="consultationDate" placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                     </div>
                 </div>
 
@@ -67,11 +67,11 @@
                         <div class="vaccine-grid">
                             <div class="vaccine-field">
                                 <span class="vaccine-name">🛡️ BCG</span>
-                                <input type="date" class="vaccine-date" data-vaccine="BCG" data-comment="Vaccin contre la tuberculose. Première dose recommandée dès la naissance.">
+                                <input type="text" class="vaccine-date" data-vaccine="BCG" data-comment="Vaccin contre la tuberculose. Première dose recommandée dès la naissance." placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                             </div>
                             <div class="vaccine-field">
                                 <span class="vaccine-name">💉 Hépatite B 1</span>
-                                <input type="date" class="vaccine-date" data-vaccine="HepatiteB1" data-comment="💡 Hépatite B 1 - L'enfant doit avoir moins de 7 jours, ou bien il a un poids inférieur à 2000g, ou sa mère est HBs positive et son âge inférieur à 30 jours.">
+                                <input type="text" class="vaccine-date" data-vaccine="HepatiteB1" data-comment="💡 Hépatite B 1 - L'enfant doit avoir moins de 7 jours, ou bien il a un poids inférieur à 2000g, ou sa mère est HBs positive et son âge inférieur à 30 jours." placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                             </div>
                         </div>
                     </div>
@@ -81,11 +81,11 @@
                         <div class="vaccine-grid">
                             <div class="vaccine-field">
                                 <span class="vaccine-name">🔬 DTCa-VPI-Hib-HBV 1</span>
-                                <input type="date" class="vaccine-date" data-vaccine="DTCa1" data-comment="💡 DTCa-VPI-Hib-HBV 1 - Âge minimum 2 mois. Primo-vaccination hexavalente.">
+                                <input type="text" class="vaccine-date" data-vaccine="DTCa1" data-comment="💡 DTCa-VPI-Hib-HBV 1 - Âge minimum 2 mois. Primo-vaccination hexavalente." placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                             </div>
                             <div class="vaccine-field">
                                 <span class="vaccine-name">🔬 DTCa-VPI-Hib-HBV 2</span>
-                                <input type="date" class="vaccine-date" data-vaccine="DTCa2" data-comment="💡 DTCa-VPI-Hib-HBV 2 - Âge minimum 4 mois. Intervalle minimum 6 semaines après la 1ère dose.">
+                                <input type="text" class="vaccine-date" data-vaccine="DTCa2" data-comment="💡 DTCa-VPI-Hib-HBV 2 - Âge minimum 4 mois. Intervalle minimum 6 semaines après la 1ère dose." placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                             </div>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                         <div class="vaccine-grid">
                             <div class="vaccine-field">
                                 <span class="vaccine-name">🔬 DTCa-VPI-Hib-HBV Rappel</span>
-                                <input type="date" class="vaccine-date" data-vaccine="DTCaRappel" data-comment="💡 DTCa-VPI-Hib-HBV Rappel - Rappel à partir de 12 mois. Intervalle minimum 6 mois après la 2ème dose (minimum 4 mois).">
+                                <input type="text" class="vaccine-date" data-vaccine="DTCaRappel" data-comment="💡 DTCa-VPI-Hib-HBV Rappel - Rappel à partir de 12 mois. Intervalle minimum 6 mois après la 2ème dose (minimum 4 mois)." placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                             </div>
                         </div>
                     </div>
@@ -105,15 +105,15 @@
                         <div class="vaccine-grid">
                             <div class="vaccine-field">
                                 <span class="vaccine-name">🫁 VPC 13 - 1</span>
-                                <input type="date" class="vaccine-date" data-vaccine="VPC1" data-comment="💡 VPC 13 - 1 - Âge minimum 2 mois. Rattrapage possible jusqu'à 2 ans.">
+                                <input type="text" class="vaccine-date" data-vaccine="VPC1" data-comment="💡 VPC 13 - 1 - Âge minimum 2 mois. Rattrapage possible jusqu'à 2 ans." placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                             </div>
                             <div class="vaccine-field">
                                 <span class="vaccine-name">🫁 VPC 13 - 2</span>
-                                <input type="date" class="vaccine-date" data-vaccine="VPC2" data-comment="💡 VPC 13 - 2 - Âge minimum 4 mois. Intervalle minimum 6 semaines après la 1ère dose.">
+                                <input type="text" class="vaccine-date" data-vaccine="VPC2" data-comment="💡 VPC 13 - 2 - Âge minimum 4 mois. Intervalle minimum 6 semaines après la 1ère dose." placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                             </div>
                             <div class="vaccine-field">
                                 <span class="vaccine-name">🫁 VPC 13 - Rappel</span>
-                                <input type="date" class="vaccine-date" data-vaccine="VPCRappel" data-comment="💡 VPC 13 - Rappel - Rappel à partir de 12 mois. Intervalle minimum 6 mois après la 2ème dose.">
+                                <input type="text" class="vaccine-date" data-vaccine="VPCRappel" data-comment="💡 VPC 13 - Rappel - Rappel à partir de 12 mois. Intervalle minimum 6 mois après la 2ème dose." placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                             </div>
                         </div>
                     </div>
@@ -123,11 +123,11 @@
                         <div class="vaccine-grid">
                             <div class="vaccine-field">
                                 <span class="vaccine-name">🦠 ROR 1</span>
-                                <input type="date" class="vaccine-date" data-vaccine="ROR1" data-comment="💡 ROR 1 - Âge minimum 11 mois (1ère dose).">
+                                <input type="text" class="vaccine-date" data-vaccine="ROR1" data-comment="💡 ROR 1 - Âge minimum 11 mois (1ère dose)." placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                             </div>
                             <div class="vaccine-field">
                                 <span class="vaccine-name">🦠 ROR 2</span>
-                                <input type="date" class="vaccine-date" data-vaccine="ROR2" data-comment="💡 ROR 2 - Âge minimum 18 mois. Intervalle minimum 1 mois après ROR 1. La 2ème dose n'est pas un rappel.">
+                                <input type="text" class="vaccine-date" data-vaccine="ROR2" data-comment="💡 ROR 2 - Âge minimum 18 mois. Intervalle minimum 1 mois après ROR 1. La 2ème dose n'est pas un rappel." placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
                             </div>
                         </div>
                     </div>
@@ -244,5 +244,42 @@
     </footer>
 
     <script src="vaccin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInputs = document.querySelectorAll('#birthDate, #consultationDate, .vaccine-date');
+            
+            dateInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = this.value.replace(/[^\d\/]/g, '');
+                    
+                    if (value.length === 2) {
+                        value += '/';
+                    } else if (value.length === 5) {
+                        value += '/';
+                    }
+                    
+                    this.value = value;
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace') {
+                        return;
+                    }
+                    
+                    if (e.key.length === 1 && !/[0-9\/]/.test(e.key)) {
+                        e.preventDefault();
+                    }
+                });
+                
+                input.addEventListener('blur', function(e) {
+                    if (this.value && !/^\d{2}\/\d{2}\/\d{4}$/.test(this.value)) {
+                        this.style.borderColor = '#dc3545';
+                    } else {
+                        this.style.borderColor = '#ddd';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
