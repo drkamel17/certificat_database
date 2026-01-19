@@ -55,6 +55,12 @@ function loadData() {
         const formattedDate = `${day}/${month}/${year}`;
         document.getElementById('dateCertificat').value = formattedDate;
     }
+    
+    // Vérifier si l'élément patientNumero existe avant de lui assigner une valeur
+    const patientNumeroElement = document.getElementById('patientNumero');
+    if (patientNumeroElement) {
+        patientNumeroElement.value = patientNumero;
+    }
 
     // Initialiser l'état des boutons de format
     const format = localStorage.getItem('certificatFormat');
@@ -150,6 +156,66 @@ function generateHeader() {
             </tbody>
         </table>
     </div>
+    <style>
+        /* Forcer l'utilisation de chiffres européens (latins) dans tous les éléments */
+        * {
+            font-variant-numeric: tabular-nums;
+            unicode-bidi: plaintext;
+        }
+        body {
+            font-variant-numeric: tabular-nums;
+            unicode-bidi: plaintext;
+        }
+        input[type="date"] {
+            font-variant-numeric: tabular-nums;
+        }
+        /* S'assurer que les dates sont affichées en français */
+        input[type="date"]::-webkit-datetime-edit {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+    <script>
+        (function() {
+            // Convertir les inputs de type date en inputs de type texte avec format français
+            function convertDateInputsToFrench() {
+                const dateInputs = document.querySelectorAll('input[type="date"]');
+                dateInputs.forEach(function(input) {
+                    if (input.value) {
+                        const date = new Date(input.value);
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const year = date.getFullYear();
+                        const frenchDate = day + '/' + month + '/' + year;
+                        
+                        // Créer un nouveau input de type texte
+                        const textInput = document.createElement('input');
+                        textInput.type = 'text';
+                        textInput.value = frenchDate;
+                        textInput.readOnly = true;
+                        textInput.style.fontFamily = 'Arial, sans-serif';
+                        textInput.style.fontVariantNumeric = 'tabular-nums';
+                        
+                        // Copier tous les attributs
+                        Array.from(input.attributes).forEach(function(attr) {
+                            if (attr.name !== 'type' && attr.name !== 'value') {
+                                textInput.setAttribute(attr.name, attr.value);
+                            }
+                        });
+                        
+                        // Remplacer l'input original
+                        input.parentNode.replaceChild(textInput, input);
+                    }
+                });
+            }
+            
+            // Exécuter la conversion au chargement
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', convertDateInputsToFrench);
+            } else {
+                convertDateInputsToFrench();
+            }
+        })();
+    </script>
     `;
 }
 
@@ -181,6 +247,17 @@ function setupFormatButtons() {
     }
 }
 
+function genererCatAntiRabique() {
+    const classe02 = document.getElementById('classe02');
+    const classe03 = document.getElementById('classe03');
+    const prex = document.getElementById('prex');
+
+    // Supprimer la classe 'hidden' pour les rendre visibles
+    if (classe02) classe02.classList.remove('hidden');
+    if (classe03) classe03.classList.remove('hidden');
+    if (prex) prex.classList.remove('hidden');
+}
+
 // Configurer les gestionnaires d'événements lorsque le DOM est chargé
 document.addEventListener('DOMContentLoaded', function () {
     loadData();
@@ -208,19 +285,6 @@ document.addEventListener('DOMContentLoaded', function () {
         container.appendChild(buttonSup);
     });
 
-    // Fonction pour gérer le clic sur le bouton Catégorie Anti-Rabique
-    // Cette fonction rend visibles les boutons classe02, classe03 et prex
-    function genererCatAntiRabique() {
-        const classe02 = document.getElementById('classe02');
-        const classe03 = document.getElementById('classe03');
-        const prex = document.getElementById('prex');
-
-        // Supprimer la classe 'hidden' pour les rendre visibles
-        if (classe02) classe02.classList.remove('hidden');
-        if (classe03) classe03.classList.remove('hidden');
-        if (prex) prex.classList.remove('hidden');
-    }
-
     // Ecouteur pour le bouton Catégorie Anti-Rabique
     // This will make the classe02, classe03, and prex buttons visible when clicked
     document.getElementById('genererCatAntiRabique').addEventListener('click', genererCatAntiRabique);
@@ -231,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.className = 'modal';
         // Récupérer les informations du patient à partir des champs du formulaire
         const patientNumero = document.getElementById('patientNumero') ? document.getElementById('patientNumero').value : '';
-
+        
         modal.innerHTML = `
         <div class="modal-content">
             <h3>Requisition Médicale</h3>
@@ -247,31 +311,21 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
 
         document.body.appendChild(modal);
+        // Ecouteur pour le bouton requisitionApte
+        document.querySelector('#requisitionApte').addEventListener('click', () => {
+            requisitionApte(); // Ouvre la modale de choix Zagreb ou Essens
+        });
+        // Ecouteur pour le bouton requisitionInapte
+        document.querySelector('#requisitionInapte').addEventListener('click', () => {
+            requisitionInapte(); // Appelle la fonction Tissulairesanssar
+        });
 
-        // DÉLÉGATION D'ÉVÉNEMENTS: Écouter tous les clics sur la modale
+        // Ajouter un écouteur de clic pour fermer la modale
         modal.addEventListener('click', function (event) {
-
-            // Vérifier si c'est le bouton Apte
-            if (event.target.id === 'requisitionApte') {
-                event.stopPropagation();
-                event.preventDefault();
-                modal.remove();
-                requisitionApte();
-                return;
-            }
-
-            // Vérifier si c'est le bouton Inapte
-            if (event.target.id === 'requisitionInapte') {
-                event.stopPropagation();
-                event.preventDefault();
-                modal.remove();
-                requisitionInapte();
-                return;
-            }
-
             // Si l'utilisateur clique en dehors du contenu de la modale
             if (event.target === modal) {
                 modal.remove();
+                // Rafraîchir la page
                 window.location.reload();
             }
         });
@@ -665,9 +719,21 @@ Dont certificat&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br>
                 dateNaissance = (editableFields[0].textContent || editableFields[0].innerText || '').trim();
             }
 
-            // Date du certificat
-            const today = new Date();
-            const dateCertificat = today.toISOString().split('T')[0];
+            // Date du certificat depuis l'editable-field
+            let dateCertificat = '';
+            for (let field of editableFields) {
+                const text = field.textContent || field.innerText || '';
+                const parentText = field.parentElement ? field.parentElement.textContent || '' : '';
+                if (parentText.includes('daté du') || parentText.includes('daté')) {
+                    dateCertificat = text.trim();
+                    break;
+                }
+            }
+
+            if (!dateCertificat) {
+                const today = new Date();
+                dateCertificat = today.toISOString().split('T')[0];
+            }
 
             // Préparer le message
             const message = {
@@ -2221,9 +2287,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // Date du certificat
-            const today = new Date();
-            const dateCertificat = today.toISOString().split('T')[0];
+            // Date du certificat depuis l'editable-field
+            let dateCertificat = '';
+            for (let field of editableFields) {
+                const text = field.textContent || field.innerText || '';
+                const parentText = field.parentElement ? field.parentElement.textContent || '' : '';
+                if (parentText.includes('dater du') || parentText.includes('date')) {
+                    dateCertificat = text.trim();
+                    break;
+                }
+            }
+
+            if (!dateCertificat) {
+                const today = new Date();
+                dateCertificat = today.toISOString().split('T')[0];
+            }
 
             // Préparer le message
             const message = {
@@ -4785,8 +4863,8 @@ ${enteteContent}
         <p>
             Je soussigné, Dr <input type="text" id="docteur" value="${docteur}" placeholder="" style="width: 120px;">, 
             certifie avoir examiné ce jour le(la) susnommé(e) 
-            <strong><input type="text" value="${patientNomPrenom}" style="width: 180px;"></strong>,
-            <span class="editable-field" contenteditable="true" style="min-width: 100px; display: inline-block;">né(e) le ${patientDateNaissance}</span>.
+            <strong><input type="text" value="${patientNomPrenom}" style="width: 180px;"></strong>,          
+			<span class="editable-field" contenteditable="true" data-field="date-naissance">né(e) le ${patientDateNaissance}</span>.
         </p>
         <p>
             qui m'a déclaré avoir été victime de 	<select id="typeAccident" style="
@@ -4805,7 +4883,12 @@ ${enteteContent}
         <option value="autre">Autre</option>
     </select>
 </strong>,
-             le <span class="editable-field" contenteditable="true" style="min-width: 120px; display: inline-block;">${todayFormatted}</span> à  l'heure:<input type="time" id="heureAccident" style="font-size: 11px !important;"> <br> 
+            
+			 le <span class="editable-field" contenteditable="true" data-field="date-certificat">${todayFormatted}</span>
+			 à l'heure :
+<input type="time" id="heureAccident">
+</p>
+
             L'examen clinique présente :<br> 
 		
 
@@ -4866,145 +4949,138 @@ ${enteteContent}
 }
 
 // Fonction pour sauvegarder le certificat CBV
+// =====================================================
+// Fonction pour sauvegarder le certificat CBV
+// =====================================================
 async function sauvegarderCBV(certificatWindow) {
     try {
-        // Récupérer les données du certificat
-        const nomPrenomInput = certificatWindow.document.querySelector('input[type="text"][value*=" "]');
-        let nom = '', prenom = '';
 
-        if (nomPrenomInput && nomPrenomInput.value) {
-            const nomPrenom = nomPrenomInput.value.trim();
-            const parts = nomPrenom.split(' ');
-            if (parts.length >= 2) {
-                nom = parts[0];
-                prenom = parts.slice(1).join(' ');
-            }
+        // ================================
+        // Nom et prénom du patient
+        // ================================
+        const nomPrenomInput = certificatWindow.document.querySelector(
+            'input[type="text"]:not(#docteur)'
+        );
+
+        let nom = '';
+        let prenom = '';
+
+        if (nomPrenomInput && nomPrenomInput.value.trim()) {
+            const parts = nomPrenomInput.value.trim().split(/\s+/);
+            nom = parts.shift();
+            prenom = parts.join(' ');
         }
 
-        // Récupérer le médecin
+        // ================================
+        // Médecin
+        // ================================
         const medecinInput = certificatWindow.document.getElementById('docteur');
         const medecin = medecinInput ? medecinInput.value.trim() : '';
 
-        // Récupérer la date du certificat
-        const today = new Date();
-        const dateCertificat = today.toISOString().split('T')[0];
+        // ================================
+        // Dates (fiables via data-field)
+        // ================================
+        const dateCertificatText = certificatWindow.document
+            .querySelector('[data-field="date-certificat"]')
+            ?.textContent.trim();
 
-        // Récupérer la date de naissance
-        const editableFields = certificatWindow.document.querySelectorAll('.editable-field');
-        let dateNaissance = '';
+        const dateNaissanceText = certificatWindow.document
+            .querySelector('[data-field="date-naissance"]')
+            ?.textContent.trim();
 
-        for (let field of editableFields) {
-            const text = field.textContent || field.innerText || '';
-            // Chercher un pattern de date (YYYY-MM-DD ou DD/MM/YYYY)
-            const dateMatch = text.match(/(\d{4}-\d{2}-\d{2}|\d{2}\/\d{2}\/\d{4}|\d{1,2}\/\d{1,2}\/\d{4})/);
-            if (dateMatch) {
-                let date = dateMatch[1];
-                // Convertir DD/MM/YYYY vers YYYY-MM-DD si nécessaire
-                if (date.includes('/')) {
-                    const parts = date.split('/');
-                    if (parts.length === 3) {
-                        // Assumer DD/MM/YYYY
-                        date = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-                    }
-                }
-                dateNaissance = date;
-                break;
+        // ================================
+        // Normalisation des dates
+        // ================================
+        function normalizeDate(text) {
+            if (!text) return null;
+
+            const match = text.match(/(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4})/);
+            if (!match) return null;
+
+            let date = match[1];
+            if (date.includes('/')) {
+                const [d, m, y] = date.split('/');
+                date = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
             }
+            return date;
         }
 
-        // Récupérer le titre (type d'accident)
+        const dateCertificat =
+            normalizeDate(dateCertificatText) ||
+            new Date().toISOString().split('T')[0];
+
+        const dateNaissance = normalizeDate(dateNaissanceText);
+
+        // ================================
+        // Type d'accident
+        // ================================
         const typeAccidentSelect = certificatWindow.document.getElementById('typeAccident');
-        const titre = typeAccidentSelect ? typeAccidentSelect.value : '';
+        const titre = typeAccidentSelect ? typeAccidentSelect.value : null;
 
-        // Récupérer l'examen (description)
+        // ================================
+        // Description / Examen
+        // ================================
         const descriptionInput = certificatWindow.document.getElementById('descriptionAccident');
-        const examen = descriptionInput ? descriptionInput.value.trim() : '';
+        const examen = descriptionInput ? descriptionInput.value.trim() : null;
 
-        // Récupérer l'heure
+        // ================================
+        // Heure
+        // ================================
         const heureInput = certificatWindow.document.getElementById('heureAccident');
         const heure = heureInput && heureInput.value ? heureInput.value : null;
 
-        console.log('📋 Données CBV récupérées:', {
-            nom,
-            prenom,
-            medecin,
-            dateCertificat,
-            dateNaissance,
-            titre,
-            examen,
-            heure
-        });
-
-        // Vérifier que nous avons les données minimales
+        // ================================
+        // Vérifications
+        // ================================
         if (!nom || !prenom) {
-            alert('Erreur: Nom et prénom du patient requis. Veuillez remplir les informations patient d\'abord.');
+            alert('❌ Nom et prénom du patient obligatoires.');
             return;
         }
 
         if (!medecin) {
-            alert('Erreur: Nom du médecin requis. Veuillez configurer le médecin dans les options.');
+            alert('❌ Nom du médecin obligatoire.');
             return;
         }
 
-        // Préparer le message pour l'API
+        // ================================
+        // Message API
+        // ================================
         const message = {
-            nom: nom,
-            prenom: prenom,
-            medecin: medecin,
+            nom,
+            prenom,
+            medecin,
             date_certificat: dateCertificat,
-            date_naissance: dateNaissance || null,
-            titre: titre || null,
-            examen: examen || null,
-            heure: heure || null
+            date_naissance: dateNaissance,
+            titre,
+            examen,
+            heure
         };
 
-        console.log('📤 Message à envoyer à l\'API:', message);
+        console.log('📤 Envoi CBV API:', message);
 
-        // Envoyer à l'API locale
-        try {
-            const response = await fetch('http://localhost:5000/api/ajouter_cbv', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(message)
-            });
+        // ================================
+        // Envoi à l'API
+        // ================================
+        const response = await fetch('http://localhost:5000/api/ajouter_cbv', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(message)
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            // Afficher les messages dans la fenêtre popup
-            if (certificatWindow && !certificatWindow.closed) {
-                if (data && data.success) {
-                    certificatWindow.alert('CBV sauvegardé avec succès !');
-                } else {
-                    const errorMsg = data ? data.error : 'Réponse invalide';
-                    certificatWindow.alert('Erreur lors de la sauvegarde: ' + errorMsg);
-                }
-            }
-        } catch (error) {
-            console.error('❌ Erreur lors de la sauvegarde:', error);
-
-            // Afficher les messages dans la fenêtre popup
-            if (certificatWindow && !certificatWindow.closed) {
-                // Fallback: Afficher les données pour copie manuelle si l'API n'est pas accessible
-                if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
-                    const fallbackMessage = `
-API non accessible. Veuillez démarrer le serveur avec: python api_simple.py
-Ou copiez ces données manuellement:
-${JSON.stringify(message, null, 2)}
-                    `;
-                    certificatWindow.alert(fallbackMessage);
-                } else {
-                    certificatWindow.alert('Erreur lors de la sauvegarde: ' + error.message);
-                }
-            }
+        if (data && data.success) {
+            certificatWindow.alert('✅ Certificat CBV sauvegardé avec succès.');
+        } else {
+            certificatWindow.alert('❌ Erreur sauvegarde : ' + (data?.error || 'Réponse invalide'));
         }
 
     } catch (error) {
-        console.error('❌ Erreur lors de la sauvegarde CBV:', error);
-        alert('Erreur lors de la sauvegarde: ' + error.message);
+        console.error('❌ Erreur sauvegarderCBV:', error);
+        alert('Erreur lors de la sauvegarde : ' + error.message);
     }
 }
+
 // Fonction pour générer un certificat d'arrêt de travail
 function genererArretTravail() {
     const polyclinique = document.getElementById('polyclinique').value;
@@ -5308,9 +5384,21 @@ Dont certificat&nbsp&nbsp&nbsp&nbsp&nbsp<br>
                 dateNaissance = (editableFields[0].textContent || editableFields[0].innerText || '').trim();
             }
 
-            // Date du certificat
-            const today = new Date();
-            const dateCertificat = today.toISOString().split('T')[0];
+            // Date du certificat depuis l'editable-field
+            let dateCertificat = '';
+            for (let field of editableFields) {
+                const text = field.textContent || field.innerText || '';
+                const parentText = field.parentElement ? field.parentElement.textContent || '' : '';
+                if (parentText.includes('daté du') || parentText.includes('daté')) {
+                    dateCertificat = text.trim();
+                    break;
+                }
+            }
+
+            if (!dateCertificat) {
+                const today = new Date();
+                dateCertificat = today.toISOString().split('T')[0];
+            }
 
             // Préparer le message
             const message = {
@@ -6152,49 +6240,21 @@ function genererRequisition() {
     `;
 
     document.body.appendChild(modal);
-    console.log("Modal ajoutée au DOM");
 
     // Ecouteur pour le bouton requisitionApte
-    const btnApte = document.querySelector('#requisitionApte');
-    console.log("Bouton requisitionApte trouvé:", btnApte);
-
-    if (btnApte) {
-        btnApte.addEventListener('click', (event) => {
-            console.log("🔴🔴🔴 CLIC DÉTECTÉ sur requisitionApte! 🔴🔴🔴");
-            event.stopPropagation(); // Empêcher la propagation vers la modale
-            event.preventDefault(); // Empêcher le comportement par défaut
-            console.log("Appel de la fonction requisitionApte()");			
-            requisitionApte();
-			
-        });
-        console.log("Event listener ajouté pour requisitionApte");
-    } else {
-        console.error("Bouton requisitionApte non trouvé!");
-    }
+    document.querySelector('#requisitionApte').addEventListener('click', () => {
+        requisitionApte(); // Ouvre la modale de choix Zagreb ou Essens
+    });
 
     // Ecouteur pour le bouton requisitionInapte
-    const btnInapte = document.querySelector('#requisitionInapte');
-    console.log("Bouton requisitionInapte trouvé:", btnInapte);
-
-    if (btnInapte) {
-        btnInapte.addEventListener('click', (event) => {
-            console.log("🔴🔴🔴 CLIC DÉTECTÉ sur requisitionInapte! 🔴🔴🔴");
-            event.stopPropagation(); // Empêcher la propagation vers la modale
-            event.preventDefault(); // Empêcher le comportement par défaut
-            console.log("Appel de la fonction requisitionInapte()");
-            requisitionInapte();
-        });
-        console.log("Event listener ajouté pour requisitionInapte");
-    } else {
-        console.error("Bouton requisitionInapte non trouvé!");
-    }
+    document.querySelector('#requisitionInapte').addEventListener('click', () => {
+        requisitionInapte(); // Appelle la fonction Tissulairesanssar
+    });
 
     // Ajouter un écouteur de clic pour fermer la modale
     modal.addEventListener('click', function (event) {
-        console.log("Clic détecté sur la modale, target:", event.target);
         // Si l'utilisateur clique en dehors du contenu de la modale
         if (event.target === modal) {
-            console.log("Clic en dehors du contenu - fermeture de la modale");
             modal.remove();
             // Rafraîchir la page
             window.location.reload();
@@ -6219,12 +6279,9 @@ function genererRequisition() {
     .modal-content {
         background-color: white;
         padding: 20px;
-        border-radius: 8px;
+        border-radius: 5px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        max-width: 400px;
-        width: 90%;
         text-align: center;
-        z-index: 1001;
     }
     .button-group {
         display: flex;
@@ -6233,41 +6290,53 @@ function genererRequisition() {
         margin-top: 20px;
     }
     .modal-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .modal-button:first-child {
+        background-color: #4CAF50;
+        color: white;
+        z-index: 1000;
+    }
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+    }
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .button-group button {
         flex: 1;
-        padding: 12px 20px;
+        padding: 12px;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
         transition: background-color 0.3s;
-        z-index: 1002;
-        position: relative;
     }
-    .modal-button:first-child {
-        background-color: #4CAF50;
-        color: white;
-    }
-    .modal-button:last-child {
-        background-color: #f44336;
-        color: white;
-    }
-    .modal-button:hover {
-        opacity: 0.9;
+    .button-group button:hover {
+        background-color: #f0f0f0;
     }
     `;
     document.head.appendChild(style);
-    console.log("Styles CSS ajoutés pour la modal");
 }
 
 // Fonctions pour la requisition
 function requisitionApte() {
-
     // Fermer la modale si elle existe
     const existingModal = document.querySelector('.modal');
-
     if (existingModal) {
         existingModal.remove();
-
+        window.location.reload();
     }
 
     // Get patient information from the new fields
@@ -6461,9 +6530,7 @@ function requisitionApte() {
 `;
 
     const newWindow = window.open("", "_blank");
-
     if (newWindow) {
-
         newWindow.document.write(certificatContent);
         newWindow.document.close();
         newWindow.onload = function () {
@@ -6478,19 +6545,16 @@ function requisitionApte() {
             }
         };
     } else {
-        alert("Popup bloquée par le navigateur.");
+        console.log("Popup bloquée par le navigateur.");
     }
-	window.location.reload();
 }
 
 function requisitionInapte() {
-
     // Fermer la modale si elle existe
     const existingModal = document.querySelector('.modal');
-
     if (existingModal) {
         existingModal.remove();
-
+        window.location.reload();
     }
 
     // Get patient information from the new fields
@@ -6692,9 +6756,7 @@ Le présent certificat est remis à  l'autorité compétente pour servir et valo
 `;
 
     const newWindow = window.open("", "_blank");
-
     if (newWindow) {
-
         newWindow.document.write(certificatContent);
         newWindow.document.close();
         newWindow.onload = function () {
@@ -6709,9 +6771,8 @@ Le présent certificat est remis à  l'autorité compétente pour servir et valo
             }
         };
     } else {
-        console.error("Popup bloquée par le navigateur (Inapte).");
+        console.log("Popup bloquée par le navigateur.");
     }
-	window.location.reload();
 }
 
 
@@ -8207,11 +8268,11 @@ function zegreb(dateMorsure, poidsInput) {
       Classe 02, schéma choisi : vaccin cellulaire / schéma de Zagreb / sans SAR
        <br><br><br>
         <p>
-         <br>
-         <br><br>
-         Jour 0 : <input type="date" id="dateJour0" value="${dateFormattedJour0}" readonly> ( 02 doses chacune dans un deltoïde ) <br>
-         Jour 7 : <input type="date" id="datePlus7" value="${dateFormattedPlus7}" readonly> <br>
-         Jour 21 : <input type="date" id="datePlus21" value="${dateFormattedPlus21}" readonly> <br>
+          <br>
+          <br><br>
+          Jour 0 : <input type="date" id="dateJour0" value="${dateFormattedJour0}" readonly> ( 02 doses chacune dans un deltoïde ) <br>
+          Jour 7 : <input type="date" id="datePlus7" value="${dateFormattedPlus7}" readonly> <br>
+          Jour 21 : <input type="date" id="datePlus21" value="${dateFormattedPlus21}" readonly> <br>
          <br><br><br>
          <br><br>
            en cas d'âge <02 ans Face antérolatéral externe de la cuisse droite et gauche<br>
@@ -8497,12 +8558,12 @@ function essens(dateMorsure, poidsInput) {
       <br><br><br>
         </p>
         <p>
-         <br>
-         <br><br>
-         Jour 0 : <input type="date" id="dateJour0" value="${dateFormattedJour0}" readonly> ( dans le deltoïde )<br>
-         Jour 3 : <input type="date" id="datePlus7" value="${dateFormattedPlus3}" readonly> <br>
-         Jour 7 : <input type="date" id="datePlus21" value="${dateFormattedPlus7}" readonly><br>
-         Jour 14 : <input type="date" id="datePlus28" value="${dateFormattedPlus14}" readonly> <br>
+          <br>
+          <br><br>
+          Jour 0 : <input type="date" id="dateJour0" value="${dateFormattedJour0}" readonly> ( dans le deltoïde )<br>
+          Jour 3 : <input type="date" id="datePlus7" value="${dateFormattedPlus3}" readonly> <br>
+          Jour 7 : <input type="date" id="datePlus21" value="${dateFormattedPlus7}" readonly><br>
+          Jour 14 : <input type="date" id="datePlus28" value="${dateFormattedPlus14}" readonly> <br>
          <br><br>
         en cas d'âge <02 ans Face antérolatéral externe de la cuisse droite et gauche<br>
         </p>
@@ -8627,9 +8688,8 @@ function risqueHemorragiqueClasse2(dateMorsure, poidsInput) {
     datePlus3.setDate(dateJour0.getDate() + 3);
 
     const dateFormattedJour0 = `${dateJour0.getFullYear()}-${String(dateJour0.getMonth() + 1).padStart(2, '0')}-${String(dateJour0.getDate()).padStart(2, '0')}`;
-    const dateFormattedPlus7 = `${datePlus7.getFullYear()}-${String(datePlus7.getMonth() + 1).padStart(2, '0')}-${String(datePlus7.getDate()).padStart(2, '0')}`;
-    const dateFormattedPlus21 = `${datePlus21.getFullYear()}-${String(datePlus21.getMonth() + 1).padStart(2, '0')}-${String(datePlus21.getDate()).padStart(2, '0')}`;
     const dateFormattedPlus3 = `${datePlus3.getFullYear()}-${String(datePlus3.getMonth() + 1).padStart(2, '0')}-${String(datePlus3.getDate()).padStart(2, '0')}`;
+    const dateFormattedPlus7 = `${datePlus7.getFullYear()}-${String(datePlus7.getMonth() + 1).padStart(2, '0')}-${String(datePlus7.getDate()).padStart(2, '0')}`;
 
     const polyclinique = localStorage.getItem('polyclinique') || "";
     const polycliniqueAr = localStorage.getItem('polyclinique-ar') || "";
@@ -12128,18 +12188,18 @@ function Tissulairesanssar(dateMorsure, poidsInput) {
         Animal en cause : <strong><input type="text" value="${animal}" style="width: auto;"></strong><br>
         Classe 02, schéma choisi : vaccin tissulaire / sans SAR<br>
 
-        Jour 0 : <input type="date" id="dateJour0" value="${formatDate(dateJour0)}" readonly>( dans les 07 premiers jours les injections sous-cutanée péri ombilicale)<br>
-        Jour 1 : <input type="date" id="dateJour1" value="${formatDate(dateJour1)}" readonly><br>
-        Jour 2 : <input type="date" id="dateJour2" value="${formatDate(dateJour2)}" readonly><br>
-        Jour 3 : <input type="date" id="dateJour3" value="${formatDate(dateJour3)}" readonly><br>
-        Jour 4 : <input type="date" id="dateJour4" value="${formatDate(dateJour4)}" readonly><br>
-        Jour 5 : <input type="date" id="dateJour5" value="${formatDate(dateJour5)}" readonly><br>
-        Jour 6 : <input type="date" id="dateJour6" value="${formatDate(dateJour6)}" readonly><br>
-        =================== les rappels en ID dans les deux bras ==================<br>
-        Jour 10 : <input type="date" id="dateJour10" value="${formatDate(dateJour10)}" readonly><br>
-        Jour 14 : <input type="date" id="dateJour14" value="${formatDate(dateJour14)}" readonly><br>
-        Jour 29 : <input type="date" id="dateJour29" value="${formatDate(dateJour29)}" readonly><br>
-        Jour 90 : <input type="date" id="dateJour90" value="${formatDate(dateJour90)}" readonly><br>
+         Jour 0 : <input type="date" id="dateJour0" value="${formatDate(dateJour0)}" readonly>( dans les 07 premiers jours les injections sous-cutanée péri ombilicale)<br>
+         Jour 1 : <input type="date" id="dateJour1" value="${formatDate(dateJour1)}" readonly><br>
+         Jour 2 : <input type="date" id="dateJour2" value="${formatDate(dateJour2)}" readonly><br>
+         Jour 3 : <input type="date" id="dateJour3" value="${formatDate(dateJour3)}" readonly><br>
+         Jour 4 : <input type="date" id="dateJour4" value="${formatDate(dateJour4)}" readonly><br>
+         Jour 5 : <input type="date" id="dateJour5" value="${formatDate(dateJour5)}" readonly><br>
+         Jour 6 : <input type="date" id="dateJour6" value="${formatDate(dateJour6)}" readonly><br>
+         =================== les rappels en ID dans les deux bras ==================<br>
+         Jour 10 : <input type="date" id="dateJour10" value="${formatDate(dateJour10)}" readonly><br>
+         Jour 14 : <input type="date" id="dateJour14" value="${formatDate(dateJour14)}" readonly><br>
+         Jour 29 : <input type="date" id="dateJour29" value="${formatDate(dateJour29)}" readonly><br>
+         Jour 90 : <input type="date" id="dateJour90" value="${formatDate(dateJour90)}" readonly><br>
         <br>
         en cas d'âge <5ans la dose sera 1/2 amp (01 ml)<br>
         </p>
